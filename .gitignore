@@ -3,3 +3,5 @@ venv
 *.pyo
 *.swo
 *.swp
+*.zip
+lambda.env

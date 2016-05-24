@@ -1,12 +1,8 @@
 {
-  "dev": {
-    "s3_bucket": "entulho-temporario",
-    "app_function": "main.app",
-    "keep_warm": false
-  },
   "prod": {
     "s3_bucket": "entulho-temporario",
     "app_function": "main.app",
-    "keep_warm": false
+    "keep_warm": false,
+    "http_methods": ["GET", "POST", "HEAD"]
   }
 }
