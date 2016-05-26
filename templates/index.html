@@ -1,16 +1,34 @@
 <!doctype html>
 
 <meta charset=utf-8>
-<link href=https://igoradamenko.github.io/awsm.css/css/awsm.min.css rel=stylesheet>
+<link href=https://cdn.rawgit.com/igoradamenko/awsm.css/2bade2b5ae3c9a9bb5a7b0a767ae5896078f37d4/dist/awsm.min.css rel=stylesheet>
+<style>
+* {
+  font-family: monospace;
+}
+input {
+  font-size: 14px;
+  line-height: 20px;
+  width: 100%;
+}
+input, button, textarea, select {
+  display: block;
+  margin: 10px auto;
+}
+</style>
 <title>webhook transmutations</title>
 
 <body>
   <header>
-    Transmutations
+    Webhook Transmutations
   </header>
   <main>
     <article>
-      
+      <form action=/c/ method=post>
+        <input name=target placeholder='The URL to which this webhook will be redirected.'>
+        <input name=definition placeholder='The jq build URL that will be used to transform the incoming data.'>
+        <button>Create</button>
+      </form>
     </article>
   </main>
 </body>
