@@ -1,7 +1,7 @@
 <!doctype html>
 
 <meta charset=utf-8>
-<link href=https://cdn.rawgit.com/igoradamenko/awsm.css/2bade2b5ae3c9a9bb5a7b0a767ae5896078f37d4/dist/awsm.min.css rel=stylesheet>
+<link href=https://websitesfortrello.github.io/classless/themes/plain/theme.css rel=stylesheet>
 <style>
 * {
   font-family: monospace;
@@ -16,17 +16,22 @@ input, button, textarea, select {
   margin: 10px auto;
 }
 </style>
-<title>webhook transmutations</title>
+<title>Webhook Transmutations</title>
 
 <body>
   <header>
-    Webhook Transmutations
+    <h1>Webhook Transmutations</h1>
+    <p>Piping from a service to another since 2016</p>
   </header>
   <main>
     <article>
-      <form action=/c/ method=post>
+      <header>
+
+      </header>
+      <form action=/e/ method=post>
         <input name=target placeholder='The URL to which this webhook will be redirected.'>
-        <input name=definition placeholder='The jq build URL that will be used to transform the incoming data.'>
+        <textarea name=definition placeholder='The jq script that will be used to transform the incoming data.'></textarea>
+        <input name=headers placeholder='A custom header.'>
         <button>Create</button>
       </form>
     </article>

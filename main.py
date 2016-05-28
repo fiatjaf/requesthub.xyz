@@ -1,95 +1,134 @@
 import os
-import redis
+import json
 import requests
-from dotenv import load_dotenv
-from subprocess import Popen, PIPE
-from flask import Flask, request, render_template
-
-from helpers import make_identifier, is_valid_definition, is_valid_url
-
-load_dotenv(os.path.join(os.path.dirname(__file__), 'lambda.env'))
+from haikunator import haikunate
+from flask import Flask, request, jsonify
+from helpers import is_valid_modifier, is_valid_url, \
+                    parse_header, pg_connect, jq
 
 app = Flask(__name__)
-r = redis.StrictRedis.from_url(os.getenv('REDIS_URL'))
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/c/', methods=['POST'])
+@app.route('/e/', methods=['POST'])
 def create_endpoint():
-    identifier = make_identifier()
+    identifier = haikunate(tokenlength=0)
 
-    ok, message = set_endpoint(
-        identifier,
-        request.form.get('definition', 'error'),
-        request.form.get('target', 'error')
-    )
+    ok, message = set_endpoint(identifier,
+                               request.form.get('definition', 'error'),
+                               request.form.get('target', 'error'))
     if not ok:
         return 'failed: %s' % message, 401
 
-    return 'set, test output at {h}d/{i} and direct webhooks to {h}w/{i}'.format(
-        h=request.url_root, i=identifier
-    ), 201
+    return jsonify({
+        'identifier': identifier,
+        'play_url': request.url_root + 'd/' + identifier,
+        'live_url': request.url_root + 'w/' + identifier,
+    }), 201
 
-@app.route('/c/<identifier>', methods=['PUT'])
+
+@app.route('/e/<identifier>', methods=['PUT'])
 def update_endpoint(identifier):
-    ok, message = set_endpoint(
-        identifier,
-        request.json.get('definition', 'error'),
-        request.json.get('target', 'error')
-    )
+    ok, message = set_endpoint(identifier,
+                               request.json.get('definition', 'error'),
+                               request.json.get('target', 'error'))
     if not ok:
         return 'failed: %s' % message, 401
-    
-    return 'set, test output at {h}d/{i} and direct webhooks to {h}w/{i}'.format(
-        h=request.url_root, i=identifier
-    ), 201
 
-def set_endpoint(identifier, definition, target):
-    if not is_valid_definition(definition):
+    return jsonify({
+        'identifier': identifier,
+        'play_url': request.url_root + 'd/' + identifier,
+        'live_url': request.url_root + 'w/' + identifier,
+    }), 201
+
+
+@app.route('/e/<identifier>', methods=['DELETE'])
+def delete_endpoint(identifier):
+    with pg_connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
+UPDATE TABLE endpoints SET enabled=false WHERE id = %s
+''', (identifier, ))
+    return 200
+
+
+def set_endpoint(identifier, definition, target_url, headers=[]):
+    data = {}
+
+    if not is_valid_modifier(definition):
         return False, 'please provide a valid jq definition'
-    if not is_valid_url(target):
-        return False, 'please provide a valid url'
 
-    r.hset(identifier, 'def', definition)
-    r.hset(identifier, 'tgt', target)
-    return True, ''
+    if not is_valid_url(target_url):
+        # url is not static, but a modifier also
+        data['url:d'] = True
+        if not is_valid_modifier(target_url):
+            return False, 'please provide a valid url'
+
+    try:
+        headers = dict([parse_header() for h in headers])
+    except ValueError as e:
+        return False, 'invalid header: %s' % e
+
+    data['def'] = definition
+    data['url'] = target_url
+    data['headers'] = headers
+
+    with pg_connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
+INSERT INTO endpoints (id, data) VALUES (%s, %s)
+ON CONFLICT (id) DO UPDATE SET data = %s''',
+                        (identifier, json.dumps(data), json.dumps(data)))
+            conn.commit()
+            return True, ''
+
+    return False, 'mysterious error'
+
 
 @app.route('/d/<identifier>', methods=['GET', 'POST', 'HEAD'])
 def display_processed(identifier):
-    info = r.hgetall(identifier)
-    mutated = process_input(info['def'], data = request.stream.read())
-    if not mutated:
-        return 'transmutated into null and aborted', 200
+    with pg_connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
+SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
+            info = cur.fetchone()[0]
 
-    return mutated + ' to ' + info['tgt']
+            mutated = jq(info['def'], data=request.stream.read())
+            if not mutated:
+                return 'transmutated into null and aborted', 200
+
+            return mutated + ' to ' + info['url']
+    return 'an error ocurred', 500
+
 
 @app.route('/w/<identifier>', methods=['GET', 'POST', 'HEAD'])
 def redirect_webhook(identifier):
-    info = r.hgetall(identifier)
-    mutated = process_input(info['def'], data = request.stream.read())
-    if not mutated:
-        return 'transmutated into null and aborted', 200
+    with pg_connect() as conn:
+        with conn.cursor() as cur:
+            cur.execute('''
+SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
+            info = cur.fetchone()[0]
 
-    try:
-        resp = requests.post(
-            info['tgt'],
-            data=mutated,
-            headers={'Content-Type': 'application/json'},
-            timeout=4
-        )
-    except requests.exceptions.RequestException as e:
-        print('FAILED TO POST', e, identifier, mutated)
-    if not resp.ok:
-        print('FAILED TO POST', resp.text, identifier, mutated)
+            mutated = jq(info['def'], data=request.stream.read())
+            if not mutated:
+                return 'transmutated into null and aborted', 200
 
-    return resp.text, resp.status_code
+            try:
+                resp = requests.post(info['url'],
+                                     data=mutated,
+                                     headers={
+                                         'Content-Type': 'application/json'
+                                     }.update(info['headers']),
+                                     timeout=4)
+            except requests.exceptions.RequestException as e:
+                print('FAILED TO POST', e, identifier, mutated)
+            if not resp.ok:
+                print('FAILED TO POST', resp.text, identifier, mutated)
 
-def process_input(definition, data):
-    p = Popen(['./jq', '-c', '-M', definition], stdin=PIPE, stdout=PIPE)
-    res = p.communicate(input=data)[0]
-    return res
+            return resp.text, resp.status_code
+    return 'an error ocurred', 500
+
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', int(os.getenv('PORT', 8787)), debug=os.getenv('DEBUG', True))
+    app.run('0.0.0.0',
+            int(os.getenv('PORT', 8787)),
+            debug=os.getenv('DEBUG', True))

@@ -5,14 +5,7 @@
     "keep_warm": false,
     "http_methods": ["GET", "POST", "HEAD", "PUT"],
     "memory_size": 128,
-    "timeout": 15
-  },
-  "test": {
-    "s3_bucket": "entulho-temporario",
-    "app_function": "test.app",
-    "keep_warm": false,
-    "http_methods": ["GET", "POST", "HEAD", "PUT"],
-    "memory_size": 128,
-    "timeout": 15
+    "timeout": 15,
+    "exclude": ["client", "client/.*"]
   }
 }
