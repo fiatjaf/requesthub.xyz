@@ -5,3 +5,8 @@ venv
 *.swp
 *.zip
 lambda.env
+node_modules
+dist/
+npm-debug.log
+*.env
+browserify-cache.json

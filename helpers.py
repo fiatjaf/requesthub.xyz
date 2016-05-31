@@ -1,11 +1,6 @@
-import os
-import pg8000
 from urlparse import urlparse
 from subprocess import Popen, PIPE
 from flask import request
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.dirname(__file__), 'lambda.env'))
 
 
 def is_valid_modifier(modifier):
@@ -24,38 +19,16 @@ def is_valid_url(url):
     return True
 
 
-def parse_header(header):
-    if len(header) > 300 or len(header) < 3 or ':' not in header:
-        raise ValueError(header)
-    key, value = header.split(':', 1)
-    return key.strip(), value.strip()
+def is_valid_headers(headers):
+    headers = {k: v for k, v in headers.items() if k.strip() and v.strip()}
+
+    for k, v in headers.items():
+        if len(k) > 50 or len(v) > 300:
+            return False
+    return True
 
 
 def jq(mod, data):
     p = Popen(['./jq', '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
     res = p.communicate(input=data)[0]
     return res
-
-
-class With():
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *args):
-        self.close()
-
-
-class Cursor(pg8000.Cursor, With):
-    pass
-
-
-class Connection(pg8000.Connection, With):
-    def cursor(self):
-        return Cursor(self)
-        self.close()
-
-
-def pg_connect(*pg_params):
-    p = urlparse(os.getenv('POSTGRESQL_URL'))
-    return Connection(p.username, p.hostname, None, p.port,
-                      p.path[1:], p.password, True, None)

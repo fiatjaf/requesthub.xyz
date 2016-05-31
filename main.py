@@ -1,41 +1,73 @@
 import os
-import json
 import requests
-from haikunator import haikunate
 from flask import Flask, request, jsonify
-from helpers import is_valid_modifier, is_valid_url, \
-                    parse_header, pg_connect, jq
+from flask.ext.cors import CORS
+from haikunator import haikunate
+from db import pg
+from helpers import jq
+from actions import set_endpoint, get_endpoints, remove_endpoint, \
+                    make_jwt, logged_user
 
 app = Flask(__name__)
+CORS(app)
 
 
-@app.route('/e/', methods=['POST'])
-def create_endpoint():
-    identifier = haikunate(tokenlength=0)
+@app.route('/auth', methods=['POST', 'GET'])
+def auth():
+    if request.method == 'GET':
+        return jsonify({'jwt': None}), 401
 
-    ok, message = set_endpoint(identifier,
-                               request.form.get('definition', 'error'),
-                               request.form.get('target', 'error'))
-    if not ok:
-        return 'failed: %s' % message, 401
-
+    email = request.json['email']
     return jsonify({
-        'identifier': identifier,
-        'play_url': request.url_root + 'd/' + identifier,
-        'live_url': request.url_root + 'w/' + identifier,
-    }), 201
+        'email': email,
+        'jwt': make_jwt(email)
+    }), 200
+
+
+@app.route('/e/', methods=['GET', 'POST'])
+def endpoints():
+    user = logged_user()
+
+    if request.method == 'GET':
+        if not user:
+            return jsonify(endpoints={})
+        return jsonify(endpoints=get_endpoints(user))
+
+    elif request.method == 'POST':
+        identifier = haikunate(tokenlength=4)
+
+        identifier, message = set_endpoint(
+            identifier, request.json.get('definition', 'error'),
+            request.json.get('url', 'error'),
+            request.json.get('headers', {}),
+            user
+        )
+        if not identifier:
+            return 'failed: %s' % message, 401
+
+        return jsonify({
+            'identifier': identifier,
+            'owner': user,
+            'play_url': request.url_root + 'd/' + identifier,
+            'live_url': request.url_root + 'w/' + identifier,
+        }), 201
 
 
 @app.route('/e/<identifier>', methods=['PUT'])
 def update_endpoint(identifier):
-    ok, message = set_endpoint(identifier,
-                               request.json.get('definition', 'error'),
-                               request.json.get('target', 'error'))
-    if not ok:
+    user = logged_user()
+    identifier, message = set_endpoint(
+        identifier,
+        request.json.get('definition', 'error'),
+        request.json.get('url', 'error'),
+        user
+    )
+    if not identifier:
         return 'failed: %s' % message, 401
 
     return jsonify({
         'identifier': identifier,
+        'owner': user,
         'play_url': request.url_root + 'd/' + identifier,
         'live_url': request.url_root + 'w/' + identifier,
     }), 201
@@ -43,88 +75,51 @@ def update_endpoint(identifier):
 
 @app.route('/e/<identifier>', methods=['DELETE'])
 def delete_endpoint(identifier):
-    with pg_connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute('''
-UPDATE TABLE endpoints SET enabled=false WHERE id = %s
-''', (identifier, ))
-    return 200
-
-
-def set_endpoint(identifier, definition, target_url, headers=[]):
-    data = {}
-
-    if not is_valid_modifier(definition):
-        return False, 'please provide a valid jq definition'
-
-    if not is_valid_url(target_url):
-        # url is not static, but a modifier also
-        data['url:d'] = True
-        if not is_valid_modifier(target_url):
-            return False, 'please provide a valid url'
-
-    try:
-        headers = dict([parse_header() for h in headers])
-    except ValueError as e:
-        return False, 'invalid header: %s' % e
-
-    data['def'] = definition
-    data['url'] = target_url
-    data['headers'] = headers
-
-    with pg_connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute('''
-INSERT INTO endpoints (id, data) VALUES (%s, %s)
-ON CONFLICT (id) DO UPDATE SET data = %s''',
-                        (identifier, json.dumps(data), json.dumps(data)))
-            conn.commit()
-            return True, ''
-
-    return False, 'mysterious error'
+    user = logged_user()
+    if remove_endpoint(identifier, user):
+        return 200
+    return 500
 
 
 @app.route('/d/<identifier>', methods=['GET', 'POST', 'HEAD'])
 def display_processed(identifier):
-    with pg_connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute('''
+    with pg() as cur:
+        cur.execute('''
 SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
-            info = cur.fetchone()[0]
+        info = cur.fetchone()[0]
 
-            mutated = jq(info['def'], data=request.stream.read())
-            if not mutated:
-                return 'transmutated into null and aborted', 200
+        mutated = jq(info['def'], data=request.stream.read())
+        if not mutated:
+            return 'transmutated into null and aborted', 200
 
-            return mutated + ' to ' + info['url']
+        return mutated + ' to ' + info['url']
     return 'an error ocurred', 500
 
 
 @app.route('/w/<identifier>', methods=['GET', 'POST', 'HEAD'])
 def redirect_webhook(identifier):
-    with pg_connect() as conn:
-        with conn.cursor() as cur:
-            cur.execute('''
+    with pg() as cur:
+        cur.execute('''
 SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
-            info = cur.fetchone()[0]
+        info = cur.fetchone()[0]
 
-            mutated = jq(info['def'], data=request.stream.read())
-            if not mutated:
-                return 'transmutated into null and aborted', 200
+        mutated = jq(info['def'], data=request.stream.read())
+        if not mutated:
+            return 'transmutated into null and aborted', 200
 
-            try:
-                resp = requests.post(info['url'],
-                                     data=mutated,
-                                     headers={
-                                         'Content-Type': 'application/json'
-                                     }.update(info['headers']),
-                                     timeout=4)
-            except requests.exceptions.RequestException as e:
-                print('FAILED TO POST', e, identifier, mutated)
-            if not resp.ok:
-                print('FAILED TO POST', resp.text, identifier, mutated)
+        try:
+            resp = requests.post(info['url'],
+                                 data=mutated,
+                                 headers={
+                                     'Content-Type': 'application/json'
+                                 }.update(info['headers']),
+                                 timeout=4)
+        except requests.exceptions.RequestException as e:
+            print('FAILED TO POST', e, identifier, mutated)
+        if not resp.ok:
+            print('FAILED TO POST', resp.text, identifier, mutated)
 
-            return resp.text, resp.status_code
+        return resp.text, resp.status_code
     return 'an error ocurred', 500
 
 
