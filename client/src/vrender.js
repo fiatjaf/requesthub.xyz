@@ -1,9 +1,15 @@
+/* global location */
+
 import {h} from '@motorcycle/dom'
 
-export function nav (jwt) {
-  if (jwt.email) {
+const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
+const CLIENT_URL = location.protocol + '//' + location.hostname + (location.port ? `:${location.port}` : '')
+const LA_ORIGIN = process.env.LA_ORIGIN
+
+export function nav (session) {
+  if (session.email) {
     return h('ul', [
-      h('li', jwt.email),
+      h('li', session.email),
       h('li', [
         h('a', {props: {href: '#/endpoints'}}, 'Endpoints')
       ]),
@@ -14,8 +20,12 @@ export function nav (jwt) {
   } else {
     return h('ul', [
       h('li', [
-        h('form.auth', [
-          h('input', {props: {type: 'email', placeholder: 'Your email'}}),
+        h('form', {props: {action: `${LA_ORIGIN}/auth`, method: 'POST'}}, [
+          h('input', {props: {type: 'hidden', name: 'scope', value: 'openid email'}}),
+          h('input', {props: {type: 'hidden', name: 'response_type', value: 'id_token'}}),
+          h('input', {props: {type: 'hidden', name: 'client_id', value: CLIENT_URL}}),
+          h('input', {props: {type: 'hidden', name: 'redirect_uri', value: `${API_ENDPOINT}/auth`}}),
+          h('input', {props: {type: 'login_hint', name: 'login_hint', placeholder: 'Your email'}}),
           h('button', 'Start here')
         ])
       ])
@@ -63,16 +73,20 @@ export function list (endpoints) {
 }
 
 export function endpoint (end, nheaders) {
+  if (!end || !end.identifier) return h('div')
+
+  end = end || {identifier: '', definition: '', headers: {}, url: '', created_at: ''}
   return h('article', [
     h('header', [
       h('h1', end.identifier),
       h('aside', [
         h('ul', [
+          h('li', `${API_ENDPOINT}/w/${end.identifier}/`),
           h('li', end.created_at)
         ])
       ])
     ]),
-    h('div', endpointForm(end, nheaders))
+    h('div', [endpointForm(end, nheaders)])
   ])
 }
 
@@ -90,6 +104,7 @@ function endpointForm (end, nheaders) {
   }
 
   return h('form.set', [
+    h('span', end.identifier ? [h('input', {props: {name: 'identifier', value: end.identifier}})] : []),
     h('label', [
       'Target URL:',
       h('input', {

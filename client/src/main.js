@@ -17,7 +17,7 @@ Cycle.run(app, {
     require('snabbdom/modules/props'),
     require('snabbdom/modules/style')
   ]),
-  ROUTER: makeRouterDriver(createHashHistory()),
+  ROUTER: makeRouterDriver(createHashHistory({queryKey: false})),
   STORAGE: localStorageDriver
 })
 
@@ -41,3 +41,7 @@ export default function localStorageDriver (req$) {
     }).multicast()
   }
 }
+
+/* classless */
+let link = document.querySelector('head > link')
+link.href = link.href.replace(/.*themes\/(\w+)\/.*/, (_, m) => { return `http://cantillon.alhur.es:4444/${m}/theme.css` })

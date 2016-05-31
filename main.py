@@ -1,10 +1,14 @@
 import os
+import json
+import urllib
 import requests
-from flask import Flask, request, jsonify
+from urllib import urlencode
+from requests.structures import CaseInsensitiveDict
+from flask import Flask, request, jsonify, redirect
 from flask.ext.cors import CORS
 from haikunator import haikunate
 from db import pg
-from helpers import jq
+from helpers import jq, get_verified_email
 from actions import set_endpoint, get_endpoints, remove_endpoint, \
                     make_jwt, logged_user
 
@@ -12,16 +16,19 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/auth', methods=['POST', 'GET'])
+@app.route('/auth', methods=['POST'])
 def auth():
-    if request.method == 'GET':
-        return jsonify({'jwt': None}), 401
+    token = request.form['id_token']
 
-    email = request.json['email']
-    return jsonify({
-        'email': email,
-        'jwt': make_jwt(email)
-    }), 200
+    result = get_verified_email(token)
+    if 'error' in result:
+        raise result
+        return redirect(os.getenv('CLIENT_URL'))
+
+    return redirect(os.getenv('CLIENT_URL') + '#/logged?' + urllib.urlencode({
+        'email': result['email'],
+        'jwt': make_jwt(result['email'])
+    }))
 
 
 @app.route('/e/', methods=['GET', 'POST'])
@@ -60,6 +67,7 @@ def update_endpoint(identifier):
         identifier,
         request.json.get('definition', 'error'),
         request.json.get('url', 'error'),
+        request.json.get('headers', {}),
         user
     )
     if not identifier:
@@ -81,39 +89,41 @@ def delete_endpoint(identifier):
     return 500
 
 
-@app.route('/d/<identifier>', methods=['GET', 'POST', 'HEAD'])
-def display_processed(identifier):
-    with pg() as cur:
-        cur.execute('''
-SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
-        info = cur.fetchone()[0]
-
-        mutated = jq(info['def'], data=request.stream.read())
-        if not mutated:
-            return 'transmutated into null and aborted', 200
-
-        return mutated + ' to ' + info['url']
-    return 'an error ocurred', 500
-
-
 @app.route('/w/<identifier>', methods=['GET', 'POST', 'HEAD'])
-def redirect_webhook(identifier):
+@app.route('/w/<identifier>/', methods=['GET', 'POST', 'HEAD'])
+def proxy_webhook(identifier):
+    data = request.get_data()
+
     with pg() as cur:
         cur.execute('''
-SELECT data FROM endpoints WHERE id = %s''', (identifier, ))
-        info = cur.fetchone()[0]
+SELECT definition, headers, url, data->'url:d'
+FROM endpoints WHERE id = %s''', (identifier, ))
+        definition, headers, url, url_dynamic = cur.fetchone()
 
-        mutated = jq(info['def'], data=request.stream.read())
+        if url_dynamic:
+            url = jq(url, data=data)
+
+        mutated = jq(definition, data=data)
         if not mutated:
             return 'transmutated into null and aborted', 200
+
+        h = CaseInsensitiveDict({'Content-Type': 'application/json'})
+        h.update(headers)
+
+        if h.get('content-type') == 'application/x-www-form-urlencoded':
+            # oops, not json
+            mutated = urlencode(json.loads(mutated))
+
+        print('POSTING ' + mutated + ' TO ' + url +
+              ' WITH HEADERS ' + json.dumps(headers))
 
         try:
-            resp = requests.post(info['url'],
-                                 data=mutated,
-                                 headers={
-                                     'Content-Type': 'application/json'
-                                 }.update(info['headers']),
-                                 timeout=4)
+            resp = requests.post(
+                url,
+                data=mutated,
+                headers=h,
+                timeout=4
+            )
         except requests.exceptions.RequestException as e:
             print('FAILED TO POST', e, identifier, mutated)
         if not resp.ok:

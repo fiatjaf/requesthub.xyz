@@ -1,17 +1,23 @@
+/* global location */
+
 import most from 'most'
 import fwitch from 'fwitch'
+import decodeqs from 'querystring/decode'
 
 import * as vrender from './vrender'
 
-const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + window.location.hostname : process.env.API_ENDPOINT
+const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
+const initialHash = location.hash
 
 export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   let match$ = ROUTER.define({
     '/': {where: 'HOME'},
+    '/logged': {where: 'LOGGED'},
     '/account': {where: 'ACCOUNT'},
     '/endpoints': {where: 'ENDPOINTS'},
     '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
   })
+    .multicast()
 
   let response$ = HTTP
     .flatMap(r$ => r$
@@ -23,16 +29,17 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   // let notify$ = response$
   //   .tap(console.log.bind(console, 'notify'))
 
-  let session$ = response$
-    .filter(r => r.jwt !== undefined)
+  let session$ = match$
+    .filter(match => match.value.where === 'LOGGED')
+    .map(match => decodeqs(match.location.search.slice(1)))
     .merge(
       STORAGE.items
         .filter(([key]) => key === 'session')
         .map(([_, value]) => JSON.parse(value))
+        .filter(x => x)
     )
     .startWith({})
     .multicast()
-    .tap(session => console.log('session', session))
 
   let created$ = response$
     .filter(r => r.live_url)
@@ -63,23 +70,17 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     )
 
   let nav$ = session$
-    .map(vrender.nav)
-
-  let auth$ = NAV.select('form').events('submit')
-    .tap(e => e.preventDefault())
-    .map(e => ({
-      url: '/auth',
-      method: 'POST',
-      send: {
-        email: e.target.querySelector('input').value.trim()
-      }
-    }))
+    .map(session => vrender.nav(session))
 
   let create$ = MAIN.select('form.set').events('submit')
     .tap(e => e.preventDefault())
     .map(e => ({
-      method: 'POST',
-      url: '/e/',
+      method: e.target.querySelector('[name="identifier"]')
+        ? 'PUT'
+        : 'POST',
+      url: e.target.querySelector('[name="identifier"]')
+        ? `/e/${e.target.querySelector('[name="identifier"]').value}`
+        : '/e/',
       send: {
         url: e.target.querySelector('[name="url"]').value.trim(),
         definition: e.target.querySelector('[name="definition"]').value.trim(),
@@ -109,7 +110,6 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
 
   let request$ = most.empty()
     .merge(create$)
-    .merge(auth$)
     .merge(fetchList$)
     .multicast()
 
@@ -122,12 +122,14 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
         return req
       }, request$, session$)
       .tap(req => req.url = API_ENDPOINT + req.url),
-    ROUTER: most.empty()
+    ROUTER: most.of(initialHash.slice(1))
+      .delay(1)
       .merge(href$)
       .merge(created$.map(c => `/endpoints/${c.identifier}`))
-      .startWith(window.location.hash)
+      .tap(x => console.log('routing to', initialHash))
       .multicast(),
-    STORAGE: session$.map(session => STORAGE.setItem('session', JSON.stringify(session)))
+    STORAGE: session$
+      .map(session => STORAGE.setItem('session', JSON.stringify(session)))
       .startWith(STORAGE.getItem('session'))
       .multicast()
   }
