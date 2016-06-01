@@ -18,12 +18,12 @@ Cycle.run(app, {
     require('snabbdom/modules/style')
   ]),
   ROUTER: makeRouterDriver(createHashHistory({queryKey: false})),
-  STORAGE: localStorageDriver
+  STORAGE: localStorageDriver,
+  HEADER: adjustHeaderDriver
 })
 
-export default function localStorageDriver (req$) {
+function localStorageDriver (req$) {
   var emit
-
   req$.observe(({action, key, value}) => {
     if (action === 'setItem') {
       window.localStorage.setItem(key, value)
@@ -40,6 +40,18 @@ export default function localStorageDriver (req$) {
       emit = add
     }).multicast()
   }
+}
+
+function adjustHeaderDriver (session$) {
+  var initialHTML = document.querySelector('body > header').innerHTML
+  session$.observe(session => {
+    if (session.jwt && session.email) {
+      document.querySelector('body > header *:not(h1)').style.display = 'none'
+      document.querySelector('body > header h1').style.fontSize = '14px'
+    } else {
+      document.querySelector('body > header').innerHTML = initialHTML
+    }
+  })
 }
 
 /* classless */

@@ -2,6 +2,8 @@
 
 import {h} from '@motorcycle/dom'
 
+import * as icons from './icons'
+
 const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
 const CLIENT_URL = location.protocol + '//' + location.hostname + (location.port ? `:${location.port}` : '')
 const LA_ORIGIN = process.env.LA_ORIGIN
@@ -103,8 +105,11 @@ function endpointForm (end, nheaders) {
     headerPairs.push(['', ''])
   }
 
-  return h('form.set', [
-    h('span', end.identifier ? [h('input', {props: {name: 'identifier', value: end.identifier}})] : []),
+  return h('form', [
+    h('span', end.identifier
+      ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.identifier}})]
+      : []
+    ),
     h('label', [
       'Target URL:',
       h('input', {
@@ -151,7 +156,18 @@ function endpointForm (end, nheaders) {
       h('a.header-add', {props: {href: '#', title: 'more headers'}}, '+'),
       h('a.header-remove', {props: {href: '#', title: 'less headers'}, style: {'float': 'right'}}, '-')
     ])),
-    h('button', end.identifier ? 'Update' : 'Create')
+    h('button.set', {
+      style: {
+        color: 'white',
+        fontSize: '18px',
+        background: end.identifier ? '#74a7e6' : '#5e8c72'
+      },
+      props: {title: end.identifier ? 'Update endpoint' : 'Create endpoint'}
+    }, end.identifier ? 'Update endpoint' : 'Create endpoint'),
+    end.identifier ? h('button.delete', {
+      style: {color: 'white', background: '#ea8686', padding: '4px 11px 2px 11px'},
+      props: {title: 'Delete endpoint', alt: 'Delete', innerHTML: icons.garbage}
+    }) : null
   ])
 }
 

@@ -17,7 +17,9 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     '/endpoints': {where: 'ENDPOINTS'},
     '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
   })
+    .delay(1) // this delay is necessary so session is ready before this emits the first.
     .multicast()
+    .tap(m => console.log('ROUTED', m.value.where))
 
   let response$ = HTTP
     .flatMap(r$ => r$
@@ -25,9 +27,6 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     )
     .map(response => response.body)
     .startWith({})
-
-  // let notify$ = response$
-  //   .tap(console.log.bind(console, 'notify'))
 
   let session$ = match$
     .filter(match => match.value.where === 'LOGGED')
@@ -37,12 +36,12 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
         .filter(([key]) => key === 'session')
         .map(([_, value]) => JSON.parse(value))
         .filter(x => x)
+        .tap(n => console.log('fetched', n))
     )
-    .startWith({})
     .multicast()
 
-  let created$ = response$
-    .filter(r => r.live_url)
+  let created$ = response$.filter(r => r.endpoint)
+  let deleted$ = response$.filter(r => r.deleted)
 
   let nheaders$ = most.merge(
     MAIN.select('.header-add').events('click').tap(e => e.preventDefault()).constant(1),
@@ -70,23 +69,25 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     )
 
   let nav$ = session$
+    .startWith({})
     .map(session => vrender.nav(session))
 
-  let create$ = MAIN.select('form.set').events('submit')
+  let endpointRequest$ = MAIN.select('form button.set').events('click')
     .tap(e => e.preventDefault())
-    .map(e => ({
-      method: e.target.querySelector('[name="identifier"]')
+    .map(e => e.ownerTarget.parentNode)
+    .map(form => ({
+      method: form.querySelector('[name="identifier"]')
         ? 'PUT'
         : 'POST',
-      url: e.target.querySelector('[name="identifier"]')
-        ? `/e/${e.target.querySelector('[name="identifier"]').value}`
+      url: form.querySelector('[name="identifier"]')
+        ? `/e/${form.querySelector('[name="identifier"]').value}/`
         : '/e/',
       send: {
-        url: e.target.querySelector('[name="url"]').value.trim(),
-        definition: e.target.querySelector('[name="definition"]').value.trim(),
+        url: form.querySelector('[name="url"]').value.trim(),
+        definition: form.querySelector('[name="definition"]').value.trim(),
         headers: (() => {
-          let keys = e.target.querySelectorAll('[name="header-key"]')
-          let vals = e.target.querySelectorAll('[name="header-val"]')
+          let keys = form.querySelectorAll('[name="header-key"]')
+          let vals = form.querySelectorAll('[name="header-val"]')
           var headers = {}
           for (let i = 0; i < keys.length; i++) {
             let key = keys[i].value.trim()
@@ -99,6 +100,15 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
         })()
       }
     }))
+    .merge(
+      MAIN.select('form button.delete').events('click')
+        .tap(e => e.preventDefault())
+        .map(e => e.ownerTarget.parentNode)
+        .map(form => ({
+          method: 'DELETE',
+          url: `/e/${form.querySelector('[name="identifier"]').value}/`
+        }))
+    )
 
   let fetchList$ = match$
     .filter(match => match.value.where === 'ENDPOINTS' || match.value.where === 'ENDPOINT')
@@ -109,7 +119,7 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     .map(e => e.target.href.slice(1))
 
   let request$ = most.empty()
-    .merge(create$)
+    .merge(endpointRequest$)
     .merge(fetchList$)
     .multicast()
 
@@ -126,11 +136,13 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
       .delay(1)
       .merge(href$)
       .merge(created$.map(c => `/endpoints/${c.identifier}`))
+      .merge(deleted$.constant('/endpoints'))
       .tap(x => console.log('routing to', initialHash))
       .multicast(),
     STORAGE: session$
       .map(session => STORAGE.setItem('session', JSON.stringify(session)))
       .startWith(STORAGE.getItem('session'))
-      .multicast()
+      .multicast(),
+    HEADER: session$
   }
 }

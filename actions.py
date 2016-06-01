@@ -100,7 +100,7 @@ LIMIT 20''',
 def remove_endpoint(identifier, owner):
     with pg() as cur:
         cur.execute('''
-DELETE FROM endpoints WHERE identifier = %s
+DELETE FROM endpoints WHERE id = %s
 AND owner = %s OR owner IS NULL
 ''', (identifier, owner))
         return True

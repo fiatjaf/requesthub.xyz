@@ -4,7 +4,7 @@ import urllib
 import requests
 from urllib import urlencode
 from requests.structures import CaseInsensitiveDict
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, make_response
 from flask.ext.cors import CORS
 from haikunator import haikunate
 from db import pg
@@ -41,52 +41,49 @@ def endpoints():
         return jsonify(endpoints=get_endpoints(user))
 
     elif request.method == 'POST':
-        identifier = haikunate(tokenlength=4)
+        newid = haikunate(tokenlength=4)
 
         identifier, message = set_endpoint(
-            identifier, request.json.get('definition', 'error'),
+            newid,
+            request.json.get('definition', 'error'),
             request.json.get('url', 'error'),
             request.json.get('headers', {}),
             user
         )
         if not identifier:
-            return 'failed: %s' % message, 401
+            return jsonify(error=message), 401
 
         return jsonify({
             'identifier': identifier,
-            'owner': user,
-            'play_url': request.url_root + 'd/' + identifier,
-            'live_url': request.url_root + 'w/' + identifier,
-        }), 201
+            'owner': user
+        }), 201 if newid == identifier else 200
 
 
-@app.route('/e/<identifier>', methods=['PUT'])
-def update_endpoint(identifier):
+@app.route('/e/<identifier>', methods=['PUT', 'DELETE'])
+@app.route('/e/<identifier>/', methods=['PUT', 'DELETE'])
+def edit_endpoint(identifier):
     user = logged_user()
-    identifier, message = set_endpoint(
-        identifier,
-        request.json.get('definition', 'error'),
-        request.json.get('url', 'error'),
-        request.json.get('headers', {}),
-        user
-    )
-    if not identifier:
-        return 'failed: %s' % message, 401
 
-    return jsonify({
-        'identifier': identifier,
-        'owner': user,
-        'play_url': request.url_root + 'd/' + identifier,
-        'live_url': request.url_root + 'w/' + identifier,
-    }), 201
+    if request.method == 'PUT':
+        identifier, message = set_endpoint(
+            identifier,
+            request.json.get('definition', 'error'),
+            request.json.get('url', 'error'),
+            request.json.get('headers', {}),
+            user
+        )
+        if not identifier:
+            return jsonify(error=message), 401
 
+        return jsonify({
+            'identifier': identifier,
+            'owner': user
+        }), 200
 
-@app.route('/e/<identifier>', methods=['DELETE'])
-def delete_endpoint(identifier):
-    user = logged_user()
-    if remove_endpoint(identifier, user):
-        return 200
-    return 500
+    elif request.method == 'DELETE':
+        if remove_endpoint(identifier, user):
+            return jsonify({'deleted': identifier}), 200
+        return jsonify(error='mysterious error'), 500
 
 
 @app.route('/w/<identifier>', methods=['GET', 'POST', 'HEAD'])
@@ -129,7 +126,9 @@ FROM endpoints WHERE id = %s''', (identifier, ))
         if not resp.ok:
             print('FAILED TO POST', resp.text, identifier, mutated)
 
-        return resp.text, resp.status_code
+        response = make_response(resp.text, resp.status_code)
+        response.headers.update(resp.headers)
+        return response
     return 'an error ocurred', 500
 
 
