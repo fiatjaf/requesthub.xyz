@@ -6,6 +6,7 @@
     "http_methods": ["GET", "POST", "HEAD", "PUT"],
     "memory_size": 128,
     "timeout": 15,
-    "exclude": ["client", "client/.*"]
+    "exclude": [".env", "local.env", "client", "client/.*"],
+    "domain": "webhooks.alhur.es"
   }
 }

@@ -7,11 +7,14 @@ from requests.structures import CaseInsensitiveDict
 from flask import Flask, request, jsonify, redirect, make_response
 from flask.ext.cors import CORS
 from haikunator import haikunate
+
+import settings
 from db import pg
 from helpers import jq, get_verified_email
 from actions import set_endpoint, get_endpoints, remove_endpoint, \
                     make_jwt, logged_user
 
+settings.init()
 app = Flask(__name__)
 CORS(app)
 

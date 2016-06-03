@@ -1,5 +1,3 @@
-/* global location */
-
 import {h} from '@motorcycle/dom'
 import marked from 'marked'
 import sampleSize from 'lodash.samplesize'
@@ -7,8 +5,8 @@ import sampleSize from 'lodash.samplesize'
 import text from '../copy.yaml'
 import * as icons from './icons'
 
-const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
-const CLIENT_URL = location.protocol + '//' + location.hostname + (location.port ? `:${location.port}` : '')
+const API_ENDPOINT = process.env.API_ENDPOINT
+const CLIENT_URL = process.env.CLIENT_URL
 const LA_ORIGIN = process.env.LA_ORIGIN
 
 export function nav (session) {
@@ -62,7 +60,6 @@ export function home (nheaders) {
       h('p', "You'll not be able to update or delete anonymous endpoints, and they will expire after some hours. It's recommended that you create an account for a better experience.")
     ]),
     h('div.columns', [
-      h('h1', 'Inspiration'),
       h('ul', [
         h('h1', 'Useful webhook sources')].concat(
           sampleSize(text.sources, 7)

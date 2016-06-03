@@ -1,9 +1,6 @@
 import os
 import pg8000
 from urlparse import urlparse
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.dirname(__file__), 'lambda.env'))
 
 
 def pg():

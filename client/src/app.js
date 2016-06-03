@@ -1,5 +1,3 @@
-/* global location */
-
 import most from 'most'
 import hold from '@most/hold'
 import fwitch from 'fwitch'
@@ -7,7 +5,7 @@ import decodeqs from 'querystring/decode'
 
 import * as vrender from './vrender'
 
-const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
+const API_ENDPOINT = process.env.API_ENDPOINT
 
 export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   let match$ = hold(
