@@ -24,21 +24,28 @@ Cycle.run(app, {
 
 function localStorageDriver (req$) {
   var emit
+  const item$ = most.create((add) => {
+    emit = add
+  }).multicast()
+
   req$.observe(({action, key, value}) => {
     if (action === 'setItem') {
       window.localStorage.setItem(key, value)
+      emit([key, value])
     } else if (action === 'getItem') {
-      let item = window.localStorage.getItem(key)
-      if (typeof emit === 'function') emit([key, item])
+      let value = window.localStorage.getItem(key)
+      emit([key, value])
+    } else if (action === 'removeItem') {
+      window.localStorage.removeItem(key)
+      emit([key, null])
     }
   })
 
   return {
     getItem: (key) => ({action: 'getItem', key}),
+    removeItem: (key) => ({action: 'removeItem', key}),
     setItem: (key, value) => ({action: 'setItem', key, value}),
-    items: most.create((add) => {
-      emit = add
-    }).multicast()
+    item$
   }
 }
 

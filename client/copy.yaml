@@ -1,0 +1,94 @@
+header:
+  aside: |
+    We get the data, run it through [jq](https://stedolan.github.io/jq/manual/#Objects-{}), then send it to the target URL. [Read more](#/documentation).
+
+body: |
+  You got a **service that sends webhooks** and you want to do use that webhook as **input to some other service**. Are you going to use _Zapier_? _IFTTT_? We provide a much flexibler way.
+
+docs:
+  summary: |
+    When you [create an endpoint](#/create) you must define a **target URL** and a **modifier**, then you'll be assigned a **listening URL** for that endpoint.
+
+    Whenever something gets `POST`ed to that listening URL, the JSON body contents of the request will be piped through the modifier and the result will be sent to the target URL.
+
+    The modifier is a [jq filter](https://stedolan.github.io/jq/manual/#Objects-{}) that builds an object based on the input data. If you're not familiar with _jq_, imagine that you got a webhook with the following contents:
+
+    ```
+    {
+      "Type": "FruitEvent",
+      "Date": "2009-10-25",
+      "Entity": {
+        "Type": "Fruit",
+        "Id": "3784323",
+        "Name": "Tomato"
+      }
+    }
+    ```
+
+    And you want to pipe that hook to a service that needs a JSON structure like the following:
+
+    ```
+    {
+      "date": "2009-10-25",
+      "value": "tomato",
+      "kind": "currentFruit"
+    }
+    ```
+
+    Then you write the modifier:
+
+    ```
+    {date: .Date, value: (.Entity.Name | ascii_downcase), kind: "currentFruit"}
+    ```
+
+    _jq_ is very flexible and you can transform data in almost anything using its filters. Try looking at its [manual](https://stedolan.github.io/jq/manual/), [installing](https://stedolan.github.io/jq/download/) it or [experimenting it online](https://jqplay.org/).
+
+    ---
+
+    More documentation will come. In the meantime, you can create an account, create an endpoint and test it with _curl_ and an [HTTP request inspector](http://webhookinbox.com/). You'll be able to edit the modifier and target URL if you're logged in.
+
+sources:
+  - "Fine-grained webpage change events from [Superfeedr](https://documentation.superfeedr.com/subscribers.html)"
+  - "[Segment](https://segment.com/docs/integrations/webhooks/#track) track and identify events"
+  - "[Mailgun](https://documentation.mailgun.com/quickstart-receiving.html#how-to-start-receiving-inbound-email) incoming email"
+  - "[Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/) alerts based on custom searches"
+  - "[Iron.io](http://dev.iron.io/mq/reference/push_queues/#overview) push queues or [Amazon SNS](http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html) messages"
+  - "Plain HTML forms"
+  - "Hosted form providers like [Typeform](http://docs.typeform.io/docs/results-introduction), [Jotform](https://www.jotform.com/help/244-How-[to-Setup-Webhook-with-JotForm) and many others"
+  - "Anything that may happen with a [Trello](https://developers.trello.com/apis/webhooks) board, user or card"
+  - "[Twilio](https://www.twilio.com/platform/webhooks) incoming calls and SMS"
+  - "[GitHub](https://developer.github.com/webhooks/) webhooks for many things that may happen in a repository"
+  - "Subscribe or unsubscribe events from [MailChimp](http://kb.mailchimp.com/integrations/other-integrations/how-to-set-up-webhooks)"
+  - "[Box](https://www.box.com/blog/box-webhooks-beta/) file management and download events"
+  - "[Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook) deploy hooks"
+  - "[Context.io](https://context.io/docs/lite/users/webhooks) webhooks for when email arrives at personal connected email accounts"
+  - "[Stripe](https://stripe.com/docs/webhooks) or [Paypal](https://developer.paypal.com/docs/integration/direct/rest-webhooks-overview/#webhook-registration) payment or subscription events "
+  - "[Asana](https://asana.com/developers/api-reference/webhooks), [Pingdom](https://www.pingdom.com/resources/webhooks), [Intercom](https://docs.intercom.io/integrations/webhooks), [Fieldbook](http://docs.fieldbook.com/blog/well-call-you-back-webhooks-in-the-fieldbook-api), [Eventbrite](https://www.eventbrite.com/developer/v3/reference/webhooks/), [Shopify](https://help.shopify.com/api/reference/webhook) and many others"
+  - "[All services that interface with Zapier](https://zapier.com/zapbook/), through their [outgoing webhooks](https://zapier.com/zapbook/webhook/) integration"
+  - "[All services that interface with IFTTT](https://ifttt.com/channels), through their [outgoing webhooks](https://ifttt.com/maker) channel"
+
+targets:
+  - "Push data to dashboards like [Mondash](https://mondash.org/welcome), [Cyfe](http://www.cyfe.com/api) or [Dasheroo](http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/)"
+  - "Queue a task on [Iron.io](http://dev.iron.io/worker/reference/api/#queue_a_task_from_a_webhook)"
+  - "[Sheetsu](https://sheetsu.com/docs/beta#post) to add or update rows in a Google Sheet"
+  - "Get notified on your phone with [Pushbullet](https://docs.pushbullet.com/#create-push) or [Pushover](https://pushover.net/)"
+  - "Post to a [Campfire](https://github.com/basecamp/campfire-api#api-endpoints) room or a [Slack](https://api.slack.com/incoming-webhooks) or [Mattermost](http://docs.mattermost.com/developer/webhooks-incoming.html) channel"
+  - "Send custom email through [Mailgun](https://documentation.mailgun.com/quickstart-sending.html) and other transactional email services"
+  - "Push structured data to [Fieldbook](https://github.com/fieldbook/api-docs), [Airtable](https://airtable.com/api) or even [Postgres](http://postgrest.com/)"
+  - "Send email from personal accounts with [Nylas](https://nylas.com/cloud/docs#sending)"
+  - "Dispatch an email from a [Sendwithus](https://www.sendwithus.com/docs/api) template"
+  - "Send SMS via [Twilio](https://www.twilio.com/docs/api/rest/sending-messages) and others"
+  - "Publish to Facebook and Twitter by [webmention](https://indiewebcamp.com/Webmention)ing [Bridgy](https://brid.gy/about#outgoing)"
+  - "[All services that interface with Zapier](https://zapier.com/zapbook/), through their [incoming webhooks](https://zapier.com/zapbook/webhook/) integration"
+  - "[All services that interface with IFTTT](https://ifttt.com/channels), through their [incoming webhooks](https://ifttt.com/maker) channel"
+
+examples:
+  - "Get notified of unexpected errors or better events from Papertrail logs in your phone"
+  - "Log data from events you're already tracking with Segment to a Dasheroo dashboard"
+  - "Get incoming SMS posted as comments to a Trello card"
+  - "Send an email to yourself whenever a document tracked with Superfeedr changes"
+  - "Render and send an email from a Sendwithus template to a user that has triggered an event on Segment"
+  - "Get incoming emails fully posted to Slack using just Mailgun and your domain"
+  - "Add data from plain HTML forms directly to your Fieldbook database"
+  - "Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has changed"
+  - "Send yourself an email every time a new version of some library is released"

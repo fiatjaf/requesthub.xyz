@@ -1,25 +1,29 @@
 /* global location */
 
 import most from 'most'
+import hold from '@most/hold'
 import fwitch from 'fwitch'
 import decodeqs from 'querystring/decode'
 
 import * as vrender from './vrender'
 
 const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
-const initialHash = location.hash
 
 export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
-  let match$ = ROUTER.define({
-    '/': {where: 'HOME'},
-    '/logged': {where: 'LOGGED'},
-    '/account': {where: 'ACCOUNT'},
-    '/endpoints': {where: 'ENDPOINTS'},
-    '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
-  })
-    .delay(1) // this delay is necessary so session is ready before this emits the first.
-    .multicast()
-    .tap(m => console.log('ROUTED', m.value.where))
+  let match$ = hold(
+    ROUTER.define({
+      '/': {where: 'HOME'},
+      '/logged': {where: 'LOGGED'},
+      '/logout': {where: 'LOGOUT'},
+      '/documentation': {where: 'DOCUMENTATION'},
+      '/create': {where: 'CREATE'},
+      '/account': {where: 'ACCOUNT'},
+      '/endpoints': {where: 'ENDPOINTS'},
+      '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
+    })
+      .skipRepeatsWith((a, b) => a.path === b.path)
+      .tap(m => console.log('ROUTED', m.value.where))
+  )
 
   let response$ = HTTP
     .flatMap(r$ => r$
@@ -28,20 +32,25 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     .map(response => response.body)
     .startWith({})
 
-  let session$ = match$
-    .filter(match => match.value.where === 'LOGGED')
-    .map(match => decodeqs(match.location.search.slice(1)))
-    .merge(
-      STORAGE.items
-        .filter(([key]) => key === 'session')
-        .map(([_, value]) => JSON.parse(value))
-        .filter(x => x)
-        .tap(n => console.log('fetched', n))
-    )
-    .multicast()
+  let session$ = hold(
+    match$
+      .filter(match => match.value.where === 'LOGGED')
+      .map(match => decodeqs(match.location.search.slice(1)))
+      .merge(
+        STORAGE.item$
+          .filter(([key]) => key === 'session')
+          .map(([_, value]) => JSON.parse(value))
+          .map(v => v || {})
+      )
+      .skipRepeatsWith((a, b) => a.jwt === b.jwt)
+  )
 
   let created$ = response$.filter(r => r.endpoint)
   let deleted$ = response$.filter(r => r.deleted)
+  let endpoints$ = response$
+    .filter(r => r.endpoints)
+    .map(r => r.endpoints)
+    .startWith({})
 
   let nheaders$ = most.merge(
     MAIN.select('.header-add').events('click').tap(e => e.preventDefault()).constant(1),
@@ -52,24 +61,24 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   let state$ = most.combine(
     (match, endpoints, nheaders) => ({match, endpoints, nheaders}),
     match$,
-    response$
-      .filter(r => r.endpoints)
-      .map(r => r.endpoints)
-      .startWith([]),
+    endpoints$,
     nheaders$
   )
 
   let vtree$ = state$
-    .map(({match, endpoints, nheaders}) =>
-      fwitch(match.value.where, {
-        ENDPOINTS: vrender.list.bind(vrender, endpoints),
-        ENDPOINT: vrender.endpoint.bind(vrender, endpoints[match.value.id], nheaders),
-        default: vrender.create.bind(vrender, nheaders)
+    .map(({match, endpoints, nheaders}) => {
+      console.log(match.value.where)
+      return fwitch(match.value.where, {
+        HOME: vrender.home.bind(null, nheaders),
+        CREATE: vrender.create.bind(null, nheaders),
+        DOCUMENTATION: vrender.docs,
+        ENDPOINTS: vrender.list.bind(null, endpoints),
+        ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders),
+        default: vrender.empty
       })
-    )
+    })
 
   let nav$ = session$
-    .startWith({})
     .map(session => vrender.nav(session))
 
   let endpointRequest$ = MAIN.select('form button.set').events('click')
@@ -111,17 +120,20 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     )
 
   let fetchList$ = match$
+    .tap(f => console.log('prefetchlist', f))
     .filter(match => match.value.where === 'ENDPOINTS' || match.value.where === 'ENDPOINT')
+    .tap(f => console.log('fetchlist', f))
     .map(() => ({url: '/e/'}))
 
   let sel = 'a[href^="#/"]'
   let href$ = most.merge(MAIN.select(sel).events('click'), NAV.select(sel).events('click'))
-    .map(e => e.target.href.slice(1))
+    .map(e => e.target.getAttribute('href').slice(1))
 
-  let request$ = most.empty()
-    .merge(endpointRequest$)
-    .merge(fetchList$)
-    .multicast()
+  let request$ = hold(
+    most.empty()
+      .merge(endpointRequest$)
+      .merge(fetchList$)
+  )
 
   return {
     MAIN: vtree$,
@@ -132,17 +144,23 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
         return req
       }, request$, session$)
       .tap(req => req.url = API_ENDPOINT + req.url),
-    ROUTER: most.of(initialHash.slice(1))
-      .delay(1)
+    ROUTER: most.empty()
       .merge(href$)
       .merge(created$.map(c => `/endpoints/${c.identifier}`))
       .merge(deleted$.constant('/endpoints'))
-      .tap(x => console.log('routing to', initialHash))
+      .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
+      .merge(hold(session$.filter(({jwt}) => !jwt).constant('/')))
+      .skipRepeats()
+      .tap(x => console.log('routing to', x))
       .multicast(),
     STORAGE: session$
       .map(session => STORAGE.setItem('session', JSON.stringify(session)))
-      .startWith(STORAGE.getItem('session'))
-      .multicast(),
+      .merge(
+        match$
+          .filter(m => m.value.where === 'LOGOUT')
+          .constant(STORAGE.removeItem('session'))
+      )
+      .merge(most.of(STORAGE.getItem('session')).delay(1)),
     HEADER: session$
   }
 }

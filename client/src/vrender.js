@@ -1,7 +1,10 @@
 /* global location */
 
 import {h} from '@motorcycle/dom'
+import marked from 'marked'
+import sampleSize from 'lodash.samplesize'
 
+import text from '../copy.yaml'
 import * as icons from './icons'
 
 const API_ENDPOINT = process.env.NODE_PRODUCTION ? 'api.' + location.hostname : process.env.API_ENDPOINT
@@ -16,7 +19,13 @@ export function nav (session) {
         h('a', {props: {href: '#/endpoints'}}, 'Endpoints')
       ]),
       h('li', [
-        h('a', {props: {href: '#/'}}, 'Create endpoint')
+        h('a', {props: {href: '#/create'}}, 'Create endpoint')
+      ]),
+      h('li', [
+        h('a', {props: {href: '#/logout'}}, 'Logout')
+      ]),
+      h('li', [
+        h('a', {props: {href: '#/documentation'}}, '?')
       ])
     ])
   } else {
@@ -27,16 +36,60 @@ export function nav (session) {
           h('input', {props: {type: 'hidden', name: 'response_type', value: 'id_token'}}),
           h('input', {props: {type: 'hidden', name: 'client_id', value: CLIENT_URL}}),
           h('input', {props: {type: 'hidden', name: 'redirect_uri', value: `${API_ENDPOINT}/auth`}}),
-          h('input', {props: {type: 'login_hint', name: 'login_hint', placeholder: 'Your email'}}),
-          h('button', 'Start here')
+          h('input', {props: {type: 'login_hint', name: 'login_hint', placeholder: 'Type your email'}}),
+          h('button', 'Login with LetsAuth')
         ])
       ])
     ])
   }
 }
 
-export function create (nheaders) {
+export function home (nheaders) {
   return h('section', [
+    h('p', {props: {innerHTML: marked(text.body)}}),
+    h('header', [
+      h('img', {props: {src: '/static/diagram.png', title: 'jq is incredibly powerful.'}}),
+      h('aside.margin-header-caption', {props: {innerHTML: marked(text.header.aside)}})
+    ]),
+    h('article', [
+      h('h1', 'Some use cases'),
+      h('ul', sampleSize(text.examples, 4)
+        .map(content => h('li', {key: content, props: {innerHTML: marked(content)}})))
+    ]),
+    h('article', [
+      h('h1', 'Define an endpoint here'),
+      endpointForm({headers: {'': ''}}, nheaders),
+      h('p', "You'll not be able to update or delete anonymous endpoints, and they will expire after some hours. It's recommended that you create an account for a better experience.")
+    ]),
+    h('div.columns', [
+      h('h1', 'Inspiration'),
+      h('ul', [
+        h('h1', 'Useful webhook sources')].concat(
+          sampleSize(text.sources, 7)
+            .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
+        )
+      ),
+      h('ul', {style: {'text-align': 'right'}}, [
+        h('h1', 'Possible HTTP destinations')].concat(
+          sampleSize(text.targets, 7)
+            .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
+        )
+      )
+    ])
+  ])
+}
+
+export function docs () {
+  return h('article', [
+    h('header', [
+      h('h1', 'How it works')
+    ]),
+    h('div', {props: {innerHTML: marked(text.docs.summary)}})
+  ])
+}
+
+export function create (nheaders) {
+  return h('article', [
     h('header', [
       h('h1', 'Create a new endpoint')
     ]),
@@ -51,7 +104,7 @@ export function list (endpoints) {
     ]),
     Object.keys(endpoints).length
       ? h('ul', Object.keys(endpoints).map(id =>
-        h('li', [
+        h('li', {key: id}, [
           h('article', [
             h('header', [
               h('h1', [
@@ -69,7 +122,7 @@ export function list (endpoints) {
       ))
       : h('p', [
         'Your have no endpoints. ',
-        h('a', {props: {href: '#/'}}, 'Create one.')
+        h('a', {props: {href: '#/create'}}, 'Create one.')
       ])
   ])
 }
@@ -83,8 +136,7 @@ export function endpoint (end, nheaders) {
       h('h1', end.identifier),
       h('aside', [
         h('ul', [
-          h('li', `${API_ENDPOINT}/w/${end.identifier}/`),
-          h('li', end.created_at)
+          h('li', `${API_ENDPOINT}/w/${end.identifier}/`)
         ])
       ])
     ]),
@@ -105,7 +157,7 @@ function endpointForm (end, nheaders) {
     headerPairs.push(['', ''])
   }
 
-  return h('form', [
+  return h('form', {key: 'create-form'}, [
     h('span', end.identifier
       ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.identifier}})]
       : []
@@ -134,7 +186,7 @@ function endpointForm (end, nheaders) {
     h('label', [
       'Headers:'
     ].concat(headerPairs.map(([key, value]) =>
-      h('div', [
+      h('div', {key: key}, [
         h('input', {
           style: {display: 'inline', width: '26%', margin: '0', marginRight: '1%'},
           props: {
@@ -171,3 +223,6 @@ function endpointForm (end, nheaders) {
   ])
 }
 
+export function empty () {
+  return h('div')
+}
