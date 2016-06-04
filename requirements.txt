@@ -1,0 +1,9 @@
+Flask
+Flask-Cors
+haikunator
+pg8000==1.10.5
+PyJWT==1.4.0
+python-dotenv
+requests
+rsa==3.4.2
+zappa

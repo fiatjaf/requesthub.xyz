@@ -5,7 +5,7 @@ import requests
 from urllib import urlencode
 from requests.structures import CaseInsensitiveDict
 from flask import Flask, request, jsonify, redirect, make_response
-from flask.ext.cors import CORS
+from flask_cors import CORS
 from haikunator import haikunate
 
 import settings
@@ -25,7 +25,7 @@ def auth():
 
     result = get_verified_email(token)
     if 'error' in result:
-        raise result
+        print(result)
         return redirect(os.getenv('CLIENT_URL'))
 
     return redirect(os.getenv('CLIENT_URL') + '#/logged?' + urllib.urlencode({
