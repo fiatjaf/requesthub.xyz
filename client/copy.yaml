@@ -54,21 +54,23 @@ sources:
   - "[Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/) alerts based on custom searches"
   - "[Iron.io](http://dev.iron.io/mq/reference/push_queues/#overview) push queues or [Amazon SNS](http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html) messages"
   - "Plain HTML forms"
+  - "[Travis](https://docs.travis-ci.com/user/notifications/#Webhook-notification) builds"
   - "Hosted form providers like [Typeform](http://docs.typeform.io/docs/results-introduction), [Jotform](https://www.jotform.com/help/244-How-[to-Setup-Webhook-with-JotForm) and many others"
   - "Anything that may happen with a [Trello](https://developers.trello.com/apis/webhooks) board, user or card"
   - "[Twilio](https://www.twilio.com/platform/webhooks) incoming calls and SMS"
-  - "[GitHub](https://developer.github.com/webhooks/) webhooks for many things that may happen in a repository"
+  - "[GitHub](https://developer.github.com/webhooks/) or [Bitbucket](https://confluence.atlassian.com/bitbucket/manage-webhooks-735643732.html) webhooks for many things that may happen in a repository"
   - "Subscribe or unsubscribe events from [MailChimp](http://kb.mailchimp.com/integrations/other-integrations/how-to-set-up-webhooks)"
   - "[Box](https://www.box.com/blog/box-webhooks-beta/) file management and download events"
   - "[Heroku](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook) deploy hooks"
   - "[Context.io](https://context.io/docs/lite/users/webhooks) webhooks for when email arrives at personal connected email accounts"
-  - "[Stripe](https://stripe.com/docs/webhooks) or [Paypal](https://developer.paypal.com/docs/integration/direct/rest-webhooks-overview/#webhook-registration) payment or subscription events "
+  - "[Stripe](https://stripe.com/docs/webhooks) or [Paypal](https://developer.paypal.com/docs/integration/direct/rest-webhooks-overview/#webhook-registration) payment or subscription events"
+  - "[Modulus](https://help.modulus.io/customer/portal/articles/1701214-webhook-notifications) server status changes"
   - "[Asana](https://asana.com/developers/api-reference/webhooks), [Pingdom](https://www.pingdom.com/resources/webhooks), [Intercom](https://docs.intercom.io/integrations/webhooks), [Fieldbook](http://docs.fieldbook.com/blog/well-call-you-back-webhooks-in-the-fieldbook-api), [Eventbrite](https://www.eventbrite.com/developer/v3/reference/webhooks/), [Shopify](https://help.shopify.com/api/reference/webhook) and many others"
   - "[All services that interface with Zapier](https://zapier.com/zapbook/), through their [outgoing webhooks](https://zapier.com/zapbook/webhook/) integration"
   - "[All services that interface with IFTTT](https://ifttt.com/channels), through their [outgoing webhooks](https://ifttt.com/maker) channel"
 
 targets:
-  - "Push data to dashboards like [Mondash](https://mondash.org/welcome), [Cyfe](http://www.cyfe.com/api) or [Dasheroo](http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/)"
+  - "Push data to dashboards like [Geckoboard](https://developer.geckoboard.com/#push-overview), [Mondash](https://mondash.org/welcome), [Cyfe](http://www.cyfe.com/api) or [Dasheroo](http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/)"
   - "Queue a task on [Iron.io](http://dev.iron.io/worker/reference/api/#queue_a_task_from_a_webhook)"
   - "[Sheetsu](https://sheetsu.com/docs/beta#post) to add or update rows in a Google Sheet"
   - "Get notified on your phone with [Pushbullet](https://docs.pushbullet.com/#create-push) or [Pushover](https://pushover.net/)"
@@ -79,6 +81,7 @@ targets:
   - "Dispatch an email from a [Sendwithus](https://www.sendwithus.com/docs/api) template"
   - "Send SMS via [Twilio](https://www.twilio.com/docs/api/rest/sending-messages) and others"
   - "Publish to Facebook and Twitter by [webmention](https://indiewebcamp.com/Webmention)ing [Bridgy](https://brid.gy/about#outgoing)"
+  - "Metrics services like [Datadog](http://docs.datadoghq.com/api/?lang=console#metrics), [Librato](https://www.librato.com/docs/api/#submit-metrics) or [StatHat](https://www.stathat.com/manual/send)"
   - "[All services that interface with Zapier](https://zapier.com/zapbook/), through their [incoming webhooks](https://zapier.com/zapbook/webhook/) integration"
   - "[All services that interface with IFTTT](https://ifttt.com/channels), through their [incoming webhooks](https://ifttt.com/maker) channel"
 
@@ -92,3 +95,8 @@ examples:
   - "Add data from plain HTML forms directly to your Fieldbook database"
   - "Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has changed"
   - "Send yourself an email every time a new version of some library is released"
+  - "Track Bitbucket code changes and Modulus server status changes on StatHat"
+
+questions:
+  - q: "How much does it cost?" 
+    a: "For up to 1500 webhooks per month it is free. If you need more, contact us."

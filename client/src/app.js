@@ -20,7 +20,6 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
       '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
     })
       .skipRepeatsWith((a, b) => a.path === b.path)
-      .tap(m => console.log('ROUTED', m.value.where))
   )
 
   let response$ = HTTP
@@ -64,9 +63,8 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   )
 
   let vtree$ = state$
-    .map(({match, endpoints, nheaders}) => {
-      console.log(match.value.where)
-      return fwitch(match.value.where, {
+    .map(({match, endpoints, nheaders}) =>
+      fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
         DOCUMENTATION: vrender.docs,
@@ -74,7 +72,7 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
         ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders),
         default: vrender.empty
       })
-    })
+    )
 
   let nav$ = session$
     .map(session => vrender.nav(session))
@@ -118,9 +116,7 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     )
 
   let fetchList$ = match$
-    .tap(f => console.log('prefetchlist', f))
-    .filter(match => match.value.where === 'ENDPOINTS' || match.value.where === 'ENDPOINT')
-    .tap(f => console.log('fetchlist', f))
+    .filter(m => m.value.where === 'ENDPOINTS' || m.value.where === 'ENDPOINT')
     .map(() => ({url: '/e/'}))
 
   let sel = 'a[href^="#/"]'
@@ -149,7 +145,6 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
       .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
       .merge(hold(session$.filter(({jwt}) => !jwt).constant('/')))
       .skipRepeats()
-      .tap(x => console.log('routing to', x))
       .multicast(),
     STORAGE: session$
       .map(session => STORAGE.setItem('session', JSON.stringify(session)))
