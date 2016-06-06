@@ -59,7 +59,10 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     (match, endpoints, nheaders) => ({match, endpoints, nheaders}),
     match$,
     endpoints$,
-    nheaders$
+    nheaders$,
+    MAIN.select('button.flush').events('click')
+      .tap(e => e.preventDefault())
+      .startWith(null)
   )
 
   let vtree$ = state$

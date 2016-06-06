@@ -51,7 +51,7 @@ export function home (nheaders) {
     ]),
     h('article', [
       h('h1', 'Some use cases'),
-      h('ul', sampleSize(text.examples, 4)
+      h('ul', sampleSize(text.examples, 3)
         .map(content => h('li', {key: content, props: {innerHTML: marked(content)}})))
     ]),
     h('article', [
@@ -60,7 +60,7 @@ export function home (nheaders) {
       h('p', "You'll not be able to update or delete anonymous endpoints, and they will expire after some hours. It's recommended that you create an account for a better experience.")
     ]),
     h('div.columns', [
-      h('ul', [
+      h('ul.sources', [
         h('h1', 'Useful webhook sources')].concat(
           sampleSize(text.sources, 7)
             .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
@@ -72,6 +72,9 @@ export function home (nheaders) {
             .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
         )
       )
+    ]),
+    h('div', {style: {'text-align': 'center'}}, [
+      h('button.flush', 'See more')
     ])
   ])
 }
