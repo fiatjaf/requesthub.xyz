@@ -162,6 +162,22 @@ function endpointForm (end, nheaders) {
       ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.identifier}})]
       : []
     ),
+    h('div', [
+      h('div', 'Method:')
+    ].concat(
+      ['POST', 'PUT', 'GET', 'DELETE'].map(m =>
+        h('label', {
+          style: {display: 'inline', 'margin-left': '20px'},
+          props: {htmlFor: m}
+        }, [
+          m,
+          h('input', {
+            style: {display: 'inline', width: '30px'},
+            props: {type: 'radio', name: 'method', value: m, id: m, checked: end.method === m}
+          })
+        ])
+      ))
+    ),
     h('label', [
       'Target URL:',
       h('input', {
@@ -176,12 +192,21 @@ function endpointForm (end, nheaders) {
       'Modifier:',
       h('textarea', {
         props: {
-          rows: 3,
+          rows: Math.max(3, (end.definition || '').split('\n').length + 1),
           name: 'definition',
           placeholder: 'The jq script that will be used to transform the incoming data.',
           value: end.definition
         }
       })
+    ]),
+    h('div', [
+      h('label', [
+        'Pass request headers on to the target URL: ',
+        h('input', {
+          style: {'width': 'auto', 'display': 'inline'},
+          props: {type: 'checkbox', name: 'pass_headers', value: 'true', checked: end.pass_headers}
+        })
+      ])
     ]),
     h('label', [
       'Headers:'

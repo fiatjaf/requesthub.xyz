@@ -84,15 +84,20 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     .tap(e => e.preventDefault())
     .map(e => e.ownerTarget.parentNode)
     .map(form => ({
-      method: form.querySelector('[name="identifier"]')
-        ? 'PUT'
-        : 'POST',
+      method: form.querySelector('[name="identifier"]') ? 'PUT' : 'POST',
       url: form.querySelector('[name="identifier"]')
         ? `/e/${form.querySelector('[name="identifier"]').value}/`
         : '/e/',
       send: {
+        method: (() => {
+          let buttons = form.querySelectorAll('[name="method"]')
+          for (let i = 0; i < buttons.length; i++) {
+            if (buttons[i].checked) return buttons[i].value
+          }
+        })(),
         url: form.querySelector('[name="url"]').value.trim(),
         definition: form.querySelector('[name="definition"]').value.trim(),
+        pass_headers: form.querySelector('[name="pass_headers"]').checked || '',
         headers: (() => {
           let keys = form.querySelectorAll('[name="header-key"]')
           let vals = form.querySelectorAll('[name="header-val"]')

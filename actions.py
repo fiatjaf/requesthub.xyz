@@ -26,7 +26,9 @@ def make_jwt(email):
     return jwt.encode({'email': email}, os.getenv('SECRET'), algorithm='HS256')
 
 
-def set_endpoint(identifier, definition, target_url, headers, owner=None):
+def set_endpoint(identifier, method, target_url, definition,
+                 pass_headers, headers, owner=None):
+    method = method.upper()
     identifier = identifier.strip()
     definition = definition.strip()
     target_url = target_url.strip()
@@ -47,18 +49,23 @@ def set_endpoint(identifier, definition, target_url, headers, owner=None):
     with pg() as cur:
         try:
             cur.execute('''
-INSERT INTO endpoints (id, owner, definition, url, headers, data)
-VALUES (%s, %s, %s, %s, %s, %s)
+INSERT INTO endpoints
+(id, owner, definition, method, url, pass_headers, headers, data)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (id) DO UPDATE SET
-    definition = EXCLUDED.definition,
+    method = EXCLUDED.method,
     url = EXCLUDED.url,
+    definition = EXCLUDED.definition,
+    pass_headers = EXCLUDED.pass_headers,
     headers = EXCLUDED.headers,
     data = EXCLUDED.data
   WHERE endpoints.owner = EXCLUDED.owner''', (
                 identifier,
                 owner,
                 definition,
+                method,
                 target_url,
+                bool(pass_headers),
                 json.dumps(headers),
                 json.dumps(data)
             ))
@@ -80,7 +87,8 @@ owner = %s AND definition = %s AND url = %s AND headers = %s
 def get_endpoints(owner):
     with pg() as cur:
         cur.execute('''
-SELECT id, created_at, definition, url, headers, data
+SELECT
+  id, created_at, definition, method, url, headers, pass_headers, data
   FROM endpoints
 WHERE owner = %s
 ORDER BY created_at
@@ -90,9 +98,11 @@ LIMIT 20''',
             'identifier': row[0],
             'created_at': row[1].isoformat(),
             'definition': row[2],
-            'url': row[3],
-            'headers': row[4],
-            'data': row[5]
+            'method': row[3],
+            'url': row[4],
+            'headers': row[5],
+            'pass_headers': row[6],
+            'data': row[7]
         }) for row in cur.fetchall()])
     return {}
 

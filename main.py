@@ -48,8 +48,10 @@ def endpoints():
 
         identifier, message = set_endpoint(
             newid,
-            request.json.get('definition', 'error'),
+            request.json.get('method', 'error'),
             request.json.get('url', 'error'),
+            request.json.get('definition', 'error'),
+            request.json.get('pass_headers', False),
             request.json.get('headers', {}),
             user
         )
@@ -70,8 +72,10 @@ def edit_endpoint(identifier):
     if request.method == 'PUT':
         identifier, message = set_endpoint(
             identifier,
-            request.json.get('definition', 'error'),
+            request.json.get('method', 'error'),
             request.json.get('url', 'error'),
+            request.json.get('definition', 'error'),
+            request.json.get('pass_headers', False),
             request.json.get('headers', {}),
             user
         )
@@ -89,17 +93,23 @@ def edit_endpoint(identifier):
         return jsonify(error='mysterious error'), 500
 
 
-@app.route('/w/<identifier>', methods=['GET', 'POST', 'HEAD'])
-@app.route('/w/<identifier>/', methods=['GET', 'POST', 'HEAD'])
+all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
+
+
+@app.route('/w/<identifier>', methods=all_methods)
+@app.route('/w/<identifier>/', methods=all_methods)
 def proxy_webhook(identifier):
     data = request.get_data()
+    print('got', data)
 
     with pg() as cur:
         cur.execute('''
-SELECT definition, headers, url, data->'url:d'
+SELECT definition, method, pass_headers, headers, url, data->'url:d'
 FROM endpoints WHERE id = %s''', (identifier, ))
-        definition, headers, url, url_dynamic = cur.fetchone()
+        definition, method, pass_headers, headers, \
+            url, url_dynamic = cur.fetchone()
 
+        method = method or 'GET'
         if url_dynamic:
             url = jq(url, data=data)
 
@@ -108,29 +118,29 @@ FROM endpoints WHERE id = %s''', (identifier, ))
             return 'transmutated into null and aborted', 200
 
         h = CaseInsensitiveDict({'Content-Type': 'application/json'})
+        if pass_headers:
+            h.update(request.headers)
         h.update(headers)
 
         if h.get('content-type') == 'application/x-www-form-urlencoded':
             # oops, not json
             mutated = urlencode(json.loads(mutated))
 
-        print('POSTING ' + mutated + ' TO ' + url +
+        print(method + '\'ING ' + mutated + ' TO ' + url +
               ' WITH HEADERS ' + json.dumps(headers))
 
         try:
-            resp = requests.post(
-                url,
-                data=mutated,
-                headers=h,
-                timeout=4
-            )
+            s = requests.Session()
+            req = requests.Request(method, url, data=mutated, headers=h) \
+                .prepare()
+            resp = s.send(req, timeout=4)
         except requests.exceptions.RequestException as e:
             print('FAILED TO POST', e, identifier, mutated)
         if not resp.ok:
             print('FAILED TO POST', resp.text, identifier, mutated)
 
         response = make_response(resp.text, resp.status_code)
-        response.headers.update(resp.headers)
+        response.headers.extend(resp.headers.items())
         return response
     return 'an error ocurred', 500
 
