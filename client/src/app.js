@@ -7,7 +7,7 @@ import * as vrender from './vrender'
 
 const API_ENDPOINT = process.env.API_ENDPOINT
 
-export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
+export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
   let match$ = hold(
     ROUTER.define({
       '/': {where: 'HOME'},
@@ -55,27 +55,36 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
   )
     .scan((acc, v) => (acc + v) || 1, 2)
 
-  let state$ = most.combine(
-    (match, endpoints, nheaders) => ({match, endpoints, nheaders}),
-    match$,
-    endpoints$,
-    nheaders$,
-    MAIN.select('button.flush').events('click')
-      .tap(e => e.preventDefault())
-      .startWith(null)
-  )
+  let events$ = PUSHER.channel$
+    .flatMap(channel =>
+      channel.event$
+        .map(ev => [channel.id, ev])
+    )
+    .scan((events, ev) => {
+      events.push(ev)
+      return events
+    }, [])
+    .multicast()
 
-  let vtree$ = state$
-    .map(({match, endpoints, nheaders}) =>
+  let vtree$ = most.combine(
+    (match, endpoints, nheaders, events) =>
       fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
         DOCUMENTATION: vrender.docs,
         ENDPOINTS: vrender.list.bind(null, endpoints),
-        ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders),
+        ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events),
         default: vrender.empty
       })
-    )
+    ,
+    match$,
+    endpoints$,
+    nheaders$,
+    events$,
+    MAIN.select('button.flush').events('click')
+      .tap(e => e.preventDefault())
+      .startWith(null)
+  )
 
   let nav$ = session$
     .map(session => vrender.nav(session))
@@ -141,10 +150,12 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
     MAIN: vtree$,
     NAV: nav$,
     HTTP: request$
+      .tap(x => console.log('pre request'))
       .sample((req, session) => {
         if (session && session.jwt) req.headers = {'Authorization': `Bearer ${session.jwt}`}
         return req
       }, request$, session$)
+      .tap(x => console.log('post request'))
       .tap(req => req.url = API_ENDPOINT + req.url),
     ROUTER: most.empty()
       .merge(href$)
@@ -162,6 +173,9 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, STORAGE}) {
           .constant(STORAGE.removeItem('session'))
       )
       .merge(most.of(STORAGE.getItem('session')).delay(1)),
+    PUSHER: match$
+      .filter(m => m.value.where === 'ENDPOINT')
+      .map(m => m.value.id),
     HEADER: session$
   }
 }

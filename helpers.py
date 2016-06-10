@@ -3,11 +3,35 @@ import re
 import rsa
 import json
 import time
+import signal
 import base64
 import requests
+from db import pg
 from urlparse import urlparse
 from subprocess import Popen, PIPE
 from flask import request
+
+
+class Alarm(Exception):
+    pass
+
+
+def alarm_handler(signum, frame):
+    raise Alarm
+
+
+def user_can_access_endpoint(email, identifier):
+    with pg() as cur:
+        cur.execute('''
+SELECT CASE WHEN owner = %s THEN true ELSE false END
+FROM endpoints WHERE id = %s''', (
+            email,
+            identifier
+        ))
+        row = cur.fetchone()
+        if row and row[0]:
+            return True
+    return False
 
 
 def get_verified_email(jwt):
@@ -72,11 +96,30 @@ def get_verified_email(jwt):
 
 
 def is_valid_modifier(modifier):
-    if len(modifier) > 600:
+    if len(modifier) > 700:
         return False
-    p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stdout=PIPE)
-    p.communicate(input='{}')
-    return p.returncode == 0
+
+    signal.signal(signal.SIGALRM, alarm_handler)
+    signal.alarm(2)  # 2 seconds
+    try:
+        p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
+        _, stderr = p.communicate(input='{}')
+        signal.alarm(0)
+    except Alarm:
+        return False
+
+    stderr = stderr.strip()
+    if p.returncode == 0:
+        return True
+    elif \
+            stderr == 'jq: error (at <stdin>:0): null (null) only ' + \
+                      'strings can be parsed' or \
+            stderr == 'jq: error (at <stdin>:1): strptime/1 ' +\
+                      'requires string inputs and arguments':
+        return True
+    else:
+        print('invalid stderr:', stderr)
+        return False
 
 
 def is_valid_url(url):
@@ -97,8 +140,15 @@ def is_valid_headers(headers):
 
 
 def jq(mod, data):
-    p = Popen(['./jq', '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
-    res = p.communicate(input=data)[0]
+    signal.signal(signal.SIGALRM, alarm_handler)
+    signal.alarm(4)  # 4 seconds
+    try:
+        p = Popen(['./jq', '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
+        res = p.communicate(input=data)[0]
+        signal.alarm(0)
+    except Alarm:
+        print('TIMEOUT')
+        return None
     return res
 
 

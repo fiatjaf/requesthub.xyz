@@ -127,7 +127,7 @@ export function list (endpoints) {
   ])
 }
 
-export function endpoint (end, nheaders) {
+export function endpoint (end, nheaders, recentEvents) {
   if (!end || !end.identifier) return h('div')
 
   end = end || {identifier: '', definition: '', headers: {}, url: '', created_at: ''}
@@ -140,6 +140,14 @@ export function endpoint (end, nheaders) {
         ])
       ])
     ]),
+    h('ul.events', [
+      h('h1', 'Recent activity')
+    ].concat(recentEvents
+      .filter(([id]) => id === end.identifier)
+      .map(([id, data]) => data)
+      .slice(-4)
+      .map(r => h('li', JSON.stringify(r)))
+    )),
     h('div', [endpointForm(end, nheaders)])
   ])
 }

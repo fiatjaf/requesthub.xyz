@@ -1,6 +1,11 @@
 import os
 import pg8000
 from urlparse import urlparse
+from redis import StrictRedis
+from pusher import Pusher
+
+redis = StrictRedis.from_url(os.getenv('REDIS_URL'))
+pusher = Pusher.from_url(os.getenv('PUSHER_URL'))
 
 
 def pg():

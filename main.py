@@ -9,10 +9,10 @@ from flask_cors import CORS
 from haikunator import haikunate
 
 import settings
-from db import pg
-from helpers import jq, get_verified_email
-from actions import set_endpoint, get_endpoints, remove_endpoint, \
-                    make_jwt, logged_user
+from third import pg, pusher, redis
+from helpers import jq, get_verified_email, user_can_access_endpoint
+from actions import set_endpoint, get_endpoints, get_endpoint, \
+                    remove_endpoint, make_jwt, logged_user
 
 settings.init()
 app = Flask(__name__)
@@ -32,6 +32,19 @@ def auth():
         'email': result['email'],
         'jwt': make_jwt(result['email'])
     }))
+
+
+@app.route('/pusher/auth', methods=['POST'])
+def pusher_auth():
+    user = logged_user()
+    identifier = request.form['channel_name'][8:]
+    if not user or not user_can_access_endpoint(user, identifier):
+        return 'you do not have access to this endpoint', 401
+
+    return jsonify(pusher.authenticate(
+        channel=request.form['channel_name'],
+        socket_id=request.form['socket_id']
+    ))
 
 
 @app.route('/e/', methods=['GET', 'POST'])
@@ -64,12 +77,15 @@ def endpoints():
         }), 201 if newid == identifier else 200
 
 
-@app.route('/e/<identifier>', methods=['PUT', 'DELETE'])
-@app.route('/e/<identifier>/', methods=['PUT', 'DELETE'])
+@app.route('/e/<identifier>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/e/<identifier>/', methods=['GET', 'PUT', 'DELETE'])
 def edit_endpoint(identifier):
     user = logged_user()
 
-    if request.method == 'PUT':
+    if request.method == 'GET':
+        return jsonify(get_endpoint(identifier, user))
+
+    elif request.method == 'PUT':
         identifier, message = set_endpoint(
             identifier,
             request.json.get('method', 'error'),
@@ -100,7 +116,6 @@ all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 @app.route('/w/<identifier>/', methods=all_methods)
 def proxy_webhook(identifier):
     data = request.get_data()
-    print('got', data)
 
     with pg() as cur:
         cur.execute('''

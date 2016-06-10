@@ -1,5 +1,6 @@
-import most from 'most'
+import mostCreate from '@most/create'
 import Cycle from '@cycle/most-run'
+import Pusher from 'pusher-js'
 import {makeDOMDriver} from '@motorcycle/dom'
 import {makeHTTPDriver} from '@motorcycle/http'
 import {makeRouterDriver} from 'cyclic-router'
@@ -19,12 +20,13 @@ Cycle.run(app, {
   ]),
   ROUTER: makeRouterDriver(createHashHistory({queryKey: false})),
   STORAGE: localStorageDriver,
+  PUSHER: pusherDriver,
   HEADER: adjustHeaderDriver
 })
 
 function localStorageDriver (req$) {
   var emit
-  const item$ = most.create((add) => {
+  const item$ = mostCreate((add) => {
     emit = add
   }).multicast()
 
@@ -59,6 +61,38 @@ function adjustHeaderDriver (session$) {
       document.querySelector('body > header').innerHTML = initialHTML
     }
   })
+}
+
+function pusherDriver (identifier$) {
+  const pusher = new Pusher(process.env.PUSHER_SOCKET_URL.split('/').slice(-1)[0], {
+    authEndpoint: process.env.PUSHER_SOCKET_URL,
+    encrypted: true
+  })
+
+  let channel$ = identifier$
+    .map(id => {
+      let channel = pusher.subscribe('private-' + id)
+
+      return {
+        id,
+        channel: channel,
+        event$: mostCreate(add => {
+          channel.bind('webhook', add)
+        })
+      }
+    })
+    .multicast()
+
+  // let channels$ = channel$
+  //   .scan((channels, [id, channel]) => {
+  //     channels[id] = channel
+  //     return channels
+  //   }, {})
+
+  return {
+    channel$
+    // channels$
+  }
 }
 
 /* classless */

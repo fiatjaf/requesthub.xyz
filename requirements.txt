@@ -2,8 +2,10 @@ Flask
 Flask-Cors
 haikunator
 pg8000==1.10.5
+pusher
 PyJWT==1.4.0
 python-dotenv
+redis
 requests
 rsa==3.4.2
 zappa

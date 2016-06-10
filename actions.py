@@ -2,7 +2,6 @@ import os
 import jwt
 import json
 import pg8000
-from db import pg
 from flask import request
 from helpers import is_valid_modifier, is_valid_url, is_valid_headers
 
@@ -87,9 +86,8 @@ owner = %s AND definition = %s AND url = %s AND headers = %s
 def get_endpoints(owner):
     with pg() as cur:
         cur.execute('''
-SELECT
-  id, created_at, definition, method, url, headers, pass_headers, data
-  FROM endpoints
+SELECT id, created_at, method, url
+FROM endpoints
 WHERE owner = %s
 ORDER BY created_at
 LIMIT 20''',
@@ -97,13 +95,32 @@ LIMIT 20''',
         return dict([(row[0], {
             'identifier': row[0],
             'created_at': row[1].isoformat(),
-            'definition': row[2],
-            'method': row[3],
-            'url': row[4],
-            'headers': row[5],
-            'pass_headers': row[6],
-            'data': row[7]
+            'method': row[2],
+            'url': row[3]
         }) for row in cur.fetchall()])
+    return {}
+
+
+def get_endpoint(identifier, owner):
+    with pg() as cur:
+        cur.execute('''
+SELECT
+  id, created_at, definition, method, url, headers, pass_headers, data
+  FROM endpoints
+WHERE identifier = %s AND owner = %s''',
+                    (owner,))
+        row = cur.fetchone()
+        if row:
+            return {
+                'identifier': row[0],
+                'created_at': row[1].isoformat(),
+                'definition': row[2],
+                'method': row[3],
+                'url': row[4],
+                'headers': row[5],
+                'pass_headers': row[6],
+                'data': row[7]
+            }
     return {}
 
 

@@ -49,6 +49,7 @@ docs:
 
 sources:
   - "Fine-grained webpage change events from [Superfeedr](https://documentation.superfeedr.com/subscribers.html)"
+  - "Translation events from [Transifex](http://docs.transifex.com/integrations/webhook/), [PhraseApp](https://phraseapp.com/docs/guides/working-with-phraseapp/webhooks/) and [WebTranslateIt](https://webtranslateit.com/en/docs/webhooks/)."
   - "[Segment](https://segment.com/docs/integrations/webhooks/#track) track and identify events"
   - "[Mailgun](https://documentation.mailgun.com/quickstart-receiving.html#how-to-start-receiving-inbound-email) incoming email"
   - "[Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/) alerts based on custom searches"
@@ -72,11 +73,13 @@ sources:
 targets:
   - "Push data to dashboards like [Geckoboard](https://developer.geckoboard.com/#push-overview), [Mondash](https://mondash.org/welcome), [Cyfe](http://www.cyfe.com/api) or [Dasheroo](http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/)"
   - "Queue a task on [Iron.io](http://dev.iron.io/worker/reference/api/#queue_a_task_from_a_webhook)"
+  - "[Twitter](https://dev.twitter.com/rest/reference/post/statuses/update)"
   - "[Sheetsu](https://sheetsu.com/docs/beta#post) to add or update rows in a Google Sheet"
   - "Get notified on your phone with [Pushbullet](https://docs.pushbullet.com/#create-push) or [Pushover](https://pushover.net/)"
   - "Post to a [Campfire](https://github.com/basecamp/campfire-api#api-endpoints) room or a [Slack](https://api.slack.com/incoming-webhooks) or [Mattermost](http://docs.mattermost.com/developer/webhooks-incoming.html) channel"
   - "Send custom email through [Mailgun](https://documentation.mailgun.com/quickstart-sending.html) and other transactional email services"
-  - "Push structured data to [Fieldbook](https://github.com/fieldbook/api-docs), [Airtable](https://airtable.com/api) or even [Postgres](http://postgrest.com/)"
+  - "Push structured data to [Fieldbook](https://github.com/fieldbook/api-docs) or [Airtable](https://airtable.com/api)"
+  - "Interact with databases with HTTP support like [CouchDB](http://docs.couchdb.org/en/1.6.1/http-api.html), [Couchbase](http://docs.couchbase.com/admin/admin/REST/overview-rest-api.html) or even [Postgres](http://postgrest.com/)"
   - "Send email from personal accounts with [Nylas](https://nylas.com/cloud/docs#sending)"
   - "Dispatch an email from a [Sendwithus](https://www.sendwithus.com/docs/api) template"
   - "Send SMS via [Twilio](https://www.twilio.com/docs/api/rest/sending-messages) and others"
@@ -96,6 +99,10 @@ examples:
   - "Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has changed"
   - "Send yourself an email every time a new version of some library is released"
   - "Track Bitbucket code changes and Modulus server status changes on StatHat"
+
+couldbe:
+  - "[UserVoice to VictorOps](https://victorops.com/blog/using-webhook-relays-translate-services/)"
+  - "[GitHub to SignalFX](https://www.devco.net/archives/2015/08/13/translating-webhooks-with-aws-api-gateway-and-lambda.php)"
 
 questions:
   - q: "How much does it cost?" 
