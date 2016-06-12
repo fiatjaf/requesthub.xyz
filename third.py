@@ -1,26 +1,18 @@
 import os
-import pg8000
-from urlparse import urlparse
+import settings
+import psycopg2
+from little_pger import LittlePGer
 from redis import StrictRedis
 from pusher import Pusher
 
+
+settings.init()
 redis = StrictRedis.from_url(os.getenv('REDIS_URL'))
 pusher = Pusher.from_url(os.getenv('PUSHER_URL'))
 
 
-def pg():
-    p = urlparse(os.getenv('POSTGRESQL_URL'))
-    return Connection(p.username, p.hostname, None, p.port,
-                      p.path[1:], p.password, True, None)
+pg = psycopg2.connect(os.getenv('POSTGRESQL_URL'))
 
 
-class Connection(pg8000.Connection):
-    def __enter__(self):
-        self.autocommit = True
-        self.____cursor = self.cursor()
-        return self.____cursor
-
-    def __exit__(self, *args):
-        self.____cursor.close()
-        self.autocommit = False
-        self.close()
+def lpg():
+    return LittlePGer(os.getenv('POSTGRESQL_URL'), commit=True)

@@ -6,17 +6,24 @@ from urllib import urlencode
 from requests.structures import CaseInsensitiveDict
 from flask import Flask, request, jsonify, redirect, make_response
 from flask_cors import CORS
-from haikunator import haikunate
 
 import settings
 from third import pg, pusher, redis
-from helpers import jq, get_verified_email, user_can_access_endpoint
-from actions import set_endpoint, get_endpoints, get_endpoint, \
-                    remove_endpoint, make_jwt, logged_user
+from schema import schema
+from helpers import jq, get_verified_email, user_can_access_endpoint, \
+                    all_methods, make_jwt, logged_user, \
+                    GraphQLViewWithUserContext as GraphQLView
 
 settings.init()
 app = Flask(__name__)
 CORS(app)
+
+
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view('graphql',
+                                  schema=schema, graphiql=os.getenv('LOCAL'))
+)
 
 
 @app.route('/auth', methods=['POST'])
@@ -47,75 +54,11 @@ def pusher_auth():
     ))
 
 
-@app.route('/e/', methods=['GET', 'POST'])
-def endpoints():
-    user = logged_user()
-
-    if request.method == 'GET':
-        if not user:
-            return jsonify(endpoints={})
-        return jsonify(endpoints=get_endpoints(user))
-
-    elif request.method == 'POST':
-        newid = haikunate(tokenlength=4)
-
-        identifier, message = set_endpoint(
-            newid,
-            request.json.get('method', 'error'),
-            request.json.get('url', 'error'),
-            request.json.get('definition', 'error'),
-            request.json.get('pass_headers', False),
-            request.json.get('headers', {}),
-            user
-        )
-        if not identifier:
-            return jsonify(error=message), 401
-
-        return jsonify({
-            'identifier': identifier,
-            'owner': user
-        }), 201 if newid == identifier else 200
-
-
-@app.route('/e/<identifier>', methods=['GET', 'PUT', 'DELETE'])
-@app.route('/e/<identifier>/', methods=['GET', 'PUT', 'DELETE'])
-def edit_endpoint(identifier):
-    user = logged_user()
-
-    if request.method == 'GET':
-        return jsonify(get_endpoint(identifier, user))
-
-    elif request.method == 'PUT':
-        identifier, message = set_endpoint(
-            identifier,
-            request.json.get('method', 'error'),
-            request.json.get('url', 'error'),
-            request.json.get('definition', 'error'),
-            request.json.get('pass_headers', False),
-            request.json.get('headers', {}),
-            user
-        )
-        if not identifier:
-            return jsonify(error=message), 401
-
-        return jsonify({
-            'identifier': identifier,
-            'owner': user
-        }), 200
-
-    elif request.method == 'DELETE':
-        if remove_endpoint(identifier, user):
-            return jsonify({'deleted': identifier}), 200
-        return jsonify(error='mysterious error'), 500
-
-
-all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
-
-
 @app.route('/w/<identifier>', methods=all_methods)
 @app.route('/w/<identifier>/', methods=all_methods)
 def proxy_webhook(identifier):
     data = request.get_data()
+    rpipe = redis.pipeline()
 
     with pg() as cur:
         cur.execute('''
@@ -143,6 +86,15 @@ FROM endpoints WHERE id = %s''', (identifier, ))
 
         print(method + '\'ING ' + mutated + ' TO ' + url +
               ' WITH HEADERS ' + json.dumps(headers))
+        event = {
+            'in': data,
+            'out': {
+                'method': method,
+                'url': url,
+                'body': mutated,
+                'headers': headers,
+            }
+        }
 
         try:
             s = requests.Session()
@@ -151,8 +103,21 @@ FROM endpoints WHERE id = %s''', (identifier, ))
             resp = s.send(req, timeout=4)
         except requests.exceptions.RequestException as e:
             print('FAILED TO POST', e, identifier, mutated)
+            event.update(response="<request failed: '%s'>" % e)
+
         if not resp.ok:
             print('FAILED TO POST', resp.text, identifier, mutated)
+            event.update(response={'code': resp.status_code,
+                                   'body': resp.text})
+        else:
+            event.update(response={'code': resp.status_code,
+                                   'body': resp.text})
+
+        key = 'events:%s' % identifier
+        rpipe.lpush(key, json.dumps(event))
+        rpipe.ltrim(key, 0, 3)
+        rpipe.expire(key, 1800)
+        rpipe.execute()
 
         response = make_response(resp.text, resp.status_code)
         response.headers.extend(resp.headers.items())
