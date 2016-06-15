@@ -128,4 +128,4 @@ FROM endpoints WHERE id = %s''', (identifier, ))
 if __name__ == '__main__':
     app.run('0.0.0.0',
             int(os.getenv('PORT', 8787)),
-            debug=os.getenv('DEBUG', True))
+            debug=os.getenv('DEBUG', False))

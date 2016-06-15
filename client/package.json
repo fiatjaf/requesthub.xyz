@@ -12,10 +12,10 @@
     ]
   },
   "dependencies": {
-    "@cycle/most-run": "^2.0.0",
+    "@cycle/most-run": "^3.0.0",
     "@most/create": "^1.0.1",
     "@motorcycle/dom": "^2.0.0",
-    "@motorcycle/http": "^2.2.3",
+    "apollo-client": "^0.3.13",
     "cyclic-router": "^2.0.0",
     "fwitch": "^1.0.1",
     "lodash.samplesize": "^4.0.4",

@@ -5,9 +5,7 @@ import decodeqs from 'querystring/decode'
 
 import * as vrender from './vrender'
 
-const API_ENDPOINT = process.env.API_ENDPOINT
-
-export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
+export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
   let match$ = hold(
     ROUTER.define({
       '/': {where: 'HOME'},
@@ -19,14 +17,23 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
       '/endpoints': {where: 'ENDPOINTS'},
       '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
     })
-      .skipRepeatsWith((a, b) => a.path === b.path)
+    .tap(x => console.log('prev', x))
+    .skipRepeatsWith((a, b) => console.log(a.path, b.path) || a.path === b.path)
+    .tap(x => console.log('after', x))
   )
 
-  let response$ = HTTP
+  let response$ = GRAPHQL
     .flatMap(r$ => r$
-      .recoverWith(err => console.log('got err', err) || most.of({body: {error: err.message}}))
+      .recoverWith(err => console.log('got err', err) || most.of({errors: [err.message]}))
     )
-    .map(response => response.body)
+    .filter(({errors}) => {
+      if (errors && errors.length) {
+        console.log('errors:', errors)
+        return false
+      }
+      return true
+    })
+    .map(({data}) => data)
     .startWith({})
 
   let session$ = hold(
@@ -39,15 +46,27 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
           .map(([_, value]) => JSON.parse(value))
           .map(v => v || {})
       )
-      .skipRepeatsWith((a, b) => a.jwt === b.jwt)
   )
+    .skipRepeatsWith((a, b) => a.jwt === b.jwt)
 
-  let created$ = response$.filter(r => r.endpoint)
-  let deleted$ = response$.filter(r => r.deleted)
+  let created$ = response$.filter(r => r.setEndpoint)
+  let deleted$ = response$.filter(r => r.deleteEndpoint)
+  let endpoint$ = response$.filter(r => r.endpoint)
   let endpoints$ = response$
     .filter(r => r.endpoints)
     .map(r => r.endpoints)
-    .startWith({})
+    .merge(endpoint$)
+    .scan((map, cur) => {
+      if (Array.isArray(cur)) {
+        for (let i = 0; i < cur.length; i++) {
+          map[cur[i].id] = cur[i]
+        }
+      } else {
+        map[cur.id] = cur
+      }
+      return map
+    }, {})
+    .tap(x => console.log('endpoints', x))
 
   let nheaders$ = most.merge(
     MAIN.select('.header-add').events('click').tap(e => e.preventDefault()).constant(1),
@@ -89,15 +108,14 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
   let nav$ = session$
     .map(session => vrender.nav(session))
 
-  let endpointRequest$ = MAIN.select('form button.set').events('click')
+  let endpointGQL$ = MAIN.select('form button.set').events('click')
+    .multicast()
     .tap(e => e.preventDefault())
     .map(e => e.ownerTarget.parentNode)
     .map(form => ({
-      method: form.querySelector('[name="identifier"]') ? 'PUT' : 'POST',
-      url: form.querySelector('[name="identifier"]')
-        ? `/e/${form.querySelector('[name="identifier"]').value}/`
-        : '/e/',
-      send: {
+      mutation: 'setEndpoint',
+      variables: {
+        id: form.querySelector('[name="identifier"]').value,
         method: (() => {
           let buttons = form.querySelectorAll('[name="method"]')
           for (let i = 0; i < buttons.length; i++) {
@@ -124,45 +142,45 @@ export default function main ({NAV, MAIN, HTTP, ROUTER, PUSHER, STORAGE}) {
     }))
     .merge(
       MAIN.select('form button.delete').events('click')
+        .multicast()
         .tap(e => e.preventDefault())
         .map(e => e.ownerTarget.parentNode)
         .map(form => ({
-          method: 'DELETE',
-          url: `/e/${form.querySelector('[name="identifier"]').value}/`
+          mutation: 'deleteEndpoint',
+          variables: {id: form.querySelector('[name="identifier"]').value}
         }))
     )
 
-  let fetchList$ = match$
-    .filter(m => m.value.where === 'ENDPOINTS' || m.value.where === 'ENDPOINT')
-    .map(() => ({url: '/e/'}))
+  let fetchEndpointsGQL$ = match$
+    .filter(m => m.value.where === 'ENDPOINTS')
+    .constant({query: 'fetchAll'})
 
-  let sel = 'a[href^="#/"]'
-  let href$ = most.merge(MAIN.select(sel).events('click'), NAV.select(sel).events('click'))
-    .map(e => e.target.getAttribute('href').slice(1))
+  let fetchEndpointGQL$ = match$
+    .filter(m => m.value.where === 'ENDPOINT')
+    .map(m => ({
+      query: 'fetchOne',
+      variables: {
+        id: m.value.id
+      }
+    }))
 
-  let request$ = hold(
+  let gql$ = hold(
     most.empty()
-      .merge(endpointRequest$)
-      .merge(fetchList$)
+      .merge(endpointGQL$)
+      .merge(fetchEndpointsGQL$)
+      .merge(fetchEndpointGQL$)
   )
 
   return {
     MAIN: vtree$,
     NAV: nav$,
-    HTTP: request$
-      .tap(x => console.log('pre request'))
-      .sample((req, session) => {
-        if (session && session.jwt) req.headers = {'Authorization': `Bearer ${session.jwt}`}
-        return req
-      }, request$, session$)
-      .tap(x => console.log('post request'))
-      .tap(req => req.url = API_ENDPOINT + req.url),
+    GRAPHQL: gql$
+      .merge(session$),
     ROUTER: most.empty()
-      .merge(href$)
-      .merge(created$.map(c => `/endpoints/${c.identifier}`))
+      .merge(created$.map(({setEndpoint: s}) => `/endpoints/${s.id}`))
       .merge(deleted$.constant('/endpoints'))
-      .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
-      .merge(hold(session$.filter(({jwt}) => !jwt).constant('/')))
+      // .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
+      // .merge(hold(session$.filter(({jwt}) => !jwt).constant('/')))
       .skipRepeats()
       .multicast(),
     STORAGE: session$

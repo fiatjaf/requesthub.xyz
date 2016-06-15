@@ -2,14 +2,55 @@ import mostCreate from '@most/create'
 import Cycle from '@cycle/most-run'
 import Pusher from 'pusher-js'
 import {makeDOMDriver} from '@motorcycle/dom'
-import {makeHTTPDriver} from '@motorcycle/http'
 import {makeRouterDriver} from 'cyclic-router'
 import {createHashHistory} from 'history'
+import {makeGraphQLDriver, gql} from './graphql-driver'
 
 import app from './app'
 
+const API_ENDPOINT = process.env.API_ENDPOINT
+
 Cycle.run(app, {
-  HTTP: makeHTTPDriver({eager: true}),
+  GRAPHQL: makeGraphQLDriver({
+    endpoint: API_ENDPOINT + '/graphql',
+    templates: {
+      fetchAll: gql`
+query {
+  endpoints {
+    id, method, url, createdAt
+  }
+}
+      `,
+      fetchOne: gql`
+query {
+  endpoint (id: "$id") {
+    id, definition, method, url, passHeaders, headers, createdAt
+  }
+}
+      `,
+      setEndpoint: gql`
+mutation set($id: ID, $definition: String, $method: String, $url: String, $pass_headers: Boolean, $headers: MapStringString) {
+  setEndpoint (
+    id: $id
+    definition: $definition
+    method: $method
+    url: $url
+    passHeaders: $pass_headers
+    headers: $headers
+  ) {
+    ok, error, id
+  }
+}
+      `,
+      deleteEndpoint: gql`
+mutation del($id: ID!) {
+  deleteEndpoint (id: $id) {
+    ok, error, id
+  }
+}
+      `
+    }
+  }),
   NAV: makeDOMDriver('body > nav', [
     require('snabbdom/modules/props'),
     require('snabbdom/modules/style')
@@ -83,15 +124,8 @@ function pusherDriver (identifier$) {
     })
     .multicast()
 
-  // let channels$ = channel$
-  //   .scan((channels, [id, channel]) => {
-  //     channels[id] = channel
-  //     return channels
-  //   }, {})
-
   return {
     channel$
-    // channels$
   }
 }
 

@@ -112,7 +112,7 @@ export function list (endpoints) {
               ]),
               h('aside', [
                 h('ul', [
-                  h('li', endpoints[id].created_at),
+                  h('li', endpoints[id].createdAt),
                   h('li', endpoints[id].url)
                 ])
               ])
@@ -128,22 +128,22 @@ export function list (endpoints) {
 }
 
 export function endpoint (end, nheaders, recentEvents) {
-  if (!end || !end.identifier) return h('div')
+  if (!end || !end.id) return h('div')
 
-  end = end || {identifier: '', definition: '', headers: {}, url: '', created_at: ''}
+  end = end || {id: '', definition: '', headers: {}, url: '', created_at: ''}
   return h('article', [
     h('header', [
-      h('h1', end.identifier),
+      h('h1', end.id),
       h('aside', [
         h('ul', [
-          h('li', `${API_ENDPOINT}/w/${end.identifier}/`)
+          h('li', `${API_ENDPOINT}/w/${end.id}/`)
         ])
       ])
     ]),
     h('ul.events', [
       h('h1', 'Recent activity')
     ].concat(recentEvents
-      .filter(([id]) => id === end.identifier)
+      .filter(([id]) => id === end.id)
       .map(([id, data]) => data)
       .slice(-4)
       .map(r => h('li', JSON.stringify(r)))
@@ -166,8 +166,8 @@ function endpointForm (end, nheaders) {
   }
 
   return h('form', {key: 'create-form'}, [
-    h('span', end.identifier
-      ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.identifier}})]
+    h('span', end.id
+      ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.id}})]
       : []
     ),
     h('div', [
@@ -245,11 +245,11 @@ function endpointForm (end, nheaders) {
       style: {
         color: 'white',
         fontSize: '18px',
-        background: end.identifier ? '#74a7e6' : '#5e8c72'
+        background: end.id ? '#74a7e6' : '#5e8c72'
       },
-      props: {title: end.identifier ? 'Update endpoint' : 'Create endpoint'}
-    }, end.identifier ? 'Update endpoint' : 'Create endpoint'),
-    end.identifier ? h('button.delete', {
+      props: {title: end.id ? 'Update endpoint' : 'Create endpoint'}
+    }, end.id ? 'Update endpoint' : 'Create endpoint'),
+    end.id ? h('button.delete', {
       style: {color: 'white', background: '#ea8686', padding: '4px 11px 2px 11px'},
       props: {title: 'Delete endpoint', alt: 'Delete', innerHTML: icons.garbage}
     }) : null

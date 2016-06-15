@@ -34,14 +34,29 @@ class Endpoint(graphene.ObjectType):
 class Query(graphene.ObjectType):
     endpoint = graphene.List(
         Endpoint,
-        owner=graphene.String(),
         id=graphene.String(),
+        owner=graphene.String()
+    )
+
+    endpoints = graphene.List(
+        Endpoint,
+        owner=graphene.String()
     )
 
     def resolve_endpoint(self, args, info):
-        rows = get_endpoint(
+        rows = get_endpoints(
             args.get('owner'),
-            args.get('id'),
+            args.get['id'],
+            fields=[snake(f.name.value) for f in
+                    info.field_asts[0].selection_set.selections
+                    if f.name.value != 'recentEvents']
+        )
+        return Endpoint(**rows[0] or {}) if rows else {}
+
+    def resolve_endpoints(self, args, info):
+        rows = get_endpoints(
+            args.get('owner'),
+            None,
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
                     if f.name.value != 'recentEvents']
@@ -49,10 +64,9 @@ class Query(graphene.ObjectType):
         return [Endpoint(**row or {}) for row in rows] if rows else []
 
 
-def get_endpoint(owner=None,
-                 id=None,
-                 fields=['owner', 'created_at', 'definition', 'method',
-                         'url', 'headers', 'pass_headers', 'data']):
+def get_endpoints(owner=None, id=None,
+                  fields=['owner', 'created_at', 'definition', 'method',
+                          'url', 'headers', 'pass_headers', 'data']):
     # always fetch the id
     fields.append('id')
 
@@ -71,8 +85,7 @@ def get_endpoint(owner=None,
 
 class SetEndpoint(graphene.Mutation):
     class Input:
-        id = graphene.String()
-        owner = graphene.String()
+        id = graphene.ID()
         method = graphene.String()
         url = graphene.String()
         definition = graphene.String()
@@ -155,7 +168,7 @@ owner = %s AND definition = %s AND url = %s AND headers = %s
 
 class DeleteEndpoint(graphene.Mutation):
     class Input:
-        id = graphene.String()
+        id = graphene.ID()
 
     id = graphene.String()
     ok = graphene.Boolean()
