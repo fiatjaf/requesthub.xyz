@@ -22,14 +22,21 @@ query {
 }
       `,
       fetchOne: gql`
-query {
-  endpoint (id: "$id") {
+query fetchOne($id: ID!) {
+  endpoint (id: $id) {
     id, definition, method, url, passHeaders, headers, createdAt
   }
 }
       `,
       setEndpoint: gql`
-mutation set($id: ID, $definition: String, $method: String, $url: String, $pass_headers: Boolean, $headers: MapStringString) {
+mutation set(
+  $id: ID
+  $definition: String
+  $method: String
+  $url: String
+  $pass_headers: Boolean
+  $headers: String
+) {
   setEndpoint (
     id: $id
     definition: $definition

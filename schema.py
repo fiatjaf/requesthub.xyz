@@ -1,13 +1,12 @@
 import json
 import logging
-import psycopg2
 import graphene
 from graphene.core.types import custom_scalars
 from haikunator import Haikunator
 from helpers import is_valid_modifier, is_valid_url, is_valid_headers, \
                     MapStringString, snake
 
-from third import lpg, pg, redis
+from third import lpg, redis
 
 haiku = Haikunator().haikunate
 logger = logging.getLogger('graphql.execution.executor')
@@ -24,7 +23,7 @@ class Endpoint(graphene.ObjectType):
     definition = graphene.String()
     pass_headers = graphene.Boolean()
     headers = MapStringString()
-    data = custom_scalars.JSONString()
+    data = MapStringString()
     recent_events = graphene.List(graphene.String())
 
     def resolve_recent_events(self, args, info):
@@ -32,9 +31,9 @@ class Endpoint(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    endpoint = graphene.List(
+    endpoint = graphene.Field(
         Endpoint,
-        id=graphene.String(),
+        id=graphene.ID(),
         owner=graphene.String()
     )
 
@@ -46,7 +45,7 @@ class Query(graphene.ObjectType):
     def resolve_endpoint(self, args, info):
         rows = get_endpoints(
             args.get('owner'),
-            args.get['id'],
+            args['id'],
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
                     if f.name.value != 'recentEvents']
@@ -90,7 +89,7 @@ class SetEndpoint(graphene.Mutation):
         url = graphene.String()
         definition = graphene.String()
         pass_headers = graphene.Boolean()
-        headers = MapStringString()
+        headers = graphene.String()
 
     id = graphene.String()
     error = graphene.String()
@@ -105,61 +104,58 @@ class SetEndpoint(graphene.Mutation):
 
 
 def set_endpoint(props):
-    identifier = props['id'].strip()
-    owner = props['owner']
-    method = props.get('method').upper()
-    target_url = props.get('url').strip()
-    definition = props.get('definition').strip()
-    headers = dict(props.get('headers'))
-    pass_headers = props.get('passHeaders')
-    data = {}
+    values = {
+        'id': props['id'].strip(),
+        'data': {}
+    }
 
-    if not is_valid_modifier(definition):
-        return None, 'please provide a valid jq definition'
+    if 'owner' in props:
+        values['owner'] = props['owner']
 
-    if not is_valid_url(target_url):
-        # url is not static, but a modifier also
-        data['url:d'] = True
-        if not is_valid_modifier(target_url):
-            return None, 'please provide a valid url'
+    if 'method' in props:
+        values['method'] = props['method'].strip()
 
-    if not is_valid_headers(headers):
-        return None, 'headers are invalid somehow'
+    if 'url' in props:
+        if not is_valid_url(props['url']):
+            # url is not static, but a modifier
+            if not is_valid_modifier(props['url']):
+                # oops, not a modifier
+                return None, 'please provide a valid url'
+            values['data']['url:d'] = True
+        values['url'] = props['url'].strip()
 
-    with pg.cursor() as c:
+    if 'definition' in props:
+        if not is_valid_modifier(props['definition']):
+            return None, 'please provide a valid jq definition'
+        values['definition'] = props['definition'].strip()
+
+    if 'headers' in props:
+        headers = json.loads(props['headers'])
+        if not is_valid_headers(headers):
+            return None, 'headers are invalid somehow'
+        values['headers'] = json.dumps(dict(headers))
+
+    if 'pass_headers' in props:
+        values['pass_headers'] = bool(props['pass_headers'])
+
+    values['data'] = json.dumps(values['data'])
+
+    with lpg() as p:
         try:
-            c.execute('''
-INSERT INTO endpoints
-(id, owner, definition, method, url, pass_headers, headers, data)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (id) DO UPDATE SET
-    method = EXCLUDED.method,
-    url = EXCLUDED.url,
-    definition = EXCLUDED.definition,
-    pass_headers = EXCLUDED.pass_headers,
-    headers = EXCLUDED.headers,
-    data = EXCLUDED.data
-  WHERE endpoints.owner = EXCLUDED.owner''', (
-                identifier,
-                owner,
-                definition,
-                method,
-                target_url,
-                bool(pass_headers),
-                json.dumps(headers),
-                json.dumps(data)
-            ))
-            pg.commit()
-            return identifier, ''
-        except psycopg2.IntegrityError as e:
-            pg.rollback()
+            id = p.upsert('endpoints', set=values, return_id=True)
+            print(id)
+            return id, ''
+        except Exception as e:
+            print('EXCEPTION', e)
             if e.pgcode == '23505':
                 # an endpoint like this already exists
-                c.execute('''
-SELECT id FROM endpoints WHERE
-owner = %s AND definition = %s AND url = %s AND headers = %s
-''', (owner, definition, target_url, json.dumps(headers)))
-                return c.fetchone()[0], ''
+                id = p.select('endpoints', what=['id'], where={
+                    'owner': values['owner'],
+                    'definition': values['definition'],
+                    'headers': values['headers']
+                })
+                print(id)
+                return id, ''
             else:
                 raise e
 

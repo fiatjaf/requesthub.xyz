@@ -145,7 +145,7 @@ def b64dec(s):
 class MapStringString(Scalar):
     @staticmethod
     def serialize(o):
-        return o
+        return dict(o)
 
     @staticmethod
     def parse_literal(node):

@@ -51,7 +51,9 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
 
   let created$ = response$.filter(r => r.setEndpoint)
   let deleted$ = response$.filter(r => r.deleteEndpoint)
-  let endpoint$ = response$.filter(r => r.endpoint)
+  let endpoint$ = response$
+    .filter(r => r.endpoint)
+    .map(r => r.endpoint)
   let endpoints$ = response$
     .filter(r => r.endpoints)
     .map(r => r.endpoints)
@@ -115,7 +117,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     .map(form => ({
       mutation: 'setEndpoint',
       variables: {
-        id: form.querySelector('[name="identifier"]').value,
+        id: form.querySelector('[name="identifier"]') && form.querySelector('[name="identifier"]').value,
         method: (() => {
           let buttons = form.querySelectorAll('[name="method"]')
           for (let i = 0; i < buttons.length; i++) {
@@ -136,7 +138,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
               headers[key] = val
             }
           }
-          return headers
+          return JSON.stringify(headers)
         })()
       }
     }))
