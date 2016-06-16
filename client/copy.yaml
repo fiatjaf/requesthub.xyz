@@ -55,6 +55,7 @@ sources:
   - "[Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/) alerts based on custom searches"
   - "[Iron.io](http://dev.iron.io/mq/reference/push_queues/#overview) push queues or [Amazon SNS](http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html) messages"
   - "Plain HTML forms"
+  - "package changes on [npm](http://blog.npmjs.org/post/145260155635/introducing-hooks-get-notifications-of-npm)"
   - "[Travis](https://docs.travis-ci.com/user/notifications/#Webhook-notification) builds"
   - "Hosted form providers like [Typeform](http://docs.typeform.io/docs/results-introduction), [Jotform](https://www.jotform.com/help/244-How-[to-Setup-Webhook-with-JotForm) and many others"
   - "Anything that may happen with a [Trello](https://developers.trello.com/apis/webhooks) board, user or card"

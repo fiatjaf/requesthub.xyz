@@ -49,7 +49,8 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
   )
     .skipRepeatsWith((a, b) => a.jwt === b.jwt)
 
-  let created$ = response$.filter(r => r.setEndpoint)
+  let created$ = response$
+    .filter(r => r.setEndpoint && r.setEndpoint.ok)
   let deleted$ = response$.filter(r => r.deleteEndpoint)
   let endpoint$ = response$
     .filter(r => r.endpoint)

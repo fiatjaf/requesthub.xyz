@@ -155,15 +155,25 @@ export function endpoint (end, nheaders, recentEvents) {
 function endpointForm (end, nheaders) {
   nheaders = nheaders || Object.keys(end.headers).length
   var headerPairs = []
+  var lowercaseHeaders = {}
   for (let k in end.headers) {
     headerPairs.push([k, end.headers[k]])
+    lowercaseHeaders[k.toLowerCase()] = true
   }
+
+  // defaults
+  if (!lowercaseHeaders['content-type']) {
+    headerPairs.push(['Content-Type', 'application/json'])
+  }
+
   headerPairs = headerPairs
     .sort((a, b) => a[0] < b[1] ? -1 : 1)
     .slice(0, nheaders)
   for (let i = headerPairs.length; i < nheaders; i++) {
     headerPairs.push(['', ''])
   }
+
+  end.method = end.method || 'POST'
 
   return h('form', {key: 'create-form'}, [
     h('span', end.id

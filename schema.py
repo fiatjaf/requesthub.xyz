@@ -1,11 +1,12 @@
 import json
 import logging
 import graphene
-from graphene.core.types import custom_scalars
 from haikunator import Haikunator
+from graphene import with_context
+from psycopg2 import IntegrityError
+from graphene.core.types import custom_scalars
 from helpers import is_valid_modifier, is_valid_url, is_valid_headers, \
                     MapStringString, snake
-
 from third import lpg, redis
 
 haiku = Haikunator().haikunate
@@ -42,9 +43,14 @@ class Query(graphene.ObjectType):
         owner=graphene.String()
     )
 
-    def resolve_endpoint(self, args, info):
+    @with_context
+    def resolve_endpoint(self, args, ctx, info):
+        owner = None
+        if not ctx['graphiql']:
+            owner = ctx['user']
+
         rows = get_endpoints(
-            args.get('owner'),
+            owner,
             args['id'],
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
@@ -52,9 +58,14 @@ class Query(graphene.ObjectType):
         )
         return Endpoint(**rows[0] or {}) if rows else {}
 
-    def resolve_endpoints(self, args, info):
+    @with_context
+    def resolve_endpoints(self, args, ctx, info):
+        owner = None
+        if not ctx['graphiql']:
+            owner = ctx['user']
+
         rows = get_endpoints(
-            args.get('owner'),
+            owner,
             None,
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
@@ -96,9 +107,14 @@ class SetEndpoint(graphene.Mutation):
     ok = graphene.Boolean()
 
     @classmethod
-    def mutate(cls, instance, args, info):
+    @with_context
+    def mutate(cls, instance, args, ctx, info):
         params = dict(args)
         params.setdefault('id', haiku(token_length=4))
+
+        if not ctx['graphiql']:
+            params['owner'] = ctx['user']
+
         id, error = set_endpoint(params)
         return SetEndpoint(id, error, not error)
 
@@ -143,19 +159,17 @@ def set_endpoint(props):
     with lpg() as p:
         try:
             id = p.upsert('endpoints', set=values, return_id=True)
-            print(id)
             return id, ''
-        except Exception as e:
-            print('EXCEPTION', e)
+        except IntegrityError as e:
             if e.pgcode == '23505':
+                p.rollback()
                 # an endpoint like this already exists
-                id = p.select('endpoints', what=['id'], where={
+                res = p.select('endpoints', what=['id'], where={
                     'owner': values['owner'],
                     'definition': values['definition'],
                     'headers': values['headers']
                 })
-                print(id)
-                return id, ''
+                return res[0]['id'], ''
             else:
                 raise e
 
@@ -170,11 +184,15 @@ class DeleteEndpoint(graphene.Mutation):
     ok = graphene.Boolean()
 
     @classmethod
-    def mutate(cls, instance, args, info):
-        id = args['id']
+    @with_context
+    def mutate(cls, instance, args, ctx, info):
+        where = {'id': args['id']}
+
+        if not ctx['graphiql']:
+            where['owner'] = ctx['owner']
 
         with lpg() as p:
-            p.delete('endpoints', where={'id': id})
+            p.delete('endpoints', where=where)
             return DeleteEndpoint(id, True)
 
         return DeleteEndpoint(id, False)
