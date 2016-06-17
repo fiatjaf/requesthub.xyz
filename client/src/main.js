@@ -9,6 +9,7 @@ import {makeGraphQLDriver, gql} from './graphql-driver'
 import app from './app'
 
 const API_ENDPOINT = process.env.API_ENDPOINT
+const PUSHER_SOCKET_URL = process.env.PUSHER_SOCKET_URL
 
 Cycle.run(app, {
   GRAPHQL: makeGraphQLDriver({
@@ -24,7 +25,7 @@ query {
       fetchOne: gql`
 query fetchOne($id: ID!) {
   endpoint (id: $id) {
-    id, definition, method, url, passHeaders, headers, createdAt
+    id, definition, method, url, passHeaders, headers, createdAt, recentEvents
   }
 }
       `,
@@ -112,12 +113,19 @@ function adjustHeaderDriver (session$) {
 }
 
 function pusherDriver (identifier$) {
-  const pusher = new Pusher(process.env.PUSHER_SOCKET_URL.split('/').slice(-1)[0], {
-    authEndpoint: process.env.PUSHER_SOCKET_URL,
-    encrypted: true
-  })
+  // custom hackish way to properly authorize pusher
+  var pusher
+  identifier$
+    .filter(i => i.jwt)
+    .observe(({jwt}) => {
+      pusher = new Pusher(PUSHER_SOCKET_URL.split('/').slice(-1)[0], {
+        authEndpoint: API_ENDPOINT + '/pusher/auth?jwt=' + jwt,
+        encrypted: true
+      })
+    })
 
   let channel$ = identifier$
+    .filter(i => !i.jwt)
     .map(id => {
       let channel = pusher.subscribe('private-' + id)
 

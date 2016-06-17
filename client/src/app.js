@@ -17,10 +17,10 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       '/endpoints': {where: 'ENDPOINTS'},
       '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
     })
+  )
     .tap(x => console.log('prev', x))
     .skipRepeatsWith((a, b) => console.log(a.path, b.path) || a.path === b.path)
     .tap(x => console.log('after', x))
-  )
 
   let response$ = GRAPHQL
     .flatMap(r$ => r$
@@ -77,25 +77,37 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
   )
     .scan((acc, v) => (acc + v) || 1, 2)
 
+  let showEvents$ = most.merge(
+    MAIN.select('.events .show').events('click').tap(e => e.preventDefault()).constant(true),
+    MAIN.select('.events .hide').events('click').tap(e => e.preventDefault()).constant(false)
+  )
+    .startWith(false)
+
   let events$ = PUSHER.channel$
     .flatMap(channel =>
       channel.event$
         .map(ev => [channel.id, ev])
     )
     .scan((events, ev) => {
-      events.push(ev)
+      events.unshift(ev)
       return events
     }, [])
     .multicast()
 
   let vtree$ = most.combine(
-    (match, endpoints, nheaders, events) =>
+    (match, endpoints, nheaders, events, showingEvents, _) =>
       fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
         DOCUMENTATION: vrender.docs,
         ENDPOINTS: vrender.list.bind(null, endpoints),
-        ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events),
+        ENDPOINT: vrender.endpoint.bind(
+          null,
+          endpoints[match.value.id],
+          nheaders,
+          events,
+          showingEvents
+        ),
         default: vrender.empty
       })
     ,
@@ -103,6 +115,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     endpoints$,
     nheaders$,
     events$,
+    showEvents$,
     MAIN.select('button.flush').events('click')
       .tap(e => e.preventDefault())
       .startWith(null)
@@ -194,9 +207,12 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
           .constant(STORAGE.removeItem('session'))
       )
       .merge(most.of(STORAGE.getItem('session')).delay(1)),
-    PUSHER: match$
-      .filter(m => m.value.where === 'ENDPOINT')
-      .map(m => m.value.id),
+    PUSHER: most.merge(
+        session$,
+        match$
+          .filter(m => m.value.where === 'ENDPOINT')
+          .map(m => m.value.id)
+    ),
     HEADER: session$
   }
 }

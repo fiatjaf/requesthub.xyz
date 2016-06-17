@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, redirect, make_response
 from flask_cors import CORS
 
 import settings
-from third import pg, pusher, redis
+from third import lpg, pusher, redis
 from schema import schema
 from helpers import jq, get_verified_email, user_can_access_endpoint, \
                     all_methods, make_jwt, logged_user, \
@@ -43,7 +43,7 @@ def auth():
 
 @app.route('/pusher/auth', methods=['POST'])
 def pusher_auth():
-    user = logged_user()
+    user = logged_user(request.args.get('jwt'))
     identifier = request.form['channel_name'][8:]
     if not user or not user_can_access_endpoint(user, identifier):
         return 'you do not have access to this endpoint', 401
@@ -60,46 +60,44 @@ def proxy_webhook(identifier):
     data = request.get_data()
     rpipe = redis.pipeline()
 
-    with pg() as cur:
-        cur.execute('''
-SELECT definition, method, pass_headers, headers, url, data->'url:d'
-FROM endpoints WHERE id = %s''', (identifier, ))
-        definition, method, pass_headers, headers, \
-            url, url_dynamic = cur.fetchone()
+    with lpg() as p:
+        values = p.select(
+            'endpoints',
+            what=['definition', 'method', 'pass_headers',
+                  'headers', 'url', "data->'url:d' as url_dynamic"],
+            where={'id': identifier}
+        )[0]
 
-        method = method or 'GET'
-        if url_dynamic:
-            url = jq(url, data=data)
+        if values['url_dynamic']:
+            values['url'] = jq(values['url'], data=data)
 
-        mutated = jq(definition, data=data)
+        mutated = jq(values['definition'], data=data)
         if not mutated:
             return 'transmutated into null and aborted', 200
 
         h = CaseInsensitiveDict({'Content-Type': 'application/json'})
-        if pass_headers:
+        if values['pass_headers']:
             h.update(request.headers)
-        h.update(headers)
+        h.update(values['headers'])
 
         if h.get('content-type') == 'application/x-www-form-urlencoded':
             # oops, not json
             mutated = urlencode(json.loads(mutated))
 
-        print(method + '\'ING ' + mutated + ' TO ' + url +
-              ' WITH HEADERS ' + json.dumps(headers))
         event = {
             'in': data,
             'out': {
-                'method': method,
-                'url': url,
+                'method': values['method'],
+                'url': values['url'],
                 'body': mutated,
-                'headers': headers,
+                'headers': values['headers'],
             }
         }
 
         try:
             s = requests.Session()
-            req = requests.Request(method, url, data=mutated, headers=h) \
-                .prepare()
+            req = requests.Request(values['method'], values['url'],
+                                   data=mutated, headers=h).prepare()
             resp = s.send(req, timeout=4)
         except requests.exceptions.RequestException as e:
             print('FAILED TO POST', e, identifier, mutated)
@@ -113,11 +111,15 @@ FROM endpoints WHERE id = %s''', (identifier, ))
             event.update(response={'code': resp.status_code,
                                    'body': resp.text})
 
+        eventjson = json.dumps(event)
+
         key = 'events:%s' % identifier
-        rpipe.lpush(key, json.dumps(event))
-        rpipe.ltrim(key, 0, 3)
-        rpipe.expire(key, 1800)
+        rpipe.lpush(key, eventjson)
+        rpipe.ltrim(key, 0, 2)
+        rpipe.expire(key, 18000)
         rpipe.execute()
+
+        pusher.trigger('private-' + identifier, 'webhook', eventjson)
 
         response = make_response(resp.text, resp.status_code)
         response.headers.extend(resp.headers.items())

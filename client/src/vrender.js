@@ -127,8 +127,17 @@ export function list (endpoints) {
   ])
 }
 
-export function endpoint (end, nheaders, recentEvents) {
+export function endpoint (end, nheaders, recentEvents = [], showing = true) {
   if (!end || !end.id) return h('div')
+
+  recentEvents = recentEvents
+    .filter(([id]) => id = end.id)
+    .map(([_, data]) => data)
+    .concat(
+      (end.recentEvents || [])
+        .map(JSON.parse.bind(JSON))
+    )
+    .slice(0, 3)
 
   end = end || {id: '', definition: '', headers: {}, url: '', created_at: ''}
   return h('article', [
@@ -140,15 +149,71 @@ export function endpoint (end, nheaders, recentEvents) {
         ])
       ])
     ]),
-    h('ul.events', [
-      h('h1', 'Recent activity')
-    ].concat(recentEvents
-      .filter(([id]) => id === end.id)
-      .map(([id, data]) => data)
-      .slice(-4)
-      .map(r => h('li', JSON.stringify(r)))
-    )),
+    recentEvents.length
+      ? h('div.events', [
+        h('h1', [
+          'Recent activity ',
+          showing
+            ? h('a.hide', {props: {href: '#'}}, '▼')
+            : h('a.show', {props: {href: '#'}}, '▲')
+        ]),
+        showing ? h('div', recentEvents.map(recentEventView)) : null
+      ])
+      : null,
     h('div', [endpointForm(end, nheaders)])
+  ])
+}
+
+function recentEventView (r) {
+  return h('table', {style: {
+    'margin': '10px',
+    'background': 'none'
+  }}, [
+    h('tr', [
+      h('td', [
+        h('h4', 'Data in'),
+        h('pre', {style: {
+          'max-height': '13rem',
+          'overflow': 'auto',
+          'white-space': 'pre-wrap'
+        }}, [h('code', r.in.trim())])
+      ]),
+      h('td', [
+        h('h4', 'Data out'),
+        h('p', `URL: ${r.out.url}`),
+        h('div', [h('pre', {style: {
+          'max-height': '13rem',
+          'overflow': 'auto',
+          'white-space': 'pre-wrap'
+        }}, [h('code', r.out.body.trim())])]),
+        h('h5', {style: {
+          'margin-top': '5px',
+          'margin-bottom': '0'
+        }}, 'Headers'),
+        h('table', {style: {
+          'font-size': '0.8em',
+          'background': 'none'
+        }}, Object.keys(r.out.headers).map(key =>
+          h('tr', [
+            h('th', key),
+            h('td', r.out.headers[key])
+          ])
+        ))
+      ])
+    ]),
+    h('tr', [
+      h('td', {props: {colSpan: 2}}, [
+        h('h4', 'Response from target URL'),
+        h('p', `Status: ${r.response.code}`),
+        h('pre', {style: {
+          'max-width': '34em',
+          'max-height': '8rem',
+          'overflow': 'auto',
+          'margin': 'auto',
+          'white-space': 'pre-wrap'
+        }}, [h('code', r.response.body)])
+      ])
+    ])
   ])
 }
 

@@ -6,7 +6,7 @@ import json
 import time
 import base64
 import requests
-from third import pg
+from third import lpg
 from flask import request
 from urlparse import urlparse
 from graphql.language import ast
@@ -19,15 +19,12 @@ all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 
 
 def user_can_access_endpoint(email, identifier):
-    with pg() as cur:
-        cur.execute('''
-SELECT CASE WHEN owner = %s THEN true ELSE false END
-FROM endpoints WHERE id = %s''', (
-            email,
-            identifier
-        ))
-        row = cur.fetchone()
-        if row and row[0]:
+    with lpg() as p:
+        rows = p.select('endpoints', what=['id'], where={
+          'id': identifier,
+          'owner': email
+        })
+        if len(rows):
             return True
     return False
 
@@ -165,12 +162,13 @@ def snake(camel):
 camel_re = re.compile('([a-z0-9])([A-Z])')
 
 
-def logged_user():
-    if 'Authorization' not in request.headers:
-        return None
-    _, token = request.headers['Authorization'].split(' ', 1)
+def logged_user(token=None):
     if not token:
-        return None
+        if 'Authorization' not in request.headers:
+            return None
+        _, token = request.headers['Authorization'].split(' ', 1)
+        if not token:
+            return None
 
     try:
         d = jwt.decode(token, os.getenv('SECRET'), algorithms=['HS256'])

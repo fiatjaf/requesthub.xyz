@@ -28,7 +28,8 @@ class Endpoint(graphene.ObjectType):
     recent_events = graphene.List(graphene.String())
 
     def resolve_recent_events(self, args, info):
-        return redis.get()
+        key = 'events:%s' % self.id
+        return redis.lrange(key, 0, 2)
 
 
 class Query(graphene.ObjectType):
