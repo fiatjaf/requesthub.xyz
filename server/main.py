@@ -9,14 +9,12 @@ from requests.structures import CaseInsensitiveDict
 from flask import Flask, request, jsonify, redirect, make_response
 from flask_cors import CORS
 
-import settings
 from third import lpg, pusher, redis
 from schema import schema
 from helpers import jq, get_verified_email, user_can_access_endpoint, \
                     all_methods, make_jwt, logged_user, \
                     GraphQLViewWithUserContext as GraphQLView
 
-settings.init()
 app = Flask(__name__)
 CORS(app)
 
@@ -26,6 +24,11 @@ app.add_url_rule(
     view_func=GraphQLView.as_view('graphql',
                                   schema=schema, graphiql=os.getenv('LOCAL'))
 )
+
+
+@app.route('/')
+def home():
+    return redirect(os.getenv('CLIENT_URL'))
 
 
 @app.route('/auth', methods=['POST'])
@@ -129,9 +132,3 @@ def proxy_webhook(identifier):
         response.headers.extend(resp.headers.items())
         return response
     return 'an error ocurred', 500
-
-
-if __name__ == '__main__':
-    app.run('0.0.0.0',
-            int(os.getenv('PORT', 8787)),
-            debug=os.getenv('DEBUG', False))

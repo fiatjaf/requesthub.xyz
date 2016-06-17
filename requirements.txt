@@ -1,6 +1,9 @@
+cffi
 Flask
 Flask-Cors
+flask-graphql
 graphene
+gunicorn==19.4.5
 haikunator
 little_pger
 psycopg2
@@ -10,4 +13,4 @@ python-dotenv
 redis
 requests
 rsa==3.4.2
-flask-graphql
+subprocess32
