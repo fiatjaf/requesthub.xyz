@@ -157,7 +157,7 @@ export function endpoint (end, nheaders, recentEvents = [], showing = true) {
             ? h('a.hide', {props: {href: '#'}}, '▼')
             : h('a.show', {props: {href: '#'}}, '▲')
         ]),
-        showing ? h('div', recentEvents.map(recentEventView)) : null
+        showing ? h('table', recentEvents.map(recentEventView)) : null
       ])
       : null,
     h('div', [endpointForm(end, nheaders)])
@@ -165,54 +165,44 @@ export function endpoint (end, nheaders, recentEvents = [], showing = true) {
 }
 
 function recentEventView (r) {
-  return h('table', {style: {
-    'margin': '10px',
-    'background': 'none'
-  }}, [
-    h('tr', [
-      h('td', [
-        h('h4', 'Data in'),
-        h('pre', {style: {
-          'max-height': '13rem',
-          'overflow': 'auto',
-          'white-space': 'pre-wrap'
-        }}, [h('code', r.in.trim())])
-      ]),
-      h('td', [
-        h('h4', 'Data out'),
-        h('p', `URL: ${r.out.url}`),
-        h('div', [h('pre', {style: {
-          'max-height': '13rem',
-          'overflow': 'auto',
-          'white-space': 'pre-wrap'
-        }}, [h('code', r.out.body.trim())])]),
-        h('h5', {style: {
-          'margin-top': '5px',
-          'margin-bottom': '0'
-        }}, 'Headers'),
-        h('table', {style: {
-          'font-size': '0.8em',
-          'background': 'none'
-        }}, Object.keys(r.out.headers).map(key =>
-          h('tr', [
-            h('th', key),
-            h('td', r.out.headers[key])
-          ])
-        ))
-      ])
+  return h('tr', [
+    h('td', [
+      h('h4', 'Data in'),
+      h('p', r.in.time.slice(0, -7).split('T').join(' ')),
+      h('pre', {style: {
+        'max-height': '18rem',
+        'overflow': 'auto',
+        'white-space': 'pre-wrap'
+      }}, [h('code', r.in.body.trim())])
     ]),
-    h('tr', [
-      h('td', {props: {colSpan: 2}}, [
-        h('h4', 'Response from target URL'),
-        h('p', `Status: ${r.response.code}`),
-        h('pre', {style: {
-          'max-width': '34em',
-          'max-height': '8rem',
-          'overflow': 'auto',
-          'margin': 'auto',
-          'white-space': 'pre-wrap'
-        }}, [h('code', r.response.body)])
-      ])
+    h('td', [
+      h('h4', 'Data out'),
+      h('p', r.out.url),
+      h('div', [h('pre', {style: {
+        'max-height': '13rem',
+        'overflow': 'auto',
+        'white-space': 'pre-wrap'
+      }}, [h('code', r.out.body.trim())])]),
+      h('table', {style: {
+        'margin-top': '8px',
+        'font-size': '0.8em',
+        'background': 'none'
+      }}, Object.keys(r.out.headers).map(key =>
+        h('tr', [
+          h('th', key),
+          h('td', r.out.headers[key])
+        ])
+      ))
+    ]),
+    h('td', [
+      h('h4', 'Response'),
+      h('p', r.response.code),
+      h('pre', {style: {
+        'max-height': '18rem',
+        'max-width': '6rem',
+        'overflow': 'auto',
+        'white-space': 'pre-wrap'
+      }}, [h('code', r.response.body)])
     ])
   ])
 }

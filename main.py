@@ -2,7 +2,9 @@ import os
 import json
 import urllib
 import requests
+import datetime
 from urllib import urlencode
+from requests import Response
 from requests.structures import CaseInsensitiveDict
 from flask import Flask, request, jsonify, redirect, make_response
 from flask_cors import CORS
@@ -85,7 +87,10 @@ def proxy_webhook(identifier):
             mutated = urlencode(json.loads(mutated))
 
         event = {
-            'in': data,
+            'in': {
+                'time': datetime.datetime.now().isoformat(),
+                'body': data
+            },
             'out': {
                 'method': values['method'],
                 'url': values['url'],
@@ -99,18 +104,17 @@ def proxy_webhook(identifier):
             req = requests.Request(values['method'], values['url'],
                                    data=mutated, headers=h).prepare()
             resp = s.send(req, timeout=4)
+
+            if not resp.ok:
+                print('FAILED TO POST', resp.text, identifier, mutated)
+
         except requests.exceptions.RequestException as e:
             print('FAILED TO POST', e, identifier, mutated)
-            event.update(response="<request failed: '%s'>" % e)
+            resp = Response()
+            resp.status_code = 503
+            resp.body = "<request failed: '%s'>" % e
 
-        if not resp.ok:
-            print('FAILED TO POST', resp.text, identifier, mutated)
-            event.update(response={'code': resp.status_code,
-                                   'body': resp.text})
-        else:
-            event.update(response={'code': resp.status_code,
-                                   'body': resp.text})
-
+        event.update(response={'code': resp.status_code, 'body': resp.text})
         eventjson = json.dumps(event)
 
         key = 'events:%s' % identifier
