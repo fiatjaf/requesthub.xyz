@@ -91,7 +91,8 @@ def get_verified_email(jwt):
 
 
 def is_valid_modifier(modifier):
-    if len(modifier) > 700:
+    if len(modifier) > 3000:
+        print('definition is too long.')
         return False
 
     p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
