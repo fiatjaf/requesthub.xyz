@@ -4,11 +4,15 @@ import mostCreate from '@most/create'
 
 var routes = []
 
-export default function hashRouterDriver () {
+export default function hashRouterDriver (href$) {
   var emit
 
   window.addEventListener('hashchange', function (e) {
     emit(parse())
+  })
+
+  href$.observe(href => {
+    location.hash = href
   })
 
   return {
@@ -42,8 +46,8 @@ export default function hashRouterDriver () {
   }
 }
 
-function parse () {
-  let [path, qs] = location.hash.slice(1).split('?')
+function parse (href = location.hash.slice(1)) {
+  let [path, qs] = href.split('?')
   var value = {}
 
   for (let r = 0; r < routes.length; r++) {

@@ -6,7 +6,7 @@ body: |
   You got a **service that sends webhooks** and you want to do use that webhook as **input to some other service**. Are you going to use _Zapier_? _IFTTT_? We provide a much flexibler way.
 
 docs:
-  summary: |
+  howitworks: |
     When you [create an endpoint](#/create) you must define a **target URL** and a **modifier**, then you'll be assigned a **listening URL** for that endpoint.
 
     Whenever something gets `POST`ed to that listening URL, the JSON body contents of the request will be piped through the modifier and the result will be sent to the target URL.

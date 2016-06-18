@@ -79,12 +79,12 @@ export function home (nheaders) {
   ])
 }
 
-export function docs () {
+export function howitworks () {
   return h('article', [
     h('header', [
       h('h1', 'How it works')
     ]),
-    h('div', {props: {innerHTML: marked(text.docs.summary)}})
+    h('div', {props: {innerHTML: marked(text.docs.howitworks)}})
   ])
 }
 

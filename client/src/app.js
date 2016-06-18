@@ -10,7 +10,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     ROUTER.define({
       '/': {where: 'HOME'},
       '/logged': {where: 'LOGGED'},
-      '/documentation': {where: 'DOCUMENTATION'},
+      '/howitworks': {where: 'HOWITWORKS'},
       '/create': {where: 'CREATE'},
       '/account': {where: 'ACCOUNT'},
       '/endpoints': {where: 'ENDPOINTS'},
@@ -89,7 +89,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
-        DOCUMENTATION: vrender.docs,
+        HOWITWORKS: vrender.docs,
         ENDPOINTS: vrender.list.bind(null, endpoints),
         ENDPOINT: vrender.endpoint.bind(
           null,
@@ -183,8 +183,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     ROUTER: most.empty()
       .merge(created$.map(({setEndpoint: s}) => `/endpoints/${s.id}`))
       .merge(deleted$.constant('/endpoints'))
-      // .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
-      // .merge(hold(session$.filter(({jwt}) => !jwt).constant('/')))
+      .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
       .skipRepeats()
       .multicast(),
     STORAGE: session$
