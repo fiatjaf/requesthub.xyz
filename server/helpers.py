@@ -103,7 +103,9 @@ def is_valid_modifier(modifier):
     elif \
             stderr == 'jq: error (at <stdin>:0): null (null) only ' + \
                       'strings can be parsed' or \
-            stderr == 'jq: error (at <stdin>:1): strptime/1 ' +\
+            stderr == 'jq: error (at <stdin>:0): Cannot iterate over ' + \
+                      'null (null)' or \
+            stderr == 'jq: error (at <stdin>:1): strptime/1 ' + \
                       'requires string inputs and arguments':
         return True
     else:

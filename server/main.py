@@ -63,7 +63,7 @@ def pusher_auth():
 @app.route('/w/<identifier>/', methods=all_methods)
 def proxy_webhook(identifier):
     data = request.get_data()
-    rpipe = redis.pipeline()
+    print('got data', data)
 
     with lpg() as p:
         values = p.select(
@@ -121,6 +121,7 @@ def proxy_webhook(identifier):
         eventjson = json.dumps(event)
 
         key = 'events:%s' % identifier
+        rpipe = redis.pipeline()
         rpipe.lpush(key, eventjson)
         rpipe.ltrim(key, 0, 2)
         rpipe.expire(key, 18000)
