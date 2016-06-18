@@ -92,12 +92,15 @@ def proxy_webhook(identifier):
         event = {
             'in': {
                 'time': datetime.datetime.now().isoformat(),
-                'body': data
+                'body': data[:300] + ' [--cropped--]'
+                if len(data) > 307 else data
             },
             'out': {
                 'method': values['method'],
-                'url': values['url'],
-                'body': mutated,
+                'url': values['url'][:100] + ' [--cropped--]'
+                if len(values['url']) > 107 else values['url'],
+                'body': mutated[:300] + ' [--cropped--]'
+                if len(mutated) > 307 else mutated,
                 'headers': values['headers'],
             }
         }
@@ -127,7 +130,10 @@ def proxy_webhook(identifier):
         rpipe.expire(key, 18000)
         rpipe.execute()
 
-        pusher.trigger('private-' + identifier, 'webhook', eventjson)
+        try:
+            pusher.trigger('private-' + identifier, 'webhook', eventjson)
+        except ValueError:
+            print('couldn\'t send webhook to pusher', e)
 
         response = make_response(resp.text, resp.status_code)
         response.headers.extend(resp.headers.items())
