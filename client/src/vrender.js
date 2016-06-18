@@ -20,7 +20,7 @@ export function nav (session) {
         h('a', {props: {href: '#/create'}}, 'Create endpoint')
       ]),
       h('li', [
-        h('a', {props: {href: '#/logout'}}, 'Logout')
+        h('a.logout', {props: {href: '#/'}}, 'Logout')
       ]),
       h('li', [
         h('a', {props: {href: '#/documentation'}}, '?')

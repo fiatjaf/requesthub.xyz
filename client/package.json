@@ -16,7 +16,6 @@
     "@most/create": "^1.0.1",
     "@motorcycle/dom": "^2.0.0",
     "apollo-client": "^0.3.13",
-    "cyclic-router": "^2.0.0",
     "fwitch": "^1.0.1",
     "lodash.samplesize": "^4.0.4",
     "marked": "^0.3.5",

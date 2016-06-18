@@ -10,7 +10,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     ROUTER.define({
       '/': {where: 'HOME'},
       '/logged': {where: 'LOGGED'},
-      '/logout': {where: 'LOGOUT'},
       '/documentation': {where: 'DOCUMENTATION'},
       '/create': {where: 'CREATE'},
       '/account': {where: 'ACCOUNT'},
@@ -18,9 +17,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
     })
   )
-    .tap(x => console.log('prev', x))
-    .skipRepeatsWith((a, b) => console.log(a.path, b.path) || a.path === b.path)
-    .tap(x => console.log('after', x))
 
   let response$ = GRAPHQL
     .flatMap(r$ => r$
@@ -36,18 +32,16 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     .map(({data}) => data)
     .startWith({})
 
-  let session$ = hold(
+  let session$ =
     match$
       .filter(match => match.value.where === 'LOGGED')
-      .map(match => decodeqs(match.location.search.slice(1)))
+      .map(match => decodeqs(match.qs))
       .merge(
         STORAGE.item$
           .filter(([key]) => key === 'session')
           .map(([_, value]) => JSON.parse(value))
           .map(v => v || {})
       )
-  )
-    .skipRepeatsWith((a, b) => a.jwt === b.jwt)
 
   let created$ = response$
     .filter(r => r.setEndpoint && r.setEndpoint.ok)
@@ -69,7 +63,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       }
       return map
     }, {})
-    .tap(x => console.log('endpoints', x))
 
   let nheaders$ = most.merge(
     MAIN.select('.header-add').events('click').tap(e => e.preventDefault()).constant(1),
@@ -202,8 +195,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     STORAGE: session$
       .map(session => STORAGE.setItem('session', JSON.stringify(session)))
       .merge(
-        match$
-          .filter(m => m.value.where === 'LOGOUT')
+        NAV.select('a.logout').events('click')
           .constant(STORAGE.removeItem('session'))
       )
       .merge(most.of(STORAGE.getItem('session')).delay(1)),

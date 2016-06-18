@@ -2,9 +2,8 @@ import mostCreate from '@most/create'
 import Cycle from '@cycle/most-run'
 import Pusher from 'pusher-js'
 import {makeDOMDriver} from '@motorcycle/dom'
-import {makeRouterDriver} from 'cyclic-router'
-import {createHashHistory} from 'history'
 import {makeGraphQLDriver, gql} from './graphql-driver'
+import hashRouterDriver from './hash-router-driver'
 
 import app from './app'
 
@@ -67,7 +66,7 @@ mutation del($id: ID!) {
     require('snabbdom/modules/props'),
     require('snabbdom/modules/style')
   ]),
-  ROUTER: makeRouterDriver(createHashHistory({queryKey: false})),
+  ROUTER: hashRouterDriver,
   STORAGE: localStorageDriver,
   PUSHER: pusherDriver,
   HEADER: adjustHeaderDriver

@@ -23,7 +23,6 @@ export function makeGraphQLDriver ({templates = {}, endpoint = '/graphql'}) {
   const client = new ApolloClient({networkInterface})
 
   return function graphqlDriver (input$) {
-    input$ = input$.tap(x => console.log('input', x))
     let query$ = input$.filter(e => e.query)
     let mutation$ = input$.filter(e => e.mutation)
     let token$ = input$.filter(e => e.jwt)
