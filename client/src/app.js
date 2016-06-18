@@ -157,7 +157,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
 
   let fetchEndpointsGQL$ = match$
     .filter(m => m.value.where === 'ENDPOINTS')
-    .constant({query: 'fetchAll'})
+    .constant({query: 'fetchAll', forceFetch: true})
 
   let fetchEndpointGQL$ = match$
     .filter(m => m.value.where === 'ENDPOINT')
@@ -165,7 +165,8 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       query: 'fetchOne',
       variables: {
         id: m.value.id
-      }
+      },
+      forceFetch: true
     }))
 
   let gql$ = hold(
