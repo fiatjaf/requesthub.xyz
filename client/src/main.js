@@ -112,34 +112,42 @@ function adjustHeaderDriver (session$) {
 }
 
 function pusherDriver (identifier$) {
+  // separating the streams
+  let login$ = identifier$
+    .filter(i => i.jwt)
+    .take(1)
+
+  let beforeLoginChannel$ = identifier$.until(login$)
+  let afterLoginChannel$ = identifier$.since(login$)
+
+  var accumulatedChannels = []
+  beforeLoginChannel$.observe(identifier => {
+    accumulatedChannels.push(identifier)
+  })
+
+  var emitChannel
+  let channel$ = mostCreate(add => { emitChannel = add })
+    .merge(afterLoginChannel$)
+
   // custom hackish way to properly authorize pusher
   var pusher
-  identifier$
-    .filter(i => i.jwt)
+  login$
     .observe(({jwt}) => {
       pusher = new Pusher(PUSHER_SOCKET_URL.split('/').slice(-1)[0], {
         authEndpoint: API_ENDPOINT + '/pusher/auth?jwt=' + jwt,
         encrypted: true
       })
-    })
 
-  let channel$ = identifier$
-    .filter(i => !i.jwt)
-    .map(id => {
-      let channel = pusher.subscribe('private-' + id)
-
-      return {
-        id,
-        channel: channel,
-        event$: mostCreate(add => {
-          channel.bind('webhook', add)
-        })
-      }
+      accumulatedChannels.forEach(emitChannel)
     })
-    .multicast()
 
   return {
-    channel$
+    events$: channel$
+      .flatMap(id => {
+        let channel = pusher.subscribe('private-' + id)
+        return mostCreate(add => channel.bind('webhook', add))
+          .map(ev => ({id, data: ev}))
+      })
   }
 }
 

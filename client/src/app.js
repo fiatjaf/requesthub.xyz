@@ -16,6 +16,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       '/endpoints': {where: 'ENDPOINTS'},
       '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
     })
+    .tap(x => console.log('ROUTER', x))
   )
 
   let response$ = GRAPHQL
@@ -76,19 +77,15 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
   )
     .startWith(false)
 
-  let events$ = PUSHER.channel$
-    .flatMap(channel =>
-      channel.event$
-        .map(ev => [channel.id, ev])
-    )
+  let events$ = PUSHER.events$
+    .map(ev => [ev.id, ev.data])
     .scan((events, ev) => {
       events.unshift(ev)
       return events
     }, [])
-    .multicast()
 
   let vtree$ = most.combine(
-    (match, endpoints, nheaders, events, showingEvents, _) =>
+    (match, endpoints, nheaders, events, showingEvents, _) => console.log('vrendering', match, endpoints, nheaders, events, showingEvents) ||
       fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
@@ -104,11 +101,11 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
         default: vrender.empty
       })
     ,
-    match$,
-    endpoints$,
-    nheaders$,
-    events$,
-    showEvents$,
+    match$.tap(x => console.log('match', x)),
+    endpoints$.tap(x => console.log('endpoints', x)),
+    nheaders$.tap(x => console.log('nheaders', x)),
+    events$.tap(x => console.log('events', x)),
+    showEvents$.tap(x => console.log('showEvents', x)),
     MAIN.select('button.flush').events('click')
       .tap(e => e.preventDefault())
       .startWith(null)
@@ -118,7 +115,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     .map(session => vrender.nav(session))
 
   let endpointGQL$ = MAIN.select('form button.set').events('click')
-    .multicast()
     .tap(e => e.preventDefault())
     .map(e => e.ownerTarget.parentNode)
     .map(form => ({
@@ -151,7 +147,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     }))
     .merge(
       MAIN.select('form button.delete').events('click')
-        .multicast()
         .tap(e => e.preventDefault())
         .map(e => e.ownerTarget.parentNode)
         .map(form => ({
@@ -204,6 +199,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
         match$
           .filter(m => m.value.where === 'ENDPOINT')
           .map(m => m.value.id)
+          .tap(x => console.log('PUSHER SUBSCRIBE', x))
     ),
     HEADER: session$
   }
