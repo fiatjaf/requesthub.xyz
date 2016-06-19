@@ -5,7 +5,7 @@ from haikunator import Haikunator
 from graphene import with_context
 from psycopg2 import IntegrityError
 from graphene.core.types import custom_scalars
-from helpers import is_valid_modifier, is_valid_url, is_valid_headers, \
+from helpers import modifier_check, is_valid_url, is_valid_headers, \
                     MapStringString, snake
 from third import lpg, redis
 
@@ -135,15 +135,18 @@ def set_endpoint(props):
     if 'url' in props:
         if not is_valid_url(props['url']):
             # url is not static, but a modifier
-            if not is_valid_modifier(props['url']):
+            valid, err = modifier_check(props['url'])
+            if not valid:
                 # oops, not a modifier
-                return None, 'please provide a valid url'
+                return None,
+                'please provide a valid URL or an URL modifier: %s' % err
             values['data']['url:d'] = True
         values['url'] = props['url'].strip()
 
     if 'definition' in props:
-        if not is_valid_modifier(props['definition']):
-            return None, 'please provide a valid jq definition'
+        valid, err = modifier_check(props['definition'])
+        if not valid:
+            return None, 'invalid modifier script: %s' % err
         values['definition'] = props['definition'].strip()
 
     if 'headers' in props:

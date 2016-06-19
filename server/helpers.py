@@ -90,17 +90,17 @@ def get_verified_email(jwt):
     return {'email': payload['sub']}
 
 
-def is_valid_modifier(modifier):
+def modifier_check(modifier):
     if len(modifier) > 3000:
         print('definition is too long.')
-        return False
+        return False, 'modifier is too long.'
 
     p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
     _, stderr = p.communicate(input='{}', timeout=2)
 
     stderr = stderr.strip()
     if p.returncode == 0:
-        return True
+        return True, ''
     elif \
             stderr == 'jq: error (at <stdin>:0): null (null) only ' + \
                       'strings can be parsed' or \
@@ -108,10 +108,10 @@ def is_valid_modifier(modifier):
                       'null (null)' or \
             stderr == 'jq: error (at <stdin>:1): strptime/1 ' + \
                       'requires string inputs and arguments':
-        return True
+        return True, ''
     else:
         print('invalid stderr:', stderr)
-        return False
+        return False, stderr
 
 
 def is_valid_url(url):
