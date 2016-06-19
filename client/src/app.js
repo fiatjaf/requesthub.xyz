@@ -21,7 +21,9 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
 
   let response$ = GRAPHQL
     .flatMap(r$ => r$
-      .recoverWith(err => console.log('got err', err) || most.of({errors: [err.message]}))
+      .recoverWith(err =>
+        console.log('got err', err) || most.of({errors: [err.message]})
+      )
     )
     .filter(({errors}) => {
       if (errors && errors.length) {
@@ -31,18 +33,22 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       return true
     })
     .map(({data}) => data)
-    .startWith({})
 
-  let session$ =
-    match$
-      .filter(match => match.value.where === 'LOGGED')
-      .map(match => decodeqs(match.qs))
-      .merge(
-        STORAGE.item$
-          .filter(([key]) => key === 'session')
-          .map(([_, value]) => JSON.parse(value))
-          .map(v => v || {})
-      )
+  let userError$ = response$
+    .map(data => data[Object.keys(data)[0]])
+    .filter(fields => fields.error)
+    .map(fields => fields.error)
+
+  let session$ = match$
+    .filter(match => match.value.where === 'LOGGED')
+    .map(match => decodeqs(match.qs))
+    .merge(
+      STORAGE.item$
+        .filter(([key]) => key === 'session')
+        .map(([_, value]) => JSON.parse(value))
+        .map(v => v || {})
+    )
+    .skipRepeats((a, b) => a.jwt === b.jwt)
 
   let created$ = response$
     .filter(r => r.setEndpoint && r.setEndpoint.ok)
@@ -77,7 +83,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
   )
     .startWith(false)
 
-  let events$ = PUSHER.events$
+  let events$ = PUSHER.event$
     .map(ev => [ev.id, ev.data])
     .scan((events, ev) => {
       events.unshift(ev)
@@ -176,6 +182,16 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       .merge(fetchEndpointGQL$)
   )
 
+  let notification$ = most.merge(
+    created$.map(({setEndpoint: s}) => [`<b>${s.id}</b> saved`, 'success', {timeout: 3000}]),
+    deleted$.constant(['endpoint deleted', {timeout: 4000}]),
+    userError$.map(err => [err, 'error']),
+    session$.filter(s => s.jwt).constant(['logged in', 'success']),
+    session$.filter(s => !s.jwt).constant('logged out'),
+    PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info', {timeout: 3000}])
+  )
+    .tap(x => console.log('notification', x))
+
   return {
     MAIN: vtree$,
     NAV: nav$,
@@ -201,6 +217,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
           .map(m => m.value.id)
           .tap(x => console.log('PUSHER SUBSCRIBE', x))
     ),
-    HEADER: session$
+    HEADER: session$,
+    NOTIFICATION: notification$
   }
 }

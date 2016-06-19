@@ -3,6 +3,7 @@ import Cycle from '@cycle/most-run'
 import Pusher from 'pusher-js'
 import {makeDOMDriver} from '@motorcycle/dom'
 import {makeGraphQLDriver, gql} from './graphql-driver'
+import {makeNotificationDriver} from './notification-driver'
 import hashRouterDriver from './hash-router-driver'
 
 import app from './app'
@@ -69,7 +70,8 @@ mutation del($id: ID!) {
   ROUTER: hashRouterDriver,
   STORAGE: localStorageDriver,
   PUSHER: pusherDriver,
-  HEADER: adjustHeaderDriver
+  HEADER: adjustHeaderDriver,
+  NOTIFICATION: makeNotificationDriver()
 })
 
 function localStorageDriver (req$) {
@@ -142,7 +144,7 @@ function pusherDriver (identifier$) {
     })
 
   return {
-    events$: channel$
+    event$: channel$
       .flatMap(id => {
         let channel = pusher.subscribe('private-' + id)
         return mostCreate(add => channel.bind('webhook', add))

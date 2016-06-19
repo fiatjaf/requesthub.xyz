@@ -17,6 +17,8 @@
     "@motorcycle/dom": "^2.0.0",
     "apollo-client": "^0.3.13",
     "fwitch": "^1.0.1",
+    "humane-js": "^3.2.2",
+    "loads-css": "^1.0.0",
     "lodash.samplesize": "^4.0.4",
     "marked": "^0.3.5",
     "most": "^0.19.7",
