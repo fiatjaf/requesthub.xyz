@@ -188,7 +188,7 @@ function recentEventView (r) {
         'max-width': '13rem',
         'overflow': 'auto'
       }}, [
-        h('code', prettify(r.in.body))
+        prettify(r.in.body)
       ])
     ]),
     h('td', [
@@ -203,7 +203,7 @@ function recentEventView (r) {
           'max-width': '17rem',
           'overflow': 'auto'
         }}, [
-          h('code', prettify(r.out.body))
+          prettify(r.out.body)
         ])
       ]),
       h('table', {style: {
@@ -226,7 +226,7 @@ function recentEventView (r) {
         'max-width': '6rem',
         'overflow': 'auto'
       }}, [
-        h('code', prettify(r.response.body))
+        prettify(r.response.body)
       ])
     ])
   ])
