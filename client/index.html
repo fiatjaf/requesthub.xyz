@@ -18,8 +18,15 @@ form {
 }
 
 label > input { width: 100%; }
-input, button, textarea, select {
+input, button, textarea, select, .CodeMirror {
   display: block;
+  border: 1px ridge;
+  border-color: initial;
+}
+input:focus, button:focus, textarea:focus, select:focus, .CodeMirror-focused {
+  outline: none;
+  border-style: inset;
+  background-color: #efeee8 !important;
 }
 
 @media (min-width: 1066px) {

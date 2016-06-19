@@ -1,6 +1,8 @@
 import {h} from '@motorcycle/dom'
 import marked from 'marked'
 import sampleSize from 'lodash.samplesize'
+import CodeMirror from 'codemirror'
+import loadCSS from 'loads-css'
 
 import text from '../copy.yaml'
 import * as icons from './icons'
@@ -9,6 +11,10 @@ import {prettify} from './helpers'
 const API_ENDPOINT = process.env.API_ENDPOINT
 const CLIENT_URL = process.env.CLIENT_URL
 const LA_ORIGIN = process.env.LA_ORIGIN
+
+// codemirror stuff
+loadCSS('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.min.css')
+var cm
 
 export function nav (session) {
   if (session.email) {
@@ -287,13 +293,25 @@ function endpointForm (end, nheaders) {
       })
     ]),
     h('label', [
-      'Modifier:',
+      'Modifier (jq script):',
       h('textarea', {
         props: {
           rows: Math.max(3, (end.definition || '').split('\n').length + 1),
           name: 'definition',
           placeholder: 'The jq script that will be used to transform the incoming data.',
           value: end.definition
+        },
+        hook: {
+          insert (vnode) {
+            cm = CodeMirror.fromTextArea(vnode.elm)
+            cm.on('changes', cm => cm.save())
+          },
+          update (old, curr) {
+            cm.setValue(curr.data.props.value)
+          },
+          destroy (vnode) {
+            cm.toTextArea()
+          }
         }
       })
     ]),
