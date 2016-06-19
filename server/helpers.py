@@ -193,3 +193,14 @@ class GraphQLViewWithUserContext(GraphQLView):
                 self.parse_body(request)
             )
         }
+
+
+def parse_incoming_data():
+    values = {}
+    values.update(request.args.items())
+    try:
+        data = request.get_data()
+        values.update(json.loads(data))
+    except ValueError:
+        values.update(request.form.items())
+    return json.dumps(values)

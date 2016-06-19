@@ -4,6 +4,7 @@ import sampleSize from 'lodash.samplesize'
 
 import text from '../copy.yaml'
 import * as icons from './icons'
+import {prettify} from './helpers'
 
 const API_ENDPOINT = process.env.API_ENDPOINT
 const CLIENT_URL = process.env.CLIENT_URL
@@ -157,7 +158,17 @@ export function endpoint (end, nheaders, recentEvents = [], showing = true) {
             ? h('a.hide', {props: {href: '#'}}, '▼')
             : h('a.show', {props: {href: '#'}}, '▲')
         ]),
-        showing ? h('table', recentEvents.map(recentEventView)) : null
+        showing
+          ? h('table', {style: {'background': 'none'}}, recentEvents.map(recentEventView))
+          : null,
+        h('style', {props: {scoped: true, innerHTML: `
+          table, tr, td {
+            background: none !important;
+          }
+          .events > table > tr:nth-child(odd) {
+            background-color: rgba(100, 165, 135, 0.21) !important;
+          }
+        `}})
       ])
       : null,
     h('div', [endpointForm(end, nheaders)])
@@ -168,25 +179,38 @@ function recentEventView (r) {
   return h('tr', [
     h('td', [
       h('h4', 'Data in'),
-      h('p', r.in.time.slice(0, -7).split('T').join(' ')),
+      h('p', {style: {
+        'max-width': '13rem',
+        'word-wrap': 'break-word'
+      }}, r.in.time.slice(0, -7).split('T').join(' ')),
       h('pre', {style: {
         'max-height': '18rem',
-        'overflow': 'auto',
-        'white-space': 'pre-wrap'
-      }}, [h('code', r.in.body.trim())])
+        'max-width': '13rem',
+        'overflow': 'auto'
+      }}, [
+        h('code', prettify(r.in.body))
+      ])
     ]),
     h('td', [
       h('h4', 'Data out'),
-      h('p', r.out.url),
-      h('div', [h('pre', {style: {
-        'max-height': '13rem',
-        'overflow': 'auto',
-        'white-space': 'pre-wrap'
-      }}, [h('code', r.out.body.trim())])]),
+      h('p', {style: {
+        'max-width': '17rem',
+        'word-wrap': 'break-word'
+      }}, r.out.url),
+      h('div', [
+        h('pre', {style: {
+          'max-height': '13rem',
+          'max-width': '17rem',
+          'overflow': 'auto'
+        }}, [
+          h('code', prettify(r.out.body))
+        ])
+      ]),
       h('table', {style: {
         'margin-top': '8px',
         'font-size': '0.8em',
-        'background': 'none'
+        'max-width': '17rem',
+        'word-wrap': 'break-word'
       }}, Object.keys(r.out.headers).map(key =>
         h('tr', [
           h('th', key),
@@ -200,9 +224,10 @@ function recentEventView (r) {
       h('pre', {style: {
         'max-height': '18rem',
         'max-width': '6rem',
-        'overflow': 'auto',
-        'white-space': 'pre-wrap'
-      }}, [h('code', r.response.body)])
+        'overflow': 'auto'
+      }}, [
+        h('code', prettify(r.response.body))
+      ])
     ])
   ])
 }

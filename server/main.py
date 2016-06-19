@@ -13,7 +13,8 @@ from third import lpg, pusher, redis
 from schema import schema
 from helpers import jq, get_verified_email, user_can_access_endpoint, \
                     all_methods, make_jwt, logged_user, \
-                    GraphQLViewWithUserContext as GraphQLView
+                    GraphQLViewWithUserContext as GraphQLView, \
+                    parse_incoming_data
 
 app = Flask(__name__)
 CORS(app)
@@ -62,8 +63,9 @@ def pusher_auth():
 @app.route('/w/<identifier>', methods=all_methods)
 @app.route('/w/<identifier>/', methods=all_methods)
 def proxy_webhook(identifier):
-    data = request.get_data()
-    print('got data', data)
+    # parse incoming data
+    data = parse_incoming_data()
+    print('incoming data', data)
 
     with lpg() as p:
         values = p.select(
@@ -85,22 +87,26 @@ def proxy_webhook(identifier):
             h.update(request.headers)
         h.update(values['headers'])
 
+        # reformat the mutated data
+        mutatedjson = json.loads(mutated)
         if h.get('content-type') == 'application/x-www-form-urlencoded':
             # oops, not json
-            mutated = urlencode(json.loads(mutated))
+            mutated = urlencode(mutatedjson)
+        else:
+            mutated = json.dumps(mutatedjson)
 
         event = {
             'in': {
                 'time': datetime.datetime.now().isoformat(),
-                'body': data[:300] + ' [--cropped--]'
-                if len(data) > 307 else data
+                'body': data[:1800] + ' [-truncated-]'
+                if len(data) > 1807 else data
             },
             'out': {
                 'method': values['method'],
-                'url': values['url'][:100] + ' [--cropped--]'
-                if len(values['url']) > 107 else values['url'],
-                'body': mutated[:300] + ' [--cropped--]'
-                if len(mutated) > 307 else mutated,
+                'url': values['url'][:120] + ' [-truncated-]'
+                if len(values['url']) > 127 else values['url'],
+                'body': mutated[:1500] + ' [-truncated-]'
+                if len(mutated) > 1507 else mutated,
                 'headers': values['headers'],
             }
         }
@@ -120,7 +126,11 @@ def proxy_webhook(identifier):
             resp.status_code = 503
             resp.body = "<request failed: '%s'>" % e
 
-        event.update(response={'code': resp.status_code, 'body': resp.text})
+        event.update(response={
+            'code': resp.status_code,
+            'body': resp.text[:200] + ' [-truncated-]'
+            if len(resp.text) > 207 else resp.text
+        })
         eventjson = json.dumps(event)
 
         key = 'events:%s' % identifier
