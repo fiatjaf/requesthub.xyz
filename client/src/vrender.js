@@ -303,7 +303,12 @@ function endpointForm (end, nheaders) {
         },
         hook: {
           insert (vnode) {
-            cm = CodeMirror.fromTextArea(vnode.elm, {mode: 'jq'})
+            cm = CodeMirror.fromTextArea(vnode.elm, {
+              mode: 'jq',
+              lineWrapping: true,
+              scrollbarStyle: null,
+              viewportMargin: Infinity
+            })
             cm.on('changes', cm => cm.save())
           },
           update (old, curr) {
