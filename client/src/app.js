@@ -95,7 +95,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       fwitch(match.value.where, {
         HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
-        HOWITWORKS: vrender.docs,
+        HOWITWORKS: vrender.howitworks,
         ENDPOINTS: vrender.list.bind(null, endpoints),
         ENDPOINT: vrender.endpoint.bind(
           null,
@@ -187,7 +187,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     deleted$.constant(['endpoint deleted', {timeout: 4000}]),
     userError$.map(err => [err, 'error']),
     session$.filter(s => s.jwt).constant(['logged in', 'success']),
-    session$.filter(s => !s.jwt).constant('logged out'),
+    session$.filter(s => !s.jwt).constant('logged out').skip(1),
     PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info', {timeout: 3000}])
   )
     .tap(x => console.log('notification', x))

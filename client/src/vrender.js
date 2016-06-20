@@ -30,41 +30,57 @@ export function nav (session) {
         h('a.logout', {props: {href: '#/'}}, 'Logout')
       ]),
       h('li', [
-        h('a', {props: {href: '#/documentation'}}, '?')
+        h('a', {props: {href: '#/howitworks'}}, '?')
       ])
     ])
   } else {
     return h('ul', [
       h('li', [
-        h('form', {props: {action: `${LA_ORIGIN}/auth`, method: 'POST'}}, [
-          h('input', {props: {type: 'hidden', name: 'scope', value: 'openid email'}}),
-          h('input', {props: {type: 'hidden', name: 'response_type', value: 'id_token'}}),
-          h('input', {props: {type: 'hidden', name: 'client_id', value: CLIENT_URL}}),
-          h('input', {props: {type: 'hidden', name: 'redirect_uri', value: `${API_ENDPOINT}/auth`}}),
-          h('input', {props: {type: 'login_hint', name: 'login_hint', placeholder: 'Type your email'}}),
-          h('button', 'Login with LetsAuth')
-        ])
+        loginForm
+      ]),
+      h('li', [
+        h('a', {props: {href: '#/howitworks'}}, 'How it works')
       ])
     ])
   }
 }
 
+const loginForm =
+  h('form', {props: {action: `${LA_ORIGIN}/auth`, method: 'POST'}}, [
+    h('input', {props: {type: 'hidden', name: 'scope', value: 'openid email'}}),
+    h('input', {props: {type: 'hidden', name: 'response_type', value: 'id_token'}}),
+    h('input', {props: {type: 'hidden', name: 'client_id', value: CLIENT_URL}}),
+    h('input', {props: {type: 'hidden', name: 'redirect_uri', value: `${API_ENDPOINT}/auth`}}),
+    h('input', {
+      props: {type: 'login_hint', name: 'login_hint', placeholder: 'Type your email'},
+      style: {display: 'inline', padding: '5px 0'}
+    }),
+    h('button', {
+      style: {display: 'inline', margin: '5px'}
+    }, 'Login with LetsAuth')
+  ])
+
 export function home (nheaders) {
   return h('section', [
-    h('p', {props: {innerHTML: marked(text.body)}}),
+    h('p', {props: {innerHTML: marked(text.landing.headline)}}),
     h('header', [
       h('img', {props: {src: '/static/diagram.png', title: 'jq is incredibly powerful.'}}),
       h('aside.margin-header-caption', {props: {innerHTML: marked(text.header.aside)}})
     ]),
     h('article', [
+      h('h1', 'What is this?'),
+      h('div', {props: {innerHTML: marked(text.landing.summary)}}),
       h('h1', 'Some use cases'),
       h('ul', sampleSize(text.examples, 3)
         .map(content => h('li', {key: content, props: {innerHTML: marked(content)}})))
     ]),
     h('article', [
-      h('h1', 'Define an endpoint here'),
-      endpointForm({headers: {'': ''}}, nheaders),
-      h('p', "You'll not be able to update or delete anonymous endpoints, and they will expire after some hours. It's recommended that you create an account for a better experience.")
+      h('h1', 'Login here to define an endpoints'),
+      loginForm,
+      h('p', [
+        'or ',
+        h('a', {props: {href: '#/howitworks'}}, 'read more about it.')
+      ])
     ]),
     h('div.columns', [
       h('ul.sources', [
@@ -293,7 +309,9 @@ function endpointForm (end, nheaders) {
       })
     ]),
     h('label', [
-      'Modifier (jq script):',
+      'Modifier (',
+      h('a', {props: {href: 'https://stedolan.github.io/jq/manual/', target: '_blank'}}, 'jq script'),
+      '):',
       h('textarea', {
         props: {
           rows: Math.max(3, (end.definition || '').split('\n').length + 1),

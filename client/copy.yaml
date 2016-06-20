@@ -1,11 +1,17 @@
 header:
   aside: |
-    We get the data, run it through [jq](https://stedolan.github.io/jq/manual/#Objects-{}), then send it to the target URL. [Read more](#/documentation).
+    We get the data, run it through [jq](https://stedolan.github.io/jq/manual/#Objects-{}), then send it to the target URL. [Read more](#/howitworks).
 
-body: |
-  You got a **service that sends webhooks** and you want to do use that webhook as **input to some other service**. Are you going to use _Zapier_? _IFTTT_? We provide a much flexibler way.
+landing:
+  headline: |
+    You got a **service that sends webhooks** and you want to do use that webhook as **input to some other service**. Are you going to use _Zapier_? _IFTTT_? Don't waste your intelligence. We provide a much better way for developers.
+  summary: |
+    RequestHub is a hub for webhooks. We **listen** at some endpoints for HTTP requests that will arrive with some structured data, **parse** these requests, run them through a **modifier** (a [jq](https://stedolan.github.io/jq/manual/#TypesandValues) script) defined by you and relay the resulting object to a target URL.
+
+    With these simple 3 steps we can connect a multitude of internet service, with other services, thanks to HTTP APIs, outgoing and incoming webhooks. By providing this simple yet powerful service, RequestHub is trying to make (at least partially) for the web what _Unix pipes_ make for a terminal.
 
 docs:
+  summary: |
   howitworks: |
     When you [create an endpoint](#/create) you must define a **target URL** and a **modifier**, then you'll be assigned a **listening URL** for that endpoint.
 
@@ -38,8 +44,14 @@ docs:
     Then you write the modifier:
 
     ```
-    {date: .Date, value: (.Entity.Name | ascii_downcase), kind: "currentFruit"}
+    {
+      date: .Date,
+      value: (.Entity.Name | ascii_downcase),
+      kind: "currentFruit"
+    }
     ```
+
+    [See it in action on the live playground](https://goo.gl/xioW5M)
 
     _jq_ is very flexible and you can transform data in almost anything using its filters. Try looking at its [manual](https://stedolan.github.io/jq/manual/), [installing](https://stedolan.github.io/jq/download/) it or [experimenting it online](https://jqplay.org/).
 
@@ -49,7 +61,10 @@ docs:
 
 sources:
   - "Fine-grained webpage change events from [Superfeedr](https://documentation.superfeedr.com/subscribers.html)"
-  - "Translation events from [Transifex](http://docs.transifex.com/integrations/webhook/), [PhraseApp](https://phraseapp.com/docs/guides/working-with-phraseapp/webhooks/) and [WebTranslateIt](https://webtranslateit.com/en/docs/webhooks/)."
+  - "Live chat events from [Olark](https://www.olark.com/help/webhooks)"
+  - "CRMs like [OnePageCRM](http://developer.onepagecrm.com/webhooksmore/), [Solve](https://solve360.com/help/integration-walkthroughs/solve-webhooks-examples/), [Zoho](https://www.zoho.com/crm/help/automation/webhooks.html#Set_Up_Webhooks) and others"
+  - "Events from helpdesk software such as [Freshdesk](https://support.freshdesk.com/support/solutions/articles/132589-using-webhooks-in-the-observer) and [Zendesk](https://support.zendesk.com/hc/en-us/articles/204890268-Creating-integrations-using-the-HTTP-target)"
+  - "[Mixpanel](https://mixpanel.com/help/reference/webhooks) target matching"
   - "[Segment](https://segment.com/docs/integrations/webhooks/#track) track and identify events"
   - "[Mailgun](https://documentation.mailgun.com/quickstart-receiving.html#how-to-start-receiving-inbound-email) incoming email"
   - "[Papertrail](http://help.papertrailapp.com/kb/how-it-works/web-hooks/) alerts based on custom searches"
@@ -80,6 +95,7 @@ targets:
   - "Post to a [Campfire](https://github.com/basecamp/campfire-api#api-endpoints) room or a [Slack](https://api.slack.com/incoming-webhooks) or [Mattermost](http://docs.mattermost.com/developer/webhooks-incoming.html) channel"
   - "Send custom email through [Mailgun](https://documentation.mailgun.com/quickstart-sending.html) and other transactional email services"
   - "Push structured data to [Fieldbook](https://github.com/fieldbook/api-docs) or [Airtable](https://airtable.com/api)"
+  - "Track data to [Google Analytics](https://developers.google.com/analytics/devguides/collection/protocol/v1/) using the [Measurement Protocol](https://ga-dev-tools.appspot.com/hit-builder/) directly"
   - "Interact with databases with HTTP support like [CouchDB](http://docs.couchdb.org/en/1.6.1/http-api.html), [Couchbase](http://docs.couchbase.com/admin/admin/REST/overview-rest-api.html) or even [Postgres](http://postgrest.com/)"
   - "Send email from personal accounts with [Nylas](https://nylas.com/cloud/docs#sending)"
   - "Dispatch an email from a [Sendwithus](https://www.sendwithus.com/docs/api) template"
