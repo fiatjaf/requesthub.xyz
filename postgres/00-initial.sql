@@ -2,7 +2,7 @@ CREATE TYPE method AS ENUM ('GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', '
 
 CREATE TABLE endpoints (
   id text PRIMARY KEY,
-  owner text,
+  owner text NOT NULL,
   created_at date DEFAULT current_date,
   method method NOT NULL,
   url text NOT NULL,

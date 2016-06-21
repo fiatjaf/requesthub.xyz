@@ -49,6 +49,8 @@ class Query(graphene.ObjectType):
         owner = None
         if not ctx['graphiql']:
             owner = ctx['user']
+            if not owner:
+                return
 
         rows = get_endpoints(
             owner,
@@ -64,6 +66,8 @@ class Query(graphene.ObjectType):
         owner = None
         if not ctx['graphiql']:
             owner = ctx['user']
+            if not owner:
+                return
 
         rows = get_endpoints(
             owner,

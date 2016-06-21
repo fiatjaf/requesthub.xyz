@@ -13,7 +13,7 @@ const CLIENT_URL = process.env.CLIENT_URL
 const LA_ORIGIN = process.env.LA_ORIGIN
 
 // codemirror stuff
-loadCSS('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.min.css')
+loadCSS('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.min.css', () => {})
 var cm
 
 export function nav (session) {
