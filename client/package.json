@@ -41,7 +41,7 @@
     "live": "find src/*.js -type f | grep -v 'swp' | entr godotenv -f ../global.env,../local.env fish -c 'browserifyinc src/main.js --outfile dist/main.js; and echo \"done!\"'",
     "server": "instant -p 5656",
     "build-prod": "godotenv -f ../global.env,../prod.env browserify src/main.js --outfile dist/main.js",
-    "predeploy": "npm run build-prod && cp index.html dist/ && sed -i -e 's/dist\\/main\\.js/main.js/' dist/index.html && cp -r static dist/",
+    "predeploy": "npm run build-prod && cp index.html favicon.ico dist/ && sed -i -e 's/dist\\/main\\.js/main.js/' dist/index.html && cp -r static dist/",
     "deploy": "godotenv -f ../global.env,../prod.env fish -c 's3cmd sync dist/ s3://$S3_BUCKET'"
   }
 }
