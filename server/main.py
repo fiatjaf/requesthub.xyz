@@ -67,6 +67,27 @@ def proxy_webhook(identifier):
     data = parse_incoming_data()
     print('incoming data', data)
 
+    event = {
+        'in': {},
+        'out': {'method': '', 'url': '', 'body': 'null', 'headers': {}},
+        'response': {'code': 0, 'body': ''}
+    }
+
+    def publish():
+        eventjson = json.dumps(event)
+
+        try:
+            pusher.trigger('private-' + identifier, 'webhook', eventjson)
+        except ValueError:
+            print('couldn\'t send webhook to pusher', e)
+
+        key = 'events:%s' % identifier
+        rpipe = redis.pipeline()
+        rpipe.lpush(key, eventjson)
+        rpipe.ltrim(key, 0, 2)
+        rpipe.expire(key, 18000)
+        rpipe.execute()
+
     with lpg() as p:
         values = p.select(
             'endpoints',
@@ -75,11 +96,20 @@ def proxy_webhook(identifier):
             where={'id': identifier}
         )[0]
 
+        event['in'] = {
+            'time': datetime.datetime.now().isoformat(),
+            'body': data[:1800] + ' [truncated]' if len(data) > 1807 else data
+        }
+
         if values['url_dynamic']:
             values['url'] = jq(values['url'], data=data)
+            if not values['url']:
+                publish()
+                return 'url building has failed', 200
 
         mutated = jq(values['definition'], data=data)
         if not mutated:
+            publish()
             return 'transmutated into null and aborted', 200
 
         h = CaseInsensitiveDict({'Content-Type': 'application/json'})
@@ -95,20 +125,13 @@ def proxy_webhook(identifier):
         else:
             mutated = json.dumps(mutatedjson)
 
-        event = {
-            'in': {
-                'time': datetime.datetime.now().isoformat(),
-                'body': data[:1800] + ' [-truncated-]'
-                if len(data) > 1807 else data
-            },
-            'out': {
-                'method': values['method'],
-                'url': values['url'][:120] + ' [-truncated-]'
-                if len(values['url']) > 127 else values['url'],
-                'body': mutated[:1500] + ' [-truncated-]'
-                if len(mutated) > 1507 else mutated,
-                'headers': values['headers'],
-            }
+        event['out'] = {
+            'method': values['method'],
+            'url': values['url'][:120] + ' [-truncated-]'
+            if len(values['url']) > 127 else values['url'],
+            'body': mutated[:1500] + ' [-truncated-]'
+            if len(mutated) > 1507 else mutated,
+            'headers': values['headers'],
         }
 
         try:
@@ -126,24 +149,13 @@ def proxy_webhook(identifier):
             resp.status_code = 503
             resp.body = "<request failed: '%s'>" % e
 
-        event.update(response={
+        event['response'] = {
             'code': resp.status_code,
             'body': resp.text[:200] + ' [-truncated-]'
             if len(resp.text) > 207 else resp.text
-        })
-        eventjson = json.dumps(event)
+        }
 
-        key = 'events:%s' % identifier
-        rpipe = redis.pipeline()
-        rpipe.lpush(key, eventjson)
-        rpipe.ltrim(key, 0, 2)
-        rpipe.expire(key, 18000)
-        rpipe.execute()
-
-        try:
-            pusher.trigger('private-' + identifier, 'webhook', eventjson)
-        except ValueError:
-            print('couldn\'t send webhook to pusher', e)
+        publish()
 
         response = make_response(resp.text, resp.status_code)
         response.headers.extend(resp.headers.items())
