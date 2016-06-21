@@ -85,7 +85,7 @@ export function home (nheaders) {
     h('div.columns', [
       h('ul.sources', [
         h('h1', 'Useful webhook sources')].concat(
-          sampleSize(text.sources, 7)
+          sampleSize(text.sources, 8)
             .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
         )
       ),
