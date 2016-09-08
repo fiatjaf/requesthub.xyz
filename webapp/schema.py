@@ -7,7 +7,7 @@ from psycopg2 import IntegrityError
 from graphene.core.types import custom_scalars
 from helpers import modifier_check, is_valid_url, is_valid_headers, \
                     MapStringString, snake
-from third import lpg, redis
+from third import pg, redis
 
 haiku = Haikunator().haikunate
 logger = logging.getLogger('graphql.execution.executor')
@@ -16,7 +16,7 @@ logger.addHandler(logging.StreamHandler())
 
 class Endpoint(graphene.ObjectType):
     id = graphene.ID()
-    owner = graphene.String()
+    owner_id = graphene.ID()
     created_at = custom_scalars.DateTime()
     method = graphene.String()
     url = graphene.String()
@@ -48,7 +48,7 @@ class Query(graphene.ObjectType):
     def resolve_endpoint(self, args, ctx, info):
         owner = None
         if not ctx['graphiql']:
-            owner = ctx['user']
+            owner = ctx['user_id']
             if not owner:
                 return
 
@@ -65,7 +65,7 @@ class Query(graphene.ObjectType):
     def resolve_endpoints(self, args, ctx, info):
         owner = None
         if not ctx['graphiql']:
-            owner = ctx['user']
+            owner = ctx['user_id']
             if not owner:
                 return
 
@@ -80,7 +80,7 @@ class Query(graphene.ObjectType):
 
 
 def get_endpoints(owner=None, id=None,
-                  fields=['owner', 'created_at', 'definition', 'method',
+                  fields=['owner_id', 'created_at', 'definition', 'method',
                           'url', 'headers', 'pass_headers', 'data']):
     # always fetch the id
     fields.append('id')
@@ -88,14 +88,14 @@ def get_endpoints(owner=None, id=None,
     where = {}
 
     if owner:
-        where['owner'] = owner
+        where['owner_id'] = owner
 
     if id:
         where['id'] = id
 
-    with lpg() as p:
-        res = p.select('endpoints', what=fields, where=where)
-        return res
+    res = pg.select('endpoints', what=fields, where=where)
+    print(res, fields, where)
+    return res
 
 
 class SetEndpoint(graphene.Mutation):
@@ -118,7 +118,7 @@ class SetEndpoint(graphene.Mutation):
         params.setdefault('id', haiku(token_length=4))
 
         if not ctx['graphiql']:
-            params['owner'] = ctx['user']
+            params['owner'] = ctx['user_id']
 
         id, error = set_endpoint(params)
         return SetEndpoint(id, error, not error)
@@ -144,7 +144,7 @@ def set_endpoint(props):
                 # oops, not a modifier
                 return None,
                 'please provide a valid URL or an URL modifier: %s' % err
-            values['data']['url:d'] = True
+            values['url_dynamic'] = True
         values['url'] = props['url'].strip()
 
     if 'definition' in props:
@@ -162,24 +162,21 @@ def set_endpoint(props):
     if 'pass_headers' in props:
         values['pass_headers'] = bool(props['pass_headers'])
 
-    values['data'] = json.dumps(values['data'])
-
-    with lpg() as p:
-        try:
-            id = p.upsert('endpoints', set=values, return_id=True)
-            return id, ''
-        except IntegrityError as e:
-            if e.pgcode == '23505':
-                p.rollback()
-                # an endpoint like this already exists
-                res = p.select('endpoints', what=['id'], where={
-                    'owner': values['owner'],
-                    'definition': values['definition'],
-                    'headers': values['headers']
-                })
-                return res[0]['id'], ''
-            else:
-                raise e
+    try:
+        id = pg.upsert('endpoints', set=values, return_id=True)
+        return id, ''
+    except IntegrityError as e:
+        if e.pgcode == '23505':
+            pg.rollback()
+            # an endpoint like this already exists
+            res = pg.select('endpoints', what=['id'], where={
+                'owner': values['owner'],
+                'definition': values['definition'],
+                'headers': values['headers']
+            })
+            return res[0]['id'], ''
+        else:
+            raise e
 
     return None, 'mysterious error'
 
@@ -199,11 +196,8 @@ class DeleteEndpoint(graphene.Mutation):
         if not ctx['graphiql']:
             where['owner'] = ctx['owner']
 
-        with lpg() as p:
-            p.delete('endpoints', where=where)
-            return DeleteEndpoint(id, True)
-
-        return DeleteEndpoint(id, False)
+        pg.delete('endpoints', where=where)
+        return DeleteEndpoint(id, True)
 
 
 class Mutations(graphene.ObjectType):

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid" id="main"></div>
+<script>
+window.PUSHER_SOCKET_URL = '{{ config.PUSHER_SOCKET_URL }}'
+</script>
+<script src="/static/main.js"></script>
+
+{% endblock %}

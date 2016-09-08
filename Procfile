@@ -1,1 +1,1 @@
-web: gunicorn server:webhooks_backend --log-file -
+web: gunicorn --pythonpath ./webapp main:app

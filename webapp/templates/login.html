@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <h3>Sign in, existing user</h3>
+      <form class="form-horizontal" action="/login" method="POST">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label">Username: </label>
+            <input type="text" placeholder="happydog101"
+                   name="username" value="{{ request.args.get('username', '') }}">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Password: </label>
+            <input type="password" placeholder="candiesmarvelous" name="password">
+          </div>
+          <button type="submit" class="btn" style="display: block; margin: auto;">Login</button>
+        </fieldset>
+      </form>
+    </div>
+    <hr>
+    <div class="row-fluid">
+      <h3>Register yourself, new user</h3>
+      <form class="form-horizontal" action="/setup" method="POST">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label">Username: </label>
+            <input type="text" placeholder="solzhenitsyn"
+                   name="username" value="{{ request.args.get('username', '') }}">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Password: </label>
+            <input type="password" placeholder="donotfreakout" name="password">
+          </div>
+          <button type="submit" style="display: block; margin: auto;" class="btn btn-large btn-primary">Register</button>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

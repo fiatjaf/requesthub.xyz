@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+  <div style="margin: 100px 0px" class="jumbotron">
+    <h1 class="text-center">A declarative approach to webhook transformation</h1>
+    <p style="color:#666; margin: 20px 0; font-size: 20px" class="lead text-center">
+      "I want to use the outgoing webhook of a service as an API call to another service."
+    </p>
+    <div style="margin: 35px 0" class="text-center">
+      <a class="btn btn-large btn-primary" href="#howitworks">Learn more</a>
+      <a style="margin-left: 20px;" class="btn btn-large btn-success" href="/login/github">Sign up</a> 
+    </div>
+  </div>
+  <hr>
+  <div class="row-fluid">
+    <div class="span6">
+      <h4>Start building webhooks integrations</h4>
+      <p>Many online services provide actually very interesting webhooks, if only it weren't so complicated to setup a server to listen to each one of them parse, gather the important data and send it to another service! Save yourself time <!--and frustration-->while {{ config.SERVICE_NAME }} handle these for you.</p>
+    </div>
+    <div class="span6">
+      <h4>No code, but still flexibility</h4>
+      <p>{{ config.SERVICE_NAME }} reads the data from the incoming request, runs it through <a href="https://stedolan.github.io/jq/manual/#Objects-{}">a jq filter</a>, then sends it to the target URL. It's like writing JSON with variables, but with a lot of utility functions. <a href="#howitworks">Read more</a>.</p>
+    </div>
+  </div>
+  <hr>
+  <!--<img src="/static/img/demo.png">-->
+  <hr>
+  <div class="row-fluid">
+    <div class="span12">
+      <p style="color:#555" class="lead">
+        
+      </p>
+    </div>
+  </div>
+  <hr>
+  <div class="container-fluid">
+    <div class="row-fluid" id="start">
+      <h2>Sign up now</h2>
+      <p>It only takes a username, a password and a shared Workflowy project URL.</p>
+      <h4>Step 1: Get a shared URL for some Workflowy project</h4>
+      <img src="/static/share.png">
+      <h4>Step 2: Register it</h4>
+      <p>(If you already have an account you can just reuse your name and password)</p>
+      <form class="form-horizontal" action="/setup" method="POST">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label">Username: </label>
+            <input type="text" placeholder="happydog101"
+                   name="username" value="{{ request.args.get('username', '') }}">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Password: </label>
+            <input type="password" placeholder="donotfreakout" name="password">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Workflowy shared URL: </label>
+            <input type="text" placeholder="https://workflowy.com/s/cqFyu4cFba"
+                   name="wfitem" value="{{ request.args.get('wfitem', '') }}">
+          </div>
+          <button type="submit" style="display: block; margin: auto;" class="btn btn-large btn-primary">Go</button>
+        </fieldset>
+      </form>
+      <h4>Step 3: Enable apps!</h4>
+      <p>Inside the <a href="/dashboard">dashboard</a> you'll be able to choose from one of the apps.</p>
+    </div>
+  </div>
+
+  {% if quotes %}
+  <hr>
+  <div class="row-fluid quotes">
+    <div class="span6">
+      <blockquote>{{ quote }}
+        <small>@{{ user }}</small> 
+      </blockquote>
+    </div>
+    <div class="span6">
+      <blockquote>{{ quote }}
+        <small>@{{ user }}</small> 
+      </blockquote>
+    </div>
+  </div>
+  {% endif %}
+
+  <hr>
+  <div class="row-fluid">
+    <div class="span6">
+      <h3>Suggest an app</h3>
+      <p>You want some feature added to your Workflowy? We want to build it.</p>
+    </div>
+    <div class="span6">
+      <form method="POST" action="https://formspree.io/fiatjaf@boardthreads.com">
+        <div class="form-control">
+          <textarea class="input-block-level" rows="3" name="idea" placeholder="Your idea."></textarea>
+        </div>
+        <div class="form-control">
+          <input class="input-block-level" type="text" name="email" placeholder="Optionally, your email.">
+        </div>
+        <button class="btn">Submit</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
