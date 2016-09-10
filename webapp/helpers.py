@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import base64
@@ -15,6 +16,11 @@ from third import pg
 all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 
 
+JQPATH = './jq'
+if not os.path.isfile(JQPATH):
+    JQPATH = '../jq'
+
+
 def user_can_access_endpoint(identifier):
     return pg.exists('endpoints', what=['id'], where={
       'id': identifier,
@@ -27,7 +33,7 @@ def modifier_check(modifier):
         print('definition is too long.')
         return False, 'modifier is too long.'
 
-    p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
+    p = Popen([JQPATH, '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
     _, stderr = p.communicate(input=b'{}', timeout=2)
 
     stderr = stderr.strip()
@@ -64,7 +70,7 @@ def is_valid_headers(headers):
 
 
 def jq(mod, data):
-    p = Popen(['./jq', '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
+    p = Popen([JQPATH, '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
     res = p.communicate(input=data.encode('utf-8'), timeout=4)[0]
     return res.decode('utf-8')
 
