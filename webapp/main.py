@@ -1,42 +1,21 @@
 import json
+import time
 import requests
-import datetime
 from urllib.parse import urlencode
 from requests import Response
 from requests.structures import CaseInsensitiveDict
-from flask import Flask, request, jsonify, redirect, make_response, \
-                  render_template, flash, url_for
-from flask_github import GitHub
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask import request, jsonify, redirect, make_response, \
+                  render_template, flash, url_for, g
+from flask_login import login_user, logout_user, login_required
 
-from third import pg, pusher, redis
-from schema import schema
+from app import app
+from third import pg, pusher, redis, github
 from helpers import jq, user_can_access_endpoint, all_methods, \
-                    GraphQLViewWithUserContext as GraphQLView, \
                     parse_incoming_data, User
 import settings
 
-app = Flask(__name__)
-app.secret_key = settings.SECRET
-app.config.from_object(settings)
 
-app.add_url_rule(
-    '/graphql',
-    view_func=GraphQLView.as_view('graphql',
-                                  schema=schema,
-                                  pretty=settings.LOCAL,
-                                  graphiql=settings.LOCAL)
-)
-
-github = GitHub(app)
-login_manager = LoginManager()
-login_manager.login_view = "github_login"
-login_manager.init_app(app)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User(id=user_id)
+github.init_app(app)
 
 
 @app.route('/')
@@ -56,9 +35,11 @@ def github_callback(oauth_token):
         flash('Authorization failed.')
         return redirect(url_for('index'))
 
-    user = User.search(github_token=oauth_token)
+    g.github_token = oauth_token
+    github_id = github.get('user')['id']
+    user = User.search(github_id=github_id)
     if user is None:
-        user = User(github_token=oauth_token)
+        user = User(github_id=github_id)
         user.save()
     login_user(user)
 
@@ -81,7 +62,7 @@ def dashboard():
 @login_required
 def pusher_auth():
     identifier = request.form['channel_name'][8:]
-    if user_can_access_endpoint(identifier):
+    if not user_can_access_endpoint(identifier):
         return 'you do not have access to this endpoint', 401
 
     return jsonify(pusher.authenticate(
@@ -90,8 +71,8 @@ def pusher_auth():
     ))
 
 
-@app.route('/w/<identifier>', methods=all_methods)
 @app.route('/w/<identifier>/', methods=all_methods)
+@app.route('/w/<identifier>', methods=all_methods)
 def proxy_webhook(identifier):
     # parse incoming data
     data = parse_incoming_data()
@@ -115,36 +96,37 @@ def proxy_webhook(identifier):
         rpipe = redis.pipeline()
         rpipe.lpush(key, eventjson)
         rpipe.ltrim(key, 0, 2)
-        rpipe.expire(key, 18000)
+        rpipe.expire(key, 86400)  # 24h
         rpipe.execute()
 
-    values = pg.select(
+    endpoint = pg.select1(
         'endpoints',
         what=['definition', 'method', 'pass_headers',
-              'headers', 'url', "data->'url:d' as url_dynamic"],
+              'headers', 'url', 'url_dynamic'],
         where={'id': identifier}
-    )[0]
+    )
 
     event['in'] = {
-        'time': datetime.datetime.now().isoformat(),
+        'time': time.time(),
+        'method': request.method,
         'body': data[:1800] + ' [truncated]' if len(data) > 1807 else data
     }
 
-    if values['url_dynamic']:
-        values['url'] = jq(values['url'], data=data)
-        if not values['url']:
+    if endpoint['url_dynamic']:
+        endpoint['url'] = jq(endpoint['url'], data=data)
+        if not endpoint['url']:
             publish()
             return 'url building has failed', 200
 
-    mutated = jq(values['definition'], data=data)
+    mutated = jq(endpoint['definition'], data=data)
     if not mutated:
         publish()
-        return 'transmutated into null and aborted', 200
+        return 'transmutated into null and aborted', 201
 
     h = CaseInsensitiveDict({'Content-Type': 'application/json'})
-    if values['pass_headers']:
+    if endpoint['pass_headers']:
         h.update(request.headers)
-    h.update(values['headers'])
+    h.update(endpoint['headers'])
 
     # reformat the mutated data
     mutatedjson = json.loads(mutated)
@@ -155,39 +137,44 @@ def proxy_webhook(identifier):
         mutated = json.dumps(mutatedjson)
 
     event['out'] = {
-        'method': values['method'],
-        'url': values['url'][:120] + ' [-truncated-]'
-        if len(values['url']) > 127 else values['url'],
+        'method': endpoint['method'],
+        'url': endpoint['url'][:120] + ' [-truncated-]'
+        if len(endpoint['url']) > 127 else endpoint['url'],
         'body': mutated[:1500] + ' [-truncated-]'
         if len(mutated) > 1507 else mutated,
-        'headers': values['headers'],
+        'headers': endpoint['headers'],
     }
 
-    try:
-        s = requests.Session()
-        req = requests.Request(values['method'], values['url'],
-                               data=mutated, headers=h).prepare()
-        resp = s.send(req, timeout=4)
+    if endpoint['url']:
+        try:
+            s = requests.Session()
+            req = requests.Request(endpoint['method'], endpoint['url'],
+                                   data=mutated, headers=h).prepare()
+            resp = s.send(req, timeout=4)
 
-        if not resp.ok:
-            print('FAILED TO POST', resp.text, identifier, mutated)
+            if not resp.ok:
+                print('FAILED TO POST', resp.text, identifier, mutated)
 
-    except requests.exceptions.RequestException as e:
-        print('FAILED TO POST', e, identifier, mutated)
-        resp = Response()
-        resp.status_code = 503
-        resp.body = "<request failed: '%s'>" % e
+        except requests.exceptions.RequestException as e:
+            print('FAILED TO POST', e, identifier, mutated)
+            resp = Response()
+            resp.status_code = 503
+            resp.body = "<request failed: '%s'>" % e
 
-    event['response'] = {
-        'code': resp.status_code,
-        'body': resp.text[:200] + ' [-truncated-]'
-        if len(resp.text) > 207 else resp.text
-    }
-
-    publish()
+        event['response'] = {
+            'code': resp.status_code,
+            'body': resp.text[:200] + ' [-truncated-]'
+            if len(resp.text) > 207 else resp.text
+        }
+    else:
+        # not URL, just testing
+        event['response'] = {'code': 0, 'body': '~'}
+        publish()
+        return 'no URL to send this to', 201
 
     response = make_response(resp.text, resp.status_code)
     response.headers.extend(resp.headers.items())
+    publish()
     return response
 
 

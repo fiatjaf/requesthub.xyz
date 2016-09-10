@@ -28,8 +28,8 @@ function makeGraphQLDriver(_ref) {
   var templates = _ref$templates === undefined ? {} : _ref$templates;
   var _ref$endpoint = _ref.endpoint;
   var endpoint = _ref$endpoint === undefined ? '/graphql' : _ref$endpoint;
-
-  var includeHeaders = {};
+  var _ref$includeHeaders = _ref.includeHeaders;
+  var includeHeaders = _ref$includeHeaders === undefined ? {} : _ref$includeHeaders;
 
   var networkInterface = (0, _apolloClient.createNetworkInterface)(endpoint, { credentials: 'include' });
   networkInterface.use([{
@@ -21187,7 +21187,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":154,"./nodeTimer":156,"./timeoutTimer":157,"_process":382}],156:[function(require,module,exports){
+},{"./Scheduler":154,"./nodeTimer":156,"./timeoutTimer":157,"_process":383}],156:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23057,7 +23057,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":180,"./utils/warning":182,"_process":382,"lodash/isPlainObject":109}],179:[function(require,module,exports){
+},{"./createStore":180,"./utils/warning":182,"_process":383,"lodash/isPlainObject":109}],179:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -23410,7 +23410,7 @@ exports.bindActionCreators = _bindActionCreators2["default"];
 exports.applyMiddleware = _applyMiddleware2["default"];
 exports.compose = _compose2["default"];
 }).call(this,require('_process'))
-},{"./applyMiddleware":176,"./bindActionCreators":177,"./combineReducers":178,"./compose":179,"./createStore":180,"./utils/warning":182,"_process":382}],182:[function(require,module,exports){
+},{"./applyMiddleware":176,"./bindActionCreators":177,"./combineReducers":178,"./compose":179,"./createStore":180,"./utils/warning":182,"_process":383}],182:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40227,7 +40227,7 @@ arguments[4][153][0].apply(exports,arguments)
 arguments[4][154][0].apply(exports,arguments)
 },{"@most/prelude":193,"dup":154}],361:[function(require,module,exports){
 arguments[4][155][0].apply(exports,arguments)
-},{"./Scheduler":360,"./nodeTimer":362,"./timeoutTimer":363,"_process":382,"dup":155}],362:[function(require,module,exports){
+},{"./Scheduler":360,"./nodeTimer":362,"./timeoutTimer":363,"_process":383,"dup":155}],362:[function(require,module,exports){
 arguments[4][156][0].apply(exports,arguments)
 },{"../defer":345,"dup":156}],363:[function(require,module,exports){
 arguments[4][157][0].apply(exports,arguments)
@@ -40268,6 +40268,40 @@ arguments[4][174][0].apply(exports,arguments)
 },{"../Stream":319,"dup":174}],381:[function(require,module,exports){
 arguments[4][175][0].apply(exports,arguments)
 },{"./lib/Stream":319,"./lib/combinator/accumulate":320,"./lib/combinator/applicative":321,"./lib/combinator/build":322,"./lib/combinator/combine":323,"./lib/combinator/concatMap":324,"./lib/combinator/continueWith":325,"./lib/combinator/delay":326,"./lib/combinator/errors":327,"./lib/combinator/filter":328,"./lib/combinator/flatMap":329,"./lib/combinator/limit":330,"./lib/combinator/loop":331,"./lib/combinator/merge":332,"./lib/combinator/mergeConcurrently":333,"./lib/combinator/observe":334,"./lib/combinator/promises":335,"./lib/combinator/sample":336,"./lib/combinator/slice":337,"./lib/combinator/switch":338,"./lib/combinator/thru":339,"./lib/combinator/timeslice":340,"./lib/combinator/timestamp":341,"./lib/combinator/transduce":342,"./lib/combinator/transform":343,"./lib/combinator/zip":344,"./lib/observable/subscribe":357,"./lib/source/core":370,"./lib/source/create":371,"./lib/source/from":372,"./lib/source/fromEvent":374,"./lib/source/generate":376,"./lib/source/iterate":377,"./lib/source/periodic":378,"./lib/source/unfold":380,"@most/multicast":192,"@most/prelude":193,"dup":175,"symbol-observable":405}],382:[function(require,module,exports){
+function createHandler(divisor,noun,restOfString){
+	return function(diff){
+		var n = Math.floor(diff/divisor);
+		var pluralizedNoun = noun + ( n > 1 ? 's' : '' );
+		return "" + n + " " + pluralizedNoun + " " + restOfString;
+	}
+}
+
+var formatters = [
+	{ threshold: 1,        handler: function(){ return      "just now" } },
+	{ threshold: 60,       handler: createHandler(1,        "second",    "ago" ) },
+	{ threshold: 3600,     handler: createHandler(60,       "minute",    "ago" ) },
+	{ threshold: 86400,    handler: createHandler(3600,     "hour",      "ago" ) },
+	{ threshold: 172800,   handler: function(){ return      "yesterday" } },
+	{ threshold: 604800,   handler: createHandler(86400,    "day",       "ago" ) },
+	{ threshold: 2592000,  handler: createHandler(604800,   "week",      "ago" ) },
+	{ threshold: 31536000, handler: createHandler(2592000,  "month",     "ago" ) },
+	{ threshold: Infinity, handler: createHandler(31536000, "year",      "ago" ) }
+];
+
+var prettydate = {
+	format: function (date) {
+		var diff = (((new Date()).getTime() - date.getTime()) / 1000);
+		for( var i=0; i<formatters.length; i++ ){
+			if( diff < formatters[i].threshold ){
+				return formatters[i].handler(diff);
+			}
+		}
+		throw new Error("exhausted all formatter options, none found"); //should never be reached
+	}
+}
+ 
+module.exports = prettydate;
+},{}],383:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -40449,7 +40483,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],383:[function(require,module,exports){
+},{}],384:[function(require,module,exports){
 /*!
  * Pusher JavaScript Library v3.2.0
  * http://pusher.com/
@@ -44524,88 +44558,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{}],384:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-'use strict';
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (Array.isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
 },{}],385:[function(require,module,exports){
 'use strict';
 
@@ -45731,10 +45683,6 @@ var _fwitch = require('fwitch');
 
 var _fwitch2 = _interopRequireDefault(_fwitch);
 
-var _decode = require('querystring/decode');
-
-var _decode2 = _interopRequireDefault(_decode);
-
 var _vrender = require('./vrender');
 
 var vrender = _interopRequireWildcard(_vrender);
@@ -45757,8 +45705,6 @@ function main(_ref) {
     '/endpoints/:endpoint': function endpointsEndpoint(id) {
       return { where: 'ENDPOINT', id: id };
     }
-  }).tap(function (x) {
-    return console.log('ROUTER', x);
   }).thru(_hold2.default);
 
   var response$ = GRAPHQL.flatMap(function (r$) {
@@ -45812,19 +45758,26 @@ function main(_ref) {
     return map;
   }, {});
 
-  var nheaders$ = _most2.default.merge(DOM.select('.header-add').events('click').tap(function (e) {
+  var nheaders$ = _most2.default.merge(DOM.select('.a-header').events('click').tap(function (e) {
     return e.preventDefault();
-  }).constant(1), DOM.select('.header-remove').events('click').tap(function (e) {
+  }).constant(1), DOM.select('.r-header').events('click').tap(function (e) {
     return e.preventDefault();
   }).constant(-1)).scan(function (acc, v) {
     return acc + v || 1;
   }, 2);
 
-  var showEvents$ = _most2.default.merge(DOM.select('.events .show').events('click').tap(function (e) {
+  var showEvents$ = _most2.default.merge(DOM.select('.s-events').events('click').tap(function (e) {
     return e.preventDefault();
-  }).constant(true), DOM.select('.events .hide').events('click').tap(function (e) {
+  }).constant(true), DOM.select('.h-events').events('click').tap(function (e) {
     return e.preventDefault();
   }).constant(false)).startWith(false);
+
+  var selectedEvent$ = DOM.select('tr.event').events('click').map(function (e) {
+    return e.ownerTarget.id.slice(3);
+  }) // id="ev-{ timestring }"
+  .scan(function (cur, next) {
+    return cur === next ? null : next;
+  }, null);
 
   var events$ = PUSHER.event$.map(function (ev) {
     return [ev.id, ev.data];
@@ -45833,24 +45786,14 @@ function main(_ref) {
     return events;
   }, []);
 
-  var vtree$ = _most2.default.combine(function (match, endpoints, nheaders, events, showingEvents, _) {
-    return console.log('vrendering', match, endpoints, nheaders, events, showingEvents) || (0, _fwitch2.default)(match.value.where, {
+  var vtree$ = _most2.default.combine(function (match, endpoints, nheaders, events, showingEvents, selectedEvent, _) {
+    return (0, _fwitch2.default)(match.value.where, {
       CREATE: vrender.create.bind(null, nheaders),
       ENDPOINTS: vrender.list.bind(null, endpoints),
-      ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events, showingEvents),
+      ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events, showingEvents, selectedEvent),
       default: vrender.empty
     });
-  }, match$.tap(function (x) {
-    return console.log('match', x);
-  }), endpoints$.tap(function (x) {
-    return console.log('endpoints', x);
-  }), nheaders$.tap(function (x) {
-    return console.log('nheaders', x);
-  }), events$.tap(function (x) {
-    return console.log('events', x);
-  }), showEvents$.tap(function (x) {
-    return console.log('showEvents', x);
-  }), DOM.select('button.flush').events('click').tap(function (e) {
+  }, match$, endpoints$, nheaders$, events$, showEvents$, selectedEvent$, DOM.select('button.flush').events('click').tap(function (e) {
     return e.preventDefault();
   }).startWith(null));
 
@@ -45862,7 +45805,8 @@ function main(_ref) {
     return {
       mutation: 'setEndpoint',
       variables: {
-        id: form.querySelector('[name="identifier"]') && form.querySelector('[name="identifier"]').value,
+        currentId: form.querySelector('[name="current_id"]') ? form.querySelector('[name="current_id"]').value : undefined,
+        id: form.querySelector('[name="identifier"]').value,
         method: function () {
           var buttons = form.querySelectorAll('[name="method"]');
           for (var i = 0; i < buttons.length; i++) {
@@ -45924,9 +45868,7 @@ function main(_ref) {
   }), PUSHER.event$.map(function (_ref5) {
     var id = _ref5.id;
     return ['detected webhook call on <b>' + id + '</b>', 'info', { timeout: 3000 }];
-  })).tap(function (x) {
-    return console.log('notification', x);
-  });
+  }));
 
   return {
     DOM: vtree$,
@@ -45946,7 +45888,7 @@ function main(_ref) {
   };
 }
 
-},{"./vrender":411,"@most/hold":191,"fwitch":219,"most":381,"querystring/decode":384}],408:[function(require,module,exports){
+},{"./vrender":410,"@most/hold":191,"fwitch":219,"most":381}],408:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46052,19 +45994,11 @@ _codemirror2.default.defineSimpleMode('jq', {
 });
 
 },{"@motorcycle/dom":202,"codemirror":214,"codemirror/addon/mode/simple":213}],409:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-var garbage = exports.garbage = "<xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" id=\"Layer_1\" x=\"0px\" y=\"0px\" viewBox=\"0 0 475.628 475.628\" style=\"enable-background:new 0 0 475.628 475.628;\" xml:space=\"preserve\" width=\"20px\" height=\"20px\">\n<g>\n\t<polygon points=\"115.592,475.628 315.592,475.628 335.592,170.628 95.592,170.628  \" fill=\"#FFFFFF\"/>\n\t<path d=\"M301.681,74.436l12.997-35.708L208.275,0l-12.996,35.708L116.923,7.189L96.402,63.57l263.114,95.766l20.521-56.381   L301.681,74.436z M226.205,38.451l50.021,18.207l-2.736,7.517l-50.022-18.206L226.205,38.451z\" fill=\"#FFFFFF\"/>\n</g>\n</svg>";
-
-},{}],410:[function(require,module,exports){
 'use strict';
 
 var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, method, url, createdAt\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, method, url, createdAt\n  }\n}\n      ']),
-    _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, url_dynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, url_dynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      ']),
-    _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
+    _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      ']),
+    _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
     _templateObject4 = _taggedTemplateLiteral(['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      ']);
 
 var _create = require('@most/create');
@@ -46131,7 +46065,7 @@ function pusherDriver(identifier$) {
   };
 }
 
-},{"./app":407,"@cycle/most-run":188,"@most/create":189,"@motorcycle/dom":202,"cycle-graphql-most-driver":1,"cycle-hashrouter-most-driver":215,"cycle-notification-most-driver":217,"pusher-js":383,"snabbdom/modules/props":401,"snabbdom/modules/style":402}],411:[function(require,module,exports){
+},{"./app":407,"@cycle/most-run":188,"@most/create":189,"@motorcycle/dom":202,"cycle-graphql-most-driver":1,"cycle-hashrouter-most-driver":215,"cycle-notification-most-driver":217,"pusher-js":384,"snabbdom/modules/props":401,"snabbdom/modules/style":402}],410:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46155,35 +46089,35 @@ var _loadsCss = require('loads-css');
 
 var _loadsCss2 = _interopRequireDefault(_loadsCss);
 
-var _icons = require('./icons');
+var _prettyDate = require('pretty-date');
 
-var icons = _interopRequireWildcard(_icons);
+var _prettyDate2 = _interopRequireDefault(_prettyDate);
 
 var _helpers = require('./helpers');
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var location = window.location;
+var ENDPOINTURLPREFIX = location.protocol + '//' + location.host + '/w/';
 
 // codemirror stuff
 (0, _loadsCss2.default)('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.min.css', function () {});
 var cm;
 
 function create(nheaders) {
-  return (0, _dom.h)('article', [(0, _dom.h)('header', [(0, _dom.h)('h1', 'Create a new endpoint')]), endpointForm({ headers: { '': '' } }, nheaders)]);
+  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h4', 'Create a new endpoint'), endpointForm(undefined, nheaders)])]);
 }
 
 function list(endpoints) {
-  return (0, _dom.h)('section', [(0, _dom.h)('header', [(0, _dom.h)('h1', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('ul', Object.keys(endpoints).map(function (id) {
-    return (0, _dom.h)('li', { key: id }, [(0, _dom.h)('article', [(0, _dom.h)('header', [(0, _dom.h)('h1', [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('aside', [(0, _dom.h)('ul', [(0, _dom.h)('li', endpoints[id].createdAt), (0, _dom.h)('li', endpoints[id].url)])])])])]);
-  })) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a', { props: { href: '#/create' } }, 'Create one.')])]);
+  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h4', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
+    return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th', [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', endpoints[id].url)]);
+  }))]) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a', { props: { href: '#/create' } }, 'Create one.')])]);
 }
 
 function endpoint(end, nheaders) {
   var recentEvents = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
   var showing = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-
-  if (!end || !end.id) return (0, _dom.h)('div');
+  var selectedEvent = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
 
   recentEvents = recentEvents.filter(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 1);
@@ -46196,43 +46130,57 @@ function endpoint(end, nheaders) {
     var _ = _ref4[0];
     var data = _ref4[1];
     return data;
-  }).concat((end.recentEvents || []).map(JSON.parse.bind(JSON))).slice(0, 3);
+  }).concat((end && end.recentEvents || []).map(JSON.parse.bind(JSON)));
 
-  end = end || { id: '', definition: '', headers: {}, url: '', created_at: '' };
-  return (0, _dom.h)('article', [(0, _dom.h)('header', [(0, _dom.h)('h1', end.id), (0, _dom.h)('aside', [(0, _dom.h)('ul', [(0, _dom.h)('li', '' + end.id)])])]), recentEvents.length ? (0, _dom.h)('div.events', [(0, _dom.h)('h1', ['Recent activity ', showing ? (0, _dom.h)('a.hide', { props: { href: '#' } }, '▼') : (0, _dom.h)('a.show', { props: { href: '#' } }, '▲')]), showing ? (0, _dom.h)('table', { style: { 'background': 'none' } }, recentEvents.map(recentEventView)) : null, (0, _dom.h)('style', { props: { scoped: true, innerHTML: '\n          table, tr, td {\n            background: none !important;\n          }\n          .events > table > tr:nth-child(odd) {\n            background-color: rgba(100, 165, 135, 0.21) !important;\n          }\n        ' } })]) : null, (0, _dom.h)('div', [endpointForm(end, nheaders)])]);
+  return (0, _dom.h)('div.container-fluid', [eventsView(end, recentEvents, showing, selectedEvent), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Modify endpoint'), endpointForm(end, nheaders)])])]);
 }
 
-function recentEventView(r) {
-  return (0, _dom.h)('tr', [(0, _dom.h)('td', [(0, _dom.h)('h4', 'Data in'), (0, _dom.h)('p', { style: {
-      'max-width': '13rem',
-      'word-wrap': 'break-word'
-    } }, r.in.time.slice(0, -7).split('T').join(' ')), (0, _dom.h)('pre', { style: {
-      'max-height': '18rem',
-      'max-width': '13rem',
-      'overflow': 'auto'
-    } }, [(0, _helpers.prettify)(r.in.body)])]), (0, _dom.h)('td', [(0, _dom.h)('h4', 'Data out'), (0, _dom.h)('p', { style: {
-      'max-width': '17rem',
-      'word-wrap': 'break-word'
-    } }, r.out.url), (0, _dom.h)('div', [(0, _dom.h)('pre', { style: {
-      'max-height': '13rem',
-      'max-width': '17rem',
-      'overflow': 'auto'
-    } }, [(0, _helpers.prettify)(r.out.body)])]), (0, _dom.h)('table', { style: {
-      'margin-top': '8px',
-      'font-size': '0.8em',
-      'max-width': '17rem',
-      'word-wrap': 'break-word'
-    } }, Object.keys(r.out.headers).map(function (key) {
-    return (0, _dom.h)('tr', [(0, _dom.h)('th', key), (0, _dom.h)('td', r.out.headers[key])]);
-  }))]), (0, _dom.h)('td', [(0, _dom.h)('h4', 'Response'), (0, _dom.h)('p', r.response.code), (0, _dom.h)('pre', { style: {
-      'max-height': '18rem',
-      'max-width': '6rem',
-      'overflow': 'auto'
-    } }, [(0, _helpers.prettify)(r.response.body)])])]);
+function eventsView(end, recentEvents, showing, selectedEvent) {
+  if (!showing) {
+    return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-info.s-events', 'See recent activity')])])]);
+  }
+
+  var selected;
+  if (selectedEvent) {
+    for (var i = 0; i < recentEvents.length; i++) {
+      if (recentEvents[i].in.time.toString() === selectedEvent) {
+        selected = recentEvents[i];
+        break;
+      }
+    }
+  }
+
+  var makeTr;
+  if (selected) {
+    makeTr = function makeTr(ev) {
+      return (0, _dom.h)('tr', {
+        props: {
+          id: 'ev-' + ev.in.time,
+          className: ev.in.time === selectedEvent ? 'info event' : 'event'
+        }
+      }, [(0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', ev.response.code)]);
+    };
+  } else {
+    makeTr = function makeTr(ev) {
+      return (0, _dom.h)('tr.event', {
+        props: {
+          id: 'ev-' + ev.in.time
+        }
+      }, [(0, _dom.h)('td', ev.in.method), (0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', ev.out.url || '/dev/null'), (0, _dom.h)('td', ev.response.code)]);
+    };
+  }
+
+  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, ENDPOINTURLPREFIX + end.id)]), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div', { props: { className: selected ? 'span6' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 5).map(makeTr))])]), selected ? (0, _dom.h)('div.span6', [(0, _dom.h)('p', [(0, _dom.h)('span.label.label-info', selected.out.url || '/dev/null'), ' ', (0, _dom.h)('span.label', selected.response.code)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.in.body)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.out.body)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.response.body)])]) : null])]);
 }
 
-function endpointForm(end, nheaders) {
+function endpointForm() {
+  var end = arguments.length <= 0 || arguments[0] === undefined ? { headers: {}, definition: '{\n  key: "value"\n}' } : arguments[0];
+  var nheaders = arguments[1];
+
+  // number of header fields
   nheaders = nheaders || Object.keys(end.headers).length;
+
+  // keep track of headers
   var headerPairs = [];
   var lowercaseHeaders = {};
   for (var k in end.headers) {
@@ -46240,21 +46188,31 @@ function endpointForm(end, nheaders) {
     lowercaseHeaders[k.toLowerCase()] = true;
   }
 
-  // defaults
+  // default headers
   if (!lowercaseHeaders['content-type']) {
-    headerPairs.push(['Content-Type', 'application/json']);
+    headerPairs.unshift(['Content-Type', 'application/json']);
   }
 
+  // sort headers (as we keep them unsorted)
   headerPairs = headerPairs.sort(function (a, b) {
-    return a[0] < b[1] ? -1 : 1;
+    return b[0] < a[1] ? -1 : 1;
   }).slice(0, nheaders);
   for (var i = headerPairs.length; i < nheaders; i++) {
     headerPairs.push(['', '']);
   }
 
+  // default method
   end.method = end.method || 'POST';
 
-  return (0, _dom.h)('form', { key: 'create-form' }, [(0, _dom.h)('span', end.id ? [(0, _dom.h)('input', { props: { type: 'hidden', name: 'identifier', value: end.id } })] : []), (0, _dom.h)('div', [(0, _dom.h)('div', 'Method:')].concat(['POST', 'PUT', 'GET', 'DELETE'].map(function (m) {
+  return (0, _dom.h)('form', { key: 'create-form' }, [end.id ? (0, _dom.h)('input', { props: { type: 'hidden', name: 'current_id', value: end.id } }) : null, (0, _dom.h)('label', { props: { htmlFor: 'identifier' } }, 'Identifier'), (0, _dom.h)('div.input-prepend', [(0, _dom.h)('span.add-on', ENDPOINTURLPREFIX), (0, _dom.h)('input', {
+    props: {
+      type: 'text',
+      id: 'identifier',
+      name: 'identifier',
+      placeholder: 'Leave blank for an autogenerated name.',
+      value: end.id
+    }
+  })]), (0, _dom.h)('label', ['Method'].concat(['POST', 'PUT', 'GET', 'DELETE'].map(function (m) {
     return (0, _dom.h)('label', {
       style: { display: 'inline', 'margin-left': '20px' },
       props: { htmlFor: m }
@@ -46262,15 +46220,18 @@ function endpointForm(end, nheaders) {
       style: { display: 'inline', width: '30px' },
       props: { type: 'radio', name: 'method', value: m, id: m, checked: end.method === m }
     })]);
-  }))), (0, _dom.h)('label', ['Target URL:', (0, _dom.h)('input', {
+  }))), (0, _dom.h)('span.help-block', 'This is the method that will be called on the target URL.'), (0, _dom.h)('label', { props: { htmlFor: 'url' } }, 'Target URL'), (0, _dom.h)('input.input-xxlarge', {
     props: {
+      id: 'url',
       name: 'url',
-      placeholder: 'The URL to which this webhook will be redirected.',
+      type: 'text',
+      placeholder: 'The URL to which this webhook will be sent.',
       value: end.url
     }
-  })]), (0, _dom.h)('label', ['Modifier (', (0, _dom.h)('a', { props: { href: 'https://stedolan.github.io/jq/manual/', target: '_blank' } }, 'jq script'), '):', (0, _dom.h)('textarea', {
+  }), (0, _dom.h)('span.help-block', 'Accepts a constant URL or a jq script that outputs an URL. Leave blank if you wanna test before actually dispatching the calls.'), (0, _dom.h)('label', { props: { htmlFor: 'definition' } }, ['Modifier (', (0, _dom.h)('a', { props: { href: 'https://stedolan.github.io/jq/manual/', target: '_blank' } }, 'jq script'), ')']), (0, _dom.h)('textarea', {
     props: {
       rows: Math.max(3, (end.definition || '').split('\n').length + 1),
+      id: 'definition',
       name: 'definition',
       placeholder: 'The jq script that will be used to transform the incoming data.',
       value: end.definition
@@ -46288,50 +46249,46 @@ function endpointForm(end, nheaders) {
         });
       },
       update: function update(old, curr) {
-        cm.setValue(curr.data.props.value);
+        cm.setValue(curr.elm.value);
       },
       destroy: function destroy(vnode) {
         cm.toTextArea();
       }
     }
-  })]), (0, _dom.h)('div', [(0, _dom.h)('label', ['Pass request headers on to the target URL: ', (0, _dom.h)('input', {
+  }), (0, _dom.h)('label.checkbox', ['Pass request headers on to the target URL', (0, _dom.h)('input', {
     style: { 'width': 'auto', 'display': 'inline' },
     props: { type: 'checkbox', name: 'pass_headers', value: 'true', checked: end.pass_headers }
-  })])]), (0, _dom.h)('label', ['Headers:'].concat(headerPairs.map(function (_ref5) {
+  })]), (0, _dom.h)('span.help-block', 'Forward all the received headers when calling the target URL. These will be superseded by any header specified below.'), (0, _dom.h)('label', ['Headers'].concat(headerPairs.map(function (_ref5) {
     var _ref6 = _slicedToArray(_ref5, 2);
 
     var key = _ref6[0];
     var value = _ref6[1];
-    return (0, _dom.h)('div', { key: key }, [(0, _dom.h)('input', {
-      style: { display: 'inline', width: '26%', margin: '0', marginRight: '1%' },
+    return (0, _dom.h)('div', { key: key, style: { marginBottom: '6px' } }, [(0, _dom.h)('input.span3', {
+      style: { display: 'inline', margin: '0' },
       props: {
         name: 'header-key',
         placeholder: 'Header name',
+        type: 'text',
         value: key
       }
-    }), (0, _dom.h)('input', {
-      style: { display: 'inline', width: '73%', margin: '0' },
+    }), ': ', (0, _dom.h)('input.span8', {
+      style: { display: 'inline', margin: '0', marginLeft: '1%' },
       props: {
         name: 'header-val',
         placeholder: 'Header value',
+        type: 'text',
         value: value
       }
     })]);
-  })).concat([(0, _dom.h)('a.header-add', { props: { href: '#', title: 'more headers' } }, '+'), (0, _dom.h)('a.header-remove', { props: { href: '#', title: 'less headers' }, style: { 'float': 'right' } }, '-')])), (0, _dom.h)('button.set', {
-    style: {
-      color: 'white',
-      fontSize: '18px',
-      background: end.id ? '#74a7e6' : '#5e8c72'
-    },
+  })).concat([(0, _dom.h)('a.btn.btn-small.btn-warning.r-header', { props: { href: '#', title: 'less headers' } }, '-'), ' ', (0, _dom.h)('a.btn.btn-small.btn-success.a-header', { props: { href: '#', title: 'more headers' } }, '+')])), (0, _dom.h)('span.help-block', ['Headers can be used for setting Content-Type, Authorization tokens or other fancy things your target endpoint may require. ', (0, _dom.h)('code', 'application/json'), ' is the default Content-Type.']), end.id ? (0, _dom.h)('button.btn.btn-danger.delete', {
+    props: { title: 'Delete endpoint' }
+  }, 'Delete endpoint') : null, (0, _dom.h)('button.btn.btn-primary.pull-right.set', {
     props: { title: end.id ? 'Update endpoint' : 'Create endpoint' }
-  }, end.id ? 'Update endpoint' : 'Create endpoint'), end.id ? (0, _dom.h)('button.delete', {
-    style: { color: 'white', background: '#ea8686', padding: '4px 11px 2px 11px' },
-    props: { title: 'Delete endpoint', alt: 'Delete', innerHTML: icons.garbage }
-  }) : null]);
+  }, end.id ? 'Update endpoint' : 'Create endpoint')]);
 }
 
 function empty() {
   return (0, _dom.h)('div');
 }
 
-},{"./helpers":408,"./icons":409,"@motorcycle/dom":202,"codemirror":214,"loads-css":221}]},{},[410]);
+},{"./helpers":408,"@motorcycle/dom":202,"codemirror":214,"loads-css":221,"pretty-date":382}]},{},[409]);

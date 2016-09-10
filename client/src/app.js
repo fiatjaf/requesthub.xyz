@@ -1,23 +1,18 @@
 import most from 'most'
 import hold from '@most/hold'
 import fwitch from 'fwitch'
-import decodeqs from 'querystring/decode'
 
 import * as vrender from './vrender'
 
-export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
-  let match$ = hold(
-    ROUTER.define({
-      '/': {where: 'HOME'},
-      '/logged': {where: 'LOGGED'},
-      '/howitworks': {where: 'HOWITWORKS'},
-      '/create': {where: 'CREATE'},
-      '/account': {where: 'ACCOUNT'},
-      '/endpoints': {where: 'ENDPOINTS'},
-      '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
-    })
-    .tap(x => console.log('ROUTER', x))
-  )
+export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
+  let match$ = ROUTER.define({
+    '/': {where: 'ENDPOINTS'},
+    '/create': {where: 'CREATE'},
+    '/account': {where: 'ACCOUNT'},
+    '/endpoints': {where: 'ENDPOINTS'},
+    '/endpoints/:endpoint': id => ({where: 'ENDPOINT', id})
+  })
+    .thru(hold)
 
   let response$ = GRAPHQL
     .flatMap(r$ => r$
@@ -38,17 +33,6 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     .map(data => data[Object.keys(data)[0]])
     .filter(fields => fields.error)
     .map(fields => fields.error)
-
-  let session$ = match$
-    .filter(match => match.value.where === 'LOGGED')
-    .map(match => decodeqs(match.qs))
-    .merge(
-      STORAGE.item$
-        .filter(([key]) => key === 'session')
-        .map(([_, value]) => JSON.parse(value))
-        .map(v => v || {})
-    )
-    .skipRepeats((a, b) => a.jwt === b.jwt)
 
   let created$ = response$
     .filter(r => r.setEndpoint && r.setEndpoint.ok)
@@ -72,16 +56,20 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     }, {})
 
   let nheaders$ = most.merge(
-    MAIN.select('.header-add').events('click').tap(e => e.preventDefault()).constant(1),
-    MAIN.select('.header-remove').events('click').tap(e => e.preventDefault()).constant(-1)
+    DOM.select('.a-header').events('click').tap(e => e.preventDefault()).constant(1),
+    DOM.select('.r-header').events('click').tap(e => e.preventDefault()).constant(-1)
   )
     .scan((acc, v) => (acc + v) || 1, 2)
 
   let showEvents$ = most.merge(
-    MAIN.select('.events .show').events('click').tap(e => e.preventDefault()).constant(true),
-    MAIN.select('.events .hide').events('click').tap(e => e.preventDefault()).constant(false)
+    DOM.select('.s-events').events('click').tap(e => e.preventDefault()).constant(true),
+    DOM.select('.h-events').events('click').tap(e => e.preventDefault()).constant(false)
   )
     .startWith(false)
+
+  let selectedEvent$ = DOM.select('tr.event').events('click')
+    .map(e => e.ownerTarget.id.slice(3)) // id="ev-{ timestring }"
+    .scan((cur, next) => cur === next ? null : next, null)
 
   let events$ = PUSHER.event$
     .map(ev => [ev.id, ev.data])
@@ -91,42 +79,42 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
     }, [])
 
   let vtree$ = most.combine(
-    (match, endpoints, nheaders, events, showingEvents, _) => console.log('vrendering', match, endpoints, nheaders, events, showingEvents) ||
+    (match, endpoints, nheaders, events, showingEvents, selectedEvent, _) =>
       fwitch(match.value.where, {
-        HOME: vrender.home.bind(null, nheaders),
         CREATE: vrender.create.bind(null, nheaders),
-        HOWITWORKS: vrender.howitworks,
         ENDPOINTS: vrender.list.bind(null, endpoints),
         ENDPOINT: vrender.endpoint.bind(
           null,
           endpoints[match.value.id],
           nheaders,
           events,
-          showingEvents
+          showingEvents,
+          selectedEvent
         ),
         default: vrender.empty
       })
     ,
-    match$.tap(x => console.log('match', x)),
-    endpoints$.tap(x => console.log('endpoints', x)),
-    nheaders$.tap(x => console.log('nheaders', x)),
-    events$.tap(x => console.log('events', x)),
-    showEvents$.tap(x => console.log('showEvents', x)),
-    MAIN.select('button.flush').events('click')
+    match$,
+    endpoints$,
+    nheaders$,
+    events$,
+    showEvents$,
+    selectedEvent$,
+    DOM.select('button.flush').events('click')
       .tap(e => e.preventDefault())
       .startWith(null)
   )
 
-  let nav$ = session$
-    .map(session => vrender.nav(session))
-
-  let endpointGQL$ = MAIN.select('form button.set').events('click')
+  let endpointGQL$ = DOM.select('form button.set').events('click')
     .tap(e => e.preventDefault())
     .map(e => e.ownerTarget.parentNode)
     .map(form => ({
       mutation: 'setEndpoint',
       variables: {
-        id: form.querySelector('[name="identifier"]') && form.querySelector('[name="identifier"]').value,
+        currentId: form.querySelector('[name="current_id"]')
+          ? form.querySelector('[name="current_id"]').value
+          : undefined,
+        id: form.querySelector('[name="identifier"]').value,
         method: (() => {
           let buttons = form.querySelectorAll('[name="method"]')
           for (let i = 0; i < buttons.length; i++) {
@@ -152,7 +140,7 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       }
     }))
     .merge(
-      MAIN.select('form button.delete').events('click')
+      DOM.select('form button.delete').events('click')
         .tap(e => e.preventDefault())
         .map(e => e.ownerTarget.parentNode)
         .map(form => ({
@@ -175,49 +163,31 @@ export default function main ({NAV, MAIN, GRAPHQL, ROUTER, PUSHER, STORAGE}) {
       forceFetch: true
     }))
 
-  let gql$ = hold(
-    most.empty()
-      .merge(endpointGQL$)
-      .merge(fetchEndpointsGQL$)
-      .merge(fetchEndpointGQL$)
-  )
+  let gql$ = most.merge(
+    endpointGQL$,
+    fetchEndpointsGQL$,
+    fetchEndpointGQL$
+  ).thru(hold)
 
   let notification$ = most.merge(
     created$.map(({setEndpoint: s}) => [`<b>${s.id}</b> saved`, 'success', {timeout: 3000}]),
     deleted$.constant(['endpoint deleted', {timeout: 4000}]),
     userError$.map(err => [err, 'error']),
-    session$.filter(s => s.jwt).constant(['logged in', 'success']),
-    session$.filter(s => !s.jwt).constant('logged out').skip(1),
     PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info', {timeout: 3000}])
   )
-    .tap(x => console.log('notification', x))
 
   return {
-    MAIN: vtree$,
-    NAV: nav$,
-    GRAPHQL: gql$
-      .merge(session$),
+    DOM: vtree$,
+    GRAPHQL: gql$,
     ROUTER: most.empty()
       .merge(created$.map(({setEndpoint: s}) => `/endpoints/${s.id}`))
       .merge(deleted$.constant('/endpoints'))
-      .merge(hold(session$.filter(({jwt}) => jwt).constant('/endpoints')))
       .skipRepeats()
       .multicast(),
-    STORAGE: session$
-      .map(session => STORAGE.setItem('session', JSON.stringify(session)))
-      .merge(
-        NAV.select('a.logout').events('click')
-          .constant(STORAGE.removeItem('session'))
-      )
-      .merge(most.of(STORAGE.getItem('session')).delay(1)),
-    PUSHER: most.merge(
-        session$,
-        match$
-          .filter(m => m.value.where === 'ENDPOINT')
-          .map(m => m.value.id)
-          .tap(x => console.log('PUSHER SUBSCRIBE', x))
-    ),
-    HEADER: session$,
+    PUSHER: match$
+      .filter(m => m.value.where === 'ENDPOINT')
+      .map(m => m.value.id)
+      .tap(x => console.log('PUSHER SUBSCRIBE', x)),
     NOTIFICATION: notification$
   }
 }

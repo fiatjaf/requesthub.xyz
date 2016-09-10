@@ -3,7 +3,7 @@ CREATE TYPE method AS ENUM ('GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS', '
 CREATE TABLE users (
   id serial PRIMARY KEY,
   email text,
-  github_token text
+  github_id int
 );
 
 CREATE TABLE endpoints (
@@ -11,7 +11,7 @@ CREATE TABLE endpoints (
   owner_id int REFERENCES users(id),
   created_at date DEFAULT current_date,
   method method NOT NULL,
-  url text NOT NULL,
+  url text,
   url_dynamic boolean NOT NULL DEFAULT false,
   definition text NOT NULL,
   pass_headers boolean NOT NULL,

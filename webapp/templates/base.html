@@ -6,6 +6,8 @@
 <meta name=description content="Translate webhooks from one service into HTTP API calls to another service">
 <meta name="author" content="alhures software">
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/2.3.2/simplex/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
 <link rel="stylesheet" href="/static/style.css">
 <script>
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -16,106 +18,6 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-38297900-21', 'auto');
 ga('send', 'pageview');
 </script>
-<style type="text/css">
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
-.wordmark a:hover {
-  text-decoration: none;
-}
-.container-fluid {
-  max-width: 757px;
-  margin: 0 auto;
-  padding: 20px 0;
-}
-label {
-  margin-right: 10px;
-}
-#footer li a {
-  color: inherit;
-  font-size: 12px;
-}
-pre code,
-code {
-  border: 0;
-}
-code.well {
-  display: block;
-}
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/2.3.2/cosmo/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
-    <style type="text/css">
-/* custom container */
-body {
-  padding-top: 20px;
-  padding-bottom: 40px;
-}
-.container-fluid {
-  margin: 0 auto;
-  max-width: 700px;
-  padding: 0;
-}
-.container-fluid > hr {
-  margin: 30px 0;
-}
-.masterhead h3 a {
-  color: inherit;
-  text-decoration: none;
-}
-.footer {
-  color: #aaa;
-}
-strong {
-  color: #000;
-}
-.quotes blockquote {
-  height: 78px;
-}
-h2 {
-  color: #dd4814;
-}
-h2.first {
-  margin-top: 0;
-}
-h4 {
-  color: #1c4a3d;
-  color: #1c8a3d;
-  color: #040;
-}
-
-/* Main marketing message and sign up button */
-.jumbotron {
-  margin: 30px 0 60px;
-  text-align: left;
-}
-.jumbotron h1 {
-  font-size: 54px;
-  line-height: 1;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-/* CodeMirror */
-label > input { width: 100%; }
-.CodeMirror {
-  height: auto !important;
-  font-size: 0.7rem;
-}
-input, textarea, select, .CodeMirror {
-  display: block;
-  border: 1px ridge;
-  border-color: initial;
-}
-input:focus, textarea:focus, select:focus, .CodeMirror-focused {
-  outline: none;
-  border-style: inset;
-  background-color: #efeee8 !important;
-}
-</style>
 
 <body>
   <div id="nav">
@@ -131,7 +33,7 @@ input:focus, textarea:focus, select:focus, .CodeMirror-focused {
           </li>
           {% else %}
           <li {% if request.path == "/dashboard" %}class="active"{% endif %}>
-            <a href="/dashboard">dashboard</a> 
+            <a href="/dashboard#/">dashboard</a> 
           </li>
           <li>
             <a href="/logout">logout</a> 

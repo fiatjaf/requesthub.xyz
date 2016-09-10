@@ -1,9 +1,7 @@
 {
   "browserify": {
     "transform": [
-      "babelify",
-      "yamlify",
-      "envify"
+      "babelify"
     ]
   },
   "babel": {
@@ -12,17 +10,18 @@
     ]
   },
   "dependencies": {
-    "@cycle/most-run": "^3.0.0",
+    "@cycle/most-run": "^4.1.0",
     "@most/create": "^1.0.1",
+    "@most/hold": "^1.3.1",
     "@motorcycle/dom": "^2.0.0",
-    "apollo-client": "^0.3.13",
     "codemirror": "^5.15.2",
+    "cycle-graphql-most-driver": "^0.2.0",
+    "cycle-hashrouter-most-driver": "0.0.3",
+    "cycle-notification-most-driver": "0.0.5",
     "fwitch": "^1.0.1",
-    "humane-js": "^3.2.2",
     "loads-css": "^1.0.0",
-    "lodash.samplesize": "^4.0.4",
-    "marked": "^0.3.5",
     "most": "^0.19.7",
+    "pretty-date": "^0.2.0",
     "pusher-js": "^3.1.0",
     "querystring": "^0.2.0"
   },
@@ -31,17 +30,11 @@
     "babel-preset-es2015": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "11.0.1",
-    "browserify-incremental": "^3.0.1",
-    "envify": "^3.4.0",
-    "instant-server": "^2.0.0",
-    "yamlify": "^0.1.3"
+    "browserify-incremental": "^3.0.1"
   },
   "scripts": {
-    "style": "stylus src/style.styl -o dist/style.css",
-    "live": "find src/*.js -type f | grep -v 'swp' | entr godotenv -f ../global.env,../local.env fish -c 'browserifyinc src/main.js --outfile dist/main.js; and echo \"done!\"'",
-    "server": "instant -p 5656",
-    "build-prod": "godotenv -f ../global.env,../prod.env browserify src/main.js --outfile dist/main.js",
-    "predeploy": "npm run build-prod && cp index.html favicon.ico dist/ && sed -i -e 's/dist\\/main\\.js/main.js/' dist/index.html && cp -r static dist/",
-    "deploy": "godotenv -f ../global.env,../prod.env fish -c 's3cmd sync dist/ s3://$S3_BUCKET'"
+    "style": "stylus src/style.styl -o ../webapp/static/style.css",
+    "live": "find src/*.js -type f | grep -v 'swp' | entr fish -c 'settitle \"browserifying...\"; and browserifyinc src/main.js --outfile ../webapp/static/main.js; and settitle \"done\"; and echo \"done!\"'",
+    "build-prod": "godotenv -f ../global.env,../prod.env browserify src/main.js --outfile ../webapp/static/main.js"
   }
 }

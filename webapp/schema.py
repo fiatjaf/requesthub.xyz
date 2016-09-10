@@ -1,10 +1,12 @@
 import json
 import logging
 import graphene
-from haikunator import Haikunator
+from slugify import slugify
 from graphene import with_context
 from psycopg2 import IntegrityError
+from haikunator import Haikunator
 from graphene.core.types import custom_scalars
+
 from helpers import modifier_check, is_valid_url, is_valid_headers, \
                     MapStringString, snake
 from third import pg, redis
@@ -24,12 +26,11 @@ class Endpoint(graphene.ObjectType):
     definition = graphene.String()
     pass_headers = graphene.Boolean()
     headers = MapStringString()
-    data = MapStringString()
     recent_events = graphene.List(graphene.String())
 
     def resolve_recent_events(self, args, info):
         key = 'events:%s' % self.id
-        return redis.lrange(key, 0, 2)
+        return [e.decode('utf-8') for e in redis.lrange(key, 0, 2)]
 
 
 class Query(graphene.ObjectType):
@@ -81,7 +82,7 @@ class Query(graphene.ObjectType):
 
 def get_endpoints(owner=None, id=None,
                   fields=['owner_id', 'created_at', 'definition', 'method',
-                          'url', 'headers', 'pass_headers', 'data']):
+                          'url', 'url_dynamic', 'headers', 'pass_headers']):
     # always fetch the id
     fields.append('id')
 
@@ -94,12 +95,12 @@ def get_endpoints(owner=None, id=None,
         where['id'] = id
 
     res = pg.select('endpoints', what=fields, where=where)
-    print(res, fields, where)
     return res
 
 
 class SetEndpoint(graphene.Mutation):
     class Input:
+        current_id = graphene.ID()
         id = graphene.ID()
         method = graphene.String()
         url = graphene.String()
@@ -125,27 +126,35 @@ class SetEndpoint(graphene.Mutation):
 
 
 def set_endpoint(props):
-    values = {
-        'id': props['id'].strip(),
-        'data': {}
-    }
+    # setEndpoint is valid both for creating and updating
+    # so we check for each property (so we will update only
+    # the ones that came in the request)
+    values = {}
+
+    # 'id' can be changed, this is the value of the new id
+    # the old one, when it exists, comes in 'current_id'
+    if 'id' in props:
+        values['id'] = slugify(props['id'])[:30]
 
     if 'owner' in props:
-        values['owner'] = props['owner']
+        values['owner_id'] = props['owner']
 
     if 'method' in props:
         values['method'] = props['method'].strip()
 
     if 'url' in props:
-        if not is_valid_url(props['url']):
-            # url is not static, but a modifier
-            valid, err = modifier_check(props['url'])
-            if not valid:
-                # oops, not a modifier
-                return None,
-                'please provide a valid URL or an URL modifier: %s' % err
-            values['url_dynamic'] = True
-        values['url'] = props['url'].strip()
+        if not props['url']:
+            values['url'] = props['url']
+        else:
+            if not is_valid_url(props['url']):
+                # url is not static, but a modifier
+                valid, err = modifier_check(props['url'])
+                if not valid:
+                    # oops, not a modifier
+                    return None,
+                    'please provide a valid URL or an URL modifier: %s' % err
+                values['url_dynamic'] = True
+            values['url'] = props['url'].strip()
 
     if 'definition' in props:
         valid, err = modifier_check(props['definition'])
@@ -163,18 +172,29 @@ def set_endpoint(props):
         values['pass_headers'] = bool(props['pass_headers'])
 
     try:
-        id = pg.upsert('endpoints', set=values, return_id=True)
+        print('PROPS', props)
+        if 'current_id' in props:
+            # updating
+            pg.update('endpoints', set=values,
+                      where={'id': props['current_id']})
+            id = values.get('id', props['current_id'])
+        else:
+            # creating
+            id = pg.insert('endpoints', values=values, return_id=True)
+
+        pg.commit()
         return id, ''
+
     except IntegrityError as e:
         if e.pgcode == '23505':
             pg.rollback()
             # an endpoint like this already exists
-            res = pg.select('endpoints', what=['id'], where={
-                'owner': values['owner'],
+            res = pg.select1('endpoints', what=['id'], where={
+                'owner_id': values['owner'],
                 'definition': values['definition'],
                 'headers': values['headers']
             })
-            return res[0]['id'], ''
+            return res['id'], ''
         else:
             raise e
 
@@ -194,9 +214,10 @@ class DeleteEndpoint(graphene.Mutation):
         where = {'id': args['id']}
 
         if not ctx['graphiql']:
-            where['owner'] = ctx['owner']
+            where['owner_id'] = ctx['owner']
 
         pg.delete('endpoints', where=where)
+        pg.commit()
         return DeleteEndpoint(id, True)
 
 

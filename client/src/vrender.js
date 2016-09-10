@@ -1,148 +1,42 @@
 import {h} from '@motorcycle/dom'
-import marked from 'marked'
-import sampleSize from 'lodash.samplesize'
 import CodeMirror from 'codemirror'
 import loadCSS from 'loads-css'
+import prettydate from 'pretty-date'
 
-import text from '../copy.yaml'
-import * as icons from './icons'
 import {prettify} from './helpers'
 
-const API_ENDPOINT = process.env.API_ENDPOINT
-const CLIENT_URL = process.env.CLIENT_URL
-const LA_ORIGIN = process.env.LA_ORIGIN
+const location = window.location
+const ENDPOINTURLPREFIX = location.protocol + '//' + location.host + '/w/'
 
 // codemirror stuff
 loadCSS('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.15.2/codemirror.min.css', () => {})
 var cm
 
-export function nav (session) {
-  if (session.email) {
-    return h('ul', [
-      h('li', session.email),
-      h('li', [
-        h('a', {props: {href: '#/endpoints'}}, 'Endpoints')
-      ]),
-      h('li', [
-        h('a', {props: {href: '#/create'}}, 'Create endpoint')
-      ]),
-      h('li', [
-        h('a.logout', {props: {href: '#/'}}, 'Logout')
-      ]),
-      h('li', [
-        h('a', {props: {href: '#/howitworks'}}, '?')
-      ])
-    ])
-  } else {
-    return h('ul', [
-      h('li', [
-        loginForm
-      ]),
-      h('li', [
-        h('a', {props: {href: '#/howitworks'}}, 'How it works')
-      ])
-    ])
-  }
-}
-
-const loginForm =
-  h('form', {props: {action: `${LA_ORIGIN}/auth`, method: 'POST'}}, [
-    h('input', {props: {type: 'hidden', name: 'scope', value: 'openid email'}}),
-    h('input', {props: {type: 'hidden', name: 'response_type', value: 'id_token'}}),
-    h('input', {props: {type: 'hidden', name: 'client_id', value: CLIENT_URL}}),
-    h('input', {props: {type: 'hidden', name: 'redirect_uri', value: `${API_ENDPOINT}/auth`}}),
-    h('input', {
-      props: {type: 'login_hint', name: 'login_hint', placeholder: 'Type your email'},
-      style: {display: 'inline', padding: '5px 0'}
-    }),
-    h('button', {
-      style: {display: 'inline', margin: '5px'}
-    }, 'Login with LetsAuth')
-  ])
-
-export function home (nheaders) {
-  return h('section', [
-    h('p', {props: {innerHTML: marked(text.landing.headline)}}),
-    h('header', [
-      h('img', {props: {src: '/static/diagram.png', title: 'jq is incredibly powerful.'}}),
-      h('aside.margin-header-caption', {props: {innerHTML: marked(text.header.aside)}})
-    ]),
-    h('article', [
-      h('h1', 'What is this?'),
-      h('div', {props: {innerHTML: marked(text.landing.summary)}}),
-      h('h1', 'Some use cases'),
-      h('ul', sampleSize(text.examples, 3)
-        .map(content => h('li', {key: content, props: {innerHTML: marked(content)}})))
-    ]),
-    h('article', [
-      h('h1', 'Login here to define an endpoints'),
-      loginForm,
-      h('p', [
-        'or ',
-        h('a', {props: {href: '#/howitworks'}}, 'read more about it.')
-      ])
-    ]),
-    h('div.columns', [
-      h('ul.sources', [
-        h('h1', 'Useful webhook sources')].concat(
-          sampleSize(text.sources, 8)
-            .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
-        )
-      ),
-      h('ul', {style: {'text-align': 'right'}}, [
-        h('h1', 'Possible HTTP destinations')].concat(
-          sampleSize(text.targets, 7)
-            .map(content => h('li', {key: content, props: {innerHTML: marked(content)}}))
-        )
-      )
-    ]),
-    h('div', {style: {'text-align': 'center'}}, [
-      h('button.flush', 'See more')
-    ])
-  ])
-}
-
-export function howitworks () {
-  return h('article', [
-    h('header', [
-      h('h1', 'How it works')
-    ]),
-    h('div', {props: {innerHTML: marked(text.docs.howitworks)}})
-  ])
-}
-
 export function create (nheaders) {
-  return h('article', [
-    h('header', [
-      h('h1', 'Create a new endpoint')
-    ]),
-    endpointForm({headers: {'': ''}}, nheaders)
+  return h('div.row-fluid', [
+    h('div.span12', [
+      h('h4', 'Create a new endpoint'),
+      endpointForm(undefined, nheaders)
+    ])
   ])
 }
 
 export function list (endpoints) {
-  return h('section', [
-    h('header', [
-      h('h1', 'Your endpoints')
+  return h('div.row-fluid', [
+    h('div.span12', [
+      h('h4', 'Your endpoints')
     ]),
     Object.keys(endpoints).length
-      ? h('ul', Object.keys(endpoints).map(id =>
-        h('li', {key: id}, [
-          h('article', [
-            h('header', [
-              h('h1', [
-                h('a', {props: {href: `#/endpoints/${id}`}}, id)
-              ]),
-              h('aside', [
-                h('ul', [
-                  h('li', endpoints[id].createdAt),
-                  h('li', endpoints[id].url)
-                ])
-              ])
-            ])
+      ? h('table.table.table-hover', [
+        h('tbody', Object.keys(endpoints).map(id =>
+          h('tr', {key: id}, [
+            h('th', [
+              h('a', {props: {href: `#/endpoints/${id}`}}, id)
+            ]),
+            h('td', endpoints[id].url)
           ])
-        ])
-      ))
+        ))
+      ])
       : h('p', [
         'Your have no endpoints. ',
         h('a', {props: {href: '#/create'}}, 'Create one.')
@@ -150,112 +44,110 @@ export function list (endpoints) {
   ])
 }
 
-export function endpoint (end, nheaders, recentEvents = [], showing = true) {
-  if (!end || !end.id) return h('div')
-
+export function endpoint (end, nheaders, recentEvents = [],
+                          showing = true, selectedEvent = null) {
   recentEvents = recentEvents
     .filter(([id]) => id = end.id)
     .map(([_, data]) => data)
     .concat(
-      (end.recentEvents || [])
+      (end && end.recentEvents || [])
         .map(JSON.parse.bind(JSON))
     )
-    .slice(0, 3)
 
-  end = end || {id: '', definition: '', headers: {}, url: '', created_at: ''}
-  return h('article', [
-    h('header', [
-      h('h1', end.id),
-      h('aside', [
-        h('ul', [
-          h('li', `${API_ENDPOINT}/w/${end.id}/`)
-        ])
-      ])
-    ]),
-    recentEvents.length
-      ? h('div.events', [
-        h('h1', [
-          'Recent activity ',
-          showing
-            ? h('a.hide', {props: {href: '#'}}, '▼')
-            : h('a.show', {props: {href: '#'}}, '▲')
-        ]),
-        showing
-          ? h('table', {style: {'background': 'none'}}, recentEvents.map(recentEventView))
-          : null,
-        h('style', {props: {scoped: true, innerHTML: `
-          table, tr, td {
-            background: none !important;
-          }
-          .events > table > tr:nth-child(odd) {
-            background-color: rgba(100, 165, 135, 0.21) !important;
-          }
-        `}})
-      ])
-      : null,
-    h('div', [endpointForm(end, nheaders)])
-  ])
-}
-
-function recentEventView (r) {
-  return h('tr', [
-    h('td', [
-      h('h4', 'Data in'),
-      h('p', {style: {
-        'max-width': '13rem',
-        'word-wrap': 'break-word'
-      }}, r.in.time.slice(0, -7).split('T').join(' ')),
-      h('pre', {style: {
-        'max-height': '18rem',
-        'max-width': '13rem',
-        'overflow': 'auto'
-      }}, [
-        prettify(r.in.body)
-      ])
-    ]),
-    h('td', [
-      h('h4', 'Data out'),
-      h('p', {style: {
-        'max-width': '17rem',
-        'word-wrap': 'break-word'
-      }}, r.out.url),
-      h('div', [
-        h('pre', {style: {
-          'max-height': '13rem',
-          'max-width': '17rem',
-          'overflow': 'auto'
-        }}, [
-          prettify(r.out.body)
-        ])
-      ]),
-      h('table', {style: {
-        'margin-top': '8px',
-        'font-size': '0.8em',
-        'max-width': '17rem',
-        'word-wrap': 'break-word'
-      }}, Object.keys(r.out.headers).map(key =>
-        h('tr', [
-          h('th', key),
-          h('td', r.out.headers[key])
-        ])
-      ))
-    ]),
-    h('td', [
-      h('h4', 'Response'),
-      h('p', r.response.code),
-      h('pre', {style: {
-        'max-height': '18rem',
-        'max-width': '6rem',
-        'overflow': 'auto'
-      }}, [
-        prettify(r.response.body)
+  return h('div.container-fluid', [
+    eventsView(end, recentEvents, showing, selectedEvent),
+    h('div.row-fluid', [
+      h('div.span12', [
+        h('h3', 'Modify endpoint'),
+        endpointForm(end, nheaders)
       ])
     ])
   ])
 }
 
-function endpointForm (end, nheaders) {
+function eventsView (end, recentEvents, showing, selectedEvent) {
+  if (!showing) {
+    return h('div.container-fluid', [
+      h('div.row-fluid', [
+        h('div.span12.text-center', [
+          h('button.btn.btn-info.s-events', 'See recent activity')
+        ])
+      ])
+    ])
+  }
+
+  var selected
+  if (selectedEvent) {
+    for (let i = 0; i < recentEvents.length; i++) {
+      if (recentEvents[i].in.time.toString() === selectedEvent) {
+        selected = recentEvents[i]
+        break
+      }
+    }
+  }
+
+  var makeTr
+  if (selected) {
+    makeTr = ev =>
+      h('tr', {
+        props: {
+          id: 'ev-' + ev.in.time,
+          className: ev.in.time === selectedEvent ? 'info event' : 'event'
+        }
+      }, [
+        h('td', prettydate.format(new Date(parseInt(ev.in.time * 1000)))),
+        h('td', ev.response.code)
+      ])
+  } else {
+    makeTr = ev =>
+      h('tr.event', {
+        props: {
+          id: 'ev-' + ev.in.time
+        }
+      }, [
+        h('td', ev.in.method),
+        h('td', prettydate.format(new Date(parseInt(ev.in.time * 1000)))),
+        h('td', ev.out.url || '/dev/null'),
+        h('td', ev.response.code)
+      ])
+  }
+
+  return h('div.container-fluid', [
+    h('div.row-fluid', [
+      h('div.span6', [
+        h('h3', [
+          'Recent activity ',
+          h('a.btn.btn-small.btn-info.h-events', {props: {href: '#'}}, '▲')
+        ])
+      ]),
+      h('div.span6', {style: {paddingTop: '1.5em'}}, ENDPOINTURLPREFIX + end.id)
+    ]),
+    h('div.row-fluid', [
+      h('div', {props: {className: selected ? 'span6' : 'span12'}}, [
+        h('table.table.table-hover.table-stripped', [
+          h('tbody', recentEvents.slice(0, 5).map(makeTr))
+        ])
+      ]),
+      selected ? h('div.span6', [
+        h('p', [
+          h('span.label.label-info', selected.out.url || '/dev/null'),
+          ' ',
+          h('span.label', selected.response.code)
+        ]),
+        h('pre', [prettify(selected.in.body)]),
+        h('pre', [prettify(selected.out.body)]),
+        h('pre', [prettify(selected.response.body)])
+      ]) : null
+    ])
+  ])
+}
+
+function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
+                       nheaders) {
+  // number of header fields
   nheaders = nheaders || Object.keys(end.headers).length
+
+  // keep track of headers
   var headerPairs = []
   var lowercaseHeaders = {}
   for (let k in end.headers) {
@@ -263,27 +155,41 @@ function endpointForm (end, nheaders) {
     lowercaseHeaders[k.toLowerCase()] = true
   }
 
-  // defaults
+  // default headers
   if (!lowercaseHeaders['content-type']) {
-    headerPairs.push(['Content-Type', 'application/json'])
+    headerPairs.unshift(['Content-Type', 'application/json'])
   }
 
+  // sort headers (as we keep them unsorted)
   headerPairs = headerPairs
-    .sort((a, b) => a[0] < b[1] ? -1 : 1)
+    .sort((a, b) => b[0] < a[1] ? -1 : 1)
     .slice(0, nheaders)
   for (let i = headerPairs.length; i < nheaders; i++) {
     headerPairs.push(['', ''])
   }
 
+  // default method
   end.method = end.method || 'POST'
 
   return h('form', {key: 'create-form'}, [
-    h('span', end.id
-      ? [h('input', {props: {type: 'hidden', name: 'identifier', value: end.id}})]
-      : []
-    ),
-    h('div', [
-      h('div', 'Method:')
+    end.id
+      ? h('input', {props: {type: 'hidden', name: 'current_id', value: end.id}})
+      : null,
+    h('label', {props: {htmlFor: 'identifier'}}, 'Identifier'),
+    h('div.input-prepend', [
+      h('span.add-on', ENDPOINTURLPREFIX),
+      h('input', {
+        props: {
+          type: 'text',
+          id: 'identifier',
+          name: 'identifier',
+          placeholder: 'Leave blank for an autogenerated name.',
+          value: end.id
+        }
+      })
+    ]),
+    h('label', [
+      'Method'
     ].concat(
       ['POST', 'PUT', 'GET', 'DELETE'].map(m =>
         h('label', {
@@ -298,92 +204,101 @@ function endpointForm (end, nheaders) {
         ])
       ))
     ),
-    h('label', [
-      'Target URL:',
-      h('input', {
-        props: {
-          name: 'url',
-          placeholder: 'The URL to which this webhook will be redirected.',
-          value: end.url
-        }
-      })
-    ]),
-    h('label', [
+    h('span.help-block', 'This is the method that will be called on the target URL.'),
+    h('label', {props: {htmlFor: 'url'}}, 'Target URL'),
+    h('input.input-xxlarge', {
+      props: {
+        id: 'url',
+        name: 'url',
+        type: 'text',
+        placeholder: 'The URL to which this webhook will be sent.',
+        value: end.url
+      }
+    }),
+    h('span.help-block', 'Accepts a constant URL or a jq script that outputs an URL. Leave blank if you wanna test before actually dispatching the calls.'),
+    h('label', {props: {htmlFor: 'definition'}}, [
       'Modifier (',
       h('a', {props: {href: 'https://stedolan.github.io/jq/manual/', target: '_blank'}}, 'jq script'),
-      '):',
-      h('textarea', {
-        props: {
-          rows: Math.max(3, (end.definition || '').split('\n').length + 1),
-          name: 'definition',
-          placeholder: 'The jq script that will be used to transform the incoming data.',
-          value: end.definition
+      ')'
+    ]),
+    h('textarea', {
+      props: {
+        rows: Math.max(3, (end.definition || '').split('\n').length + 1),
+        id: 'definition',
+        name: 'definition',
+        placeholder: 'The jq script that will be used to transform the incoming data.',
+        value: end.definition
+      },
+      hook: {
+        insert (vnode) {
+          cm = CodeMirror.fromTextArea(vnode.elm, {
+            mode: 'jq',
+            lineWrapping: true,
+            scrollbarStyle: null,
+            viewportMargin: Infinity
+          })
+          cm.on('changes', cm => cm.save())
         },
-        hook: {
-          insert (vnode) {
-            cm = CodeMirror.fromTextArea(vnode.elm, {
-              mode: 'jq',
-              lineWrapping: true,
-              scrollbarStyle: null,
-              viewportMargin: Infinity
-            })
-            cm.on('changes', cm => cm.save())
-          },
-          update (old, curr) {
-            cm.setValue(curr.data.props.value)
-          },
-          destroy (vnode) {
-            cm.toTextArea()
-          }
+        update (old, curr) {
+          cm.setValue(curr.elm.value)
+        },
+        destroy (vnode) {
+          cm.toTextArea()
         }
+      }
+    }),
+    h('label.checkbox', [
+      'Pass request headers on to the target URL',
+      h('input', {
+        style: {'width': 'auto', 'display': 'inline'},
+        props: {type: 'checkbox', name: 'pass_headers', value: 'true', checked: end.pass_headers}
       })
     ]),
-    h('div', [
-      h('label', [
-        'Pass request headers on to the target URL: ',
-        h('input', {
-          style: {'width': 'auto', 'display': 'inline'},
-          props: {type: 'checkbox', name: 'pass_headers', value: 'true', checked: end.pass_headers}
-        })
-      ])
-    ]),
+    h('span.help-block', 'Forward all the received headers when calling the target URL. These will be superseded by any header specified below.'),
     h('label', [
-      'Headers:'
+      'Headers'
     ].concat(headerPairs.map(([key, value]) =>
-      h('div', {key: key}, [
-        h('input', {
-          style: {display: 'inline', width: '26%', margin: '0', marginRight: '1%'},
+      h('div', {key: key, style: {marginBottom: '6px'}}, [
+        h('input.span3', {
+          style: {display: 'inline', margin: '0'},
           props: {
             name: 'header-key',
             placeholder: 'Header name',
+            type: 'text',
             value: key
           }
         }),
-        h('input', {
-          style: {display: 'inline', width: '73%', margin: '0'},
+        ': ',
+        h('input.span8', {
+          style: {display: 'inline', margin: '0', marginLeft: '1%'},
           props: {
             name: 'header-val',
             placeholder: 'Header value',
+            type: 'text',
             value: value
           }
         })
       ])
     )).concat([
-      h('a.header-add', {props: {href: '#', title: 'more headers'}}, '+'),
-      h('a.header-remove', {props: {href: '#', title: 'less headers'}, style: {'float': 'right'}}, '-')
+      h('a.btn.btn-small.btn-warning.r-header',
+        {props: {href: '#', title: 'less headers'}},
+        '-'),
+      ' ',
+      h('a.btn.btn-small.btn-success.a-header',
+        {props: {href: '#', title: 'more headers'}},
+        '+')
     ])),
-    h('button.set', {
-      style: {
-        color: 'white',
-        fontSize: '18px',
-        background: end.id ? '#74a7e6' : '#5e8c72'
-      },
+    h('span.help-block', [
+      'Headers can be used for setting Content-Type, Authorization tokens or other fancy things your target endpoint may require. ',
+      h('code', 'application/json'),
+      ' is the default Content-Type.'
+    ]),
+    end.id ? h('button.btn.btn-danger.delete', {
+      props: {title: 'Delete endpoint'}
+    }, 'Delete endpoint') : null,
+    h('button.btn.btn-primary.pull-right.set', {
       props: {title: end.id ? 'Update endpoint' : 'Create endpoint'}
-    }, end.id ? 'Update endpoint' : 'Create endpoint'),
-    end.id ? h('button.delete', {
-      style: {color: 'white', background: '#ea8686', padding: '4px 11px 2px 11px'},
-      props: {title: 'Delete endpoint', alt: 'Delete', innerHTML: icons.garbage}
-    }) : null
+    }, end.id ? 'Update endpoint' : 'Create endpoint')
   ])
 }
 

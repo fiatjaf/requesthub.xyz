@@ -1,7 +1,6 @@
 import re
 import json
 import base64
-from third import pg
 from flask import request
 from urllib.parse import urlparse
 from graphql.language import ast
@@ -10,16 +9,17 @@ from flask_graphql import GraphQLView
 from flask_login import current_user
 from graphene.core.classtypes import Scalar
 
+from third import pg
+
 
 all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 
 
 def user_can_access_endpoint(identifier):
-    rows = pg.select('endpoints', what=['id'], where={
+    return pg.exists('endpoints', what=['id'], where={
       'id': identifier,
       'owner_id': current_user.get_id()
     })
-    return bool(rows)
 
 
 def modifier_check(modifier):
@@ -28,7 +28,7 @@ def modifier_check(modifier):
         return False, 'modifier is too long.'
 
     p = Popen(['./jq', '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
-    _, stderr = p.communicate(input='{}', timeout=2)
+    _, stderr = p.communicate(input=b'{}', timeout=2)
 
     stderr = stderr.strip()
     if p.returncode == 0:
@@ -65,8 +65,8 @@ def is_valid_headers(headers):
 
 def jq(mod, data):
     p = Popen(['./jq', '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
-    res = p.communicate(input=data, timeout=4)[0]
-    return res
+    res = p.communicate(input=data.encode('utf-8'), timeout=4)[0]
+    return res.decode('utf-8')
 
 
 def b64dec(s):
@@ -124,23 +124,26 @@ def parse_incoming_data():
 class User():
     @classmethod
     def search(cls, **kwargs):
-        users = pg.select('users', where=kwargs)
-        if len(users) > 1:
-            print('{} users found for query {}'.format(len(users), kwargs))
-        elif not users:
-            return None
-        return User(**users[0])
+        user = pg.select1('users', where=kwargs)
+        if user:
+            return User(**user)
 
-    def __init__(self, id=None, github_token=None, email=None):
+    def __init__(self, id=None, github_id=None, email=None):
         self.id = id
-        self.github_token = github_token
+        self.github_id = github_id
         self.email = email
 
     def save(self):
-        values = self.__dict__
-        if not values['id']:
-            del values['id']
+        values = {}
+        if self.email:
+            values['email'] = self.email
+        elif self.github_id:
+            values['github_id'] = self.github_id
+        else:
+            raise Exception('cannot save without any identifying property.')
+
         id = pg.upsert('users', set=values, return_id=True)
+        pg.commit()
         self.id = id
 
     def is_authenticated(self):
