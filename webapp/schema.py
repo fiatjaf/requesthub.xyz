@@ -1,9 +1,9 @@
 import json
 import logging
 import graphene
+import psycopg2
 from slugify import slugify
 from graphene import with_context
-from psycopg2 import IntegrityError
 from haikunator import Haikunator
 from graphene.core.types import custom_scalars
 
@@ -27,10 +27,15 @@ class Endpoint(graphene.ObjectType):
     pass_headers = graphene.Boolean()
     headers = MapStringString()
     recent_events = graphene.List(graphene.String())
+    event_count = graphene.Int()
+
+    def resolve_event_count(self, args, info):
+        key = 'events:%s' % self.id
+        return redis.llen(key)
 
     def resolve_recent_events(self, args, info):
         key = 'events:%s' % self.id
-        return [e.decode('utf-8') for e in redis.lrange(key, 0, 2)]
+        return [e.decode('utf-8') for e in redis.lrange(key, 0, 8)]
 
 
 class Query(graphene.ObjectType):
@@ -58,7 +63,8 @@ class Query(graphene.ObjectType):
             args['id'],
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
-                    if f.name.value != 'recentEvents']
+                    if f.name.value != 'recentEvents' and
+                    f.name.value != 'eventCount']
         )
         return Endpoint(**rows[0] or {}) if rows else {}
 
@@ -75,7 +81,8 @@ class Query(graphene.ObjectType):
             None,
             fields=[snake(f.name.value) for f in
                     info.field_asts[0].selection_set.selections
-                    if f.name.value != 'recentEvents']
+                    if f.name.value != 'recentEvents' and
+                    f.name.value != 'eventCount']
         )
         return [Endpoint(**row or {}) for row in rows] if rows else []
 
@@ -94,7 +101,12 @@ def get_endpoints(owner=None, id=None,
     if id:
         where['id'] = id
 
-    res = pg.select('endpoints', what=fields, where=where)
+    try:
+        res = pg.select('endpoints', what=fields, where=where)
+    except psycopg2.ProgrammingError as e:
+        print(e)
+        pg.rollback()
+        return []
     return res
 
 
@@ -151,8 +163,9 @@ def set_endpoint(props):
                 valid, err = modifier_check(props['url'])
                 if not valid:
                     # oops, not a modifier
-                    return None,
-                    'please provide a valid URL or an URL modifier: %s' % err
+                    return None, \
+                        'please provide a valid URL' \
+                        ' or an URL modifier: %s' % err
                 values['url_dynamic'] = True
             values['url'] = props['url'].strip()
 
@@ -172,7 +185,6 @@ def set_endpoint(props):
         values['pass_headers'] = bool(props['pass_headers'])
 
     try:
-        print('PROPS', props)
         if 'current_id' in props:
             # updating
             pg.update('endpoints', set=values,
@@ -185,7 +197,7 @@ def set_endpoint(props):
         pg.commit()
         return id, ''
 
-    except IntegrityError as e:
+    except psycopg2.IntegrityError as e:
         if e.pgcode == '23505':
             pg.rollback()
             # an endpoint like this already exists

@@ -33,11 +33,10 @@ def modifier_check(modifier):
         print('definition is too long.')
         return False, 'modifier is too long.'
 
-    p = Popen([JQPATH, '-c', '-M', modifier], stdin=PIPE, stderr=PIPE)
-    _, stderr = p.communicate(input=b'{}', timeout=2)
+    _, stderr = jq(modifier, '{}', timeout=2)
 
-    stderr = stderr.strip()
-    if p.returncode == 0:
+    stderr = stderr.decode('utf-8').strip()
+    if stderr == '':
         return True, ''
     elif \
             stderr == 'jq: error (at <stdin>:0): null (null) only ' + \
@@ -69,10 +68,10 @@ def is_valid_headers(headers):
     return True
 
 
-def jq(mod, data):
-    p = Popen([JQPATH, '-c', '-M', '-r', mod], stdin=PIPE, stdout=PIPE)
-    res = p.communicate(input=data.encode('utf-8'), timeout=4)[0]
-    return res.decode('utf-8')
+def jq(mod, data, timeout=4):
+    p = Popen([JQPATH, '-c', '-M', '-r', mod],
+              stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    return p.communicate(input=data.encode('utf-8'), timeout=timeout)
 
 
 def b64dec(s):
@@ -119,11 +118,11 @@ def parse_incoming_data():
     try:
         data = request.get_data().decode('utf-8')
         values.update(json.loads(data))
-    except ValueError:
-        values.update(request.form.items())
     except UnicodeDecodeError:
-        print('failed to decode ' + repr(request.get_data()))
         pass
+    except ValueError:
+        if '=' in data:
+            values.update(request.form.items())
     return json.dumps(values)
 
 

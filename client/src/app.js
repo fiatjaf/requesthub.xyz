@@ -83,14 +83,14 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
       fwitch(match.value.where, {
         CREATE: vrender.create.bind(null, nheaders),
         ENDPOINTS: vrender.list.bind(null, endpoints),
-        ENDPOINT: vrender.endpoint.bind(
+        ENDPOINT: endpoints[match.value.id] ? vrender.endpoint.bind(
           null,
           endpoints[match.value.id],
           nheaders,
           events,
           showingEvents,
           selectedEvent
-        ),
+        ) : vrender.empty,
         default: vrender.empty
       })
     ,

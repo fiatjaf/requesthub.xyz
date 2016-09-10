@@ -45790,7 +45790,7 @@ function main(_ref) {
     return (0, _fwitch2.default)(match.value.where, {
       CREATE: vrender.create.bind(null, nheaders),
       ENDPOINTS: vrender.list.bind(null, endpoints),
-      ENDPOINT: vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events, showingEvents, selectedEvent),
+      ENDPOINT: endpoints[match.value.id] ? vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events, showingEvents, selectedEvent) : vrender.empty,
       default: vrender.empty
     });
   }, match$, endpoints$, nheaders$, events$, showEvents$, selectedEvent$, DOM.select('button.flush').events('click').tap(function (e) {
@@ -45996,7 +45996,7 @@ _codemirror2.default.defineSimpleMode('jq', {
 },{"@motorcycle/dom":202,"codemirror":214,"codemirror/addon/mode/simple":213}],409:[function(require,module,exports){
 'use strict';
 
-var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, method, url, createdAt\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, method, url, createdAt\n  }\n}\n      ']),
+var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      ']),
     _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      ']),
     _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
     _templateObject4 = _taggedTemplateLiteral(['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      ']);
@@ -46089,6 +46089,10 @@ var _loadsCss = require('loads-css');
 
 var _loadsCss2 = _interopRequireDefault(_loadsCss);
 
+var _fwitch = require('fwitch');
+
+var _fwitch2 = _interopRequireDefault(_fwitch);
+
 var _prettyDate = require('pretty-date');
 
 var _prettyDate2 = _interopRequireDefault(_prettyDate);
@@ -46109,9 +46113,23 @@ function create(nheaders) {
 }
 
 function list(endpoints) {
-  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h4', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
-    return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th', [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', endpoints[id].url)]);
-  }))]) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a', { props: { href: '#/create' } }, 'Create one.')])]);
+  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('thead', [(0, _dom.h)('th.text-right', 'identifier'), (0, _dom.h)('th', 'target URL'), (0, _dom.h)('th', { style: { textAlign: 'center' } }, 'recent events')]), (0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
+    return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th.text-right', { style: { whiteSpace: 'nowrap' } }, [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, endpoints[id].url || '/dev/null'), (0, _dom.h)('th', [(0, _dom.h)('span', {
+      props: {
+        className: 'text-center label label-' + (0, _fwitch2.default)(endpoints[id].eventCount, {
+          0: 'default',
+          1: 'info',
+          2: 'info',
+          3: 'info',
+          default: 'warning'
+        })
+      },
+      style: { maxWidth: '12px', display: 'block', margin: 'auto' }
+    }, endpoints[id].eventCount)])]);
+  }))]) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a.text-center.btn-primary.btn-large.btn-block', { props: { href: '#/create' } }, 'Create one!')]), (0, _dom.h)('a.text-center.btn-primary.btn-block', {
+    props: { href: '#/create' },
+    style: { padding: '8px', maxWidth: '80%', margin: 'auto' }
+  }, 'Create new')]);
 }
 
 function endpoint(end, nheaders) {
@@ -46130,14 +46148,16 @@ function endpoint(end, nheaders) {
     var _ = _ref4[0];
     var data = _ref4[1];
     return data;
-  }).concat((end && end.recentEvents || []).map(JSON.parse.bind(JSON)));
+  }).concat((end && end.recentEvents || []).map(JSON.parse.bind(JSON))).sort(function (a, b) {
+    return b.in.time - a.in.time;
+  });
 
   return (0, _dom.h)('div.container-fluid', [eventsView(end, recentEvents, showing, selectedEvent), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Modify endpoint'), endpointForm(end, nheaders)])])]);
 }
 
 function eventsView(end, recentEvents, showing, selectedEvent) {
   if (!showing) {
-    return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-info.s-events', 'See recent activity')])])]);
+    return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-large.btn-info.s-events', ['See recent activity', (0, _dom.h)('br'), recentEvents.length + (recentEvents.length >= 8 ? ' (or more)' : '') + ' in the last 24h'])])])]);
   }
 
   var selected;
@@ -46156,7 +46176,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
       return (0, _dom.h)('tr', {
         props: {
           id: 'ev-' + ev.in.time,
-          className: ev.in.time === selectedEvent ? 'info event' : 'event'
+          className: ev.in.time.toString() === selectedEvent ? 'info event' : 'event'
         }
       }, [(0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', ev.response.code)]);
     };
@@ -46170,7 +46190,17 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
     };
   }
 
-  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, ENDPOINTURLPREFIX + end.id)]), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div', { props: { className: selected ? 'span6' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 5).map(makeTr))])]), selected ? (0, _dom.h)('div.span6', [(0, _dom.h)('p', [(0, _dom.h)('span.label.label-info', selected.out.url || '/dev/null'), ' ', (0, _dom.h)('span.label', selected.response.code)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.in.body)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.out.body)]), (0, _dom.h)('pre', [(0, _helpers.prettify)(selected.response.body)])]) : null])]);
+  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('p', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '/dev/null'), ' ', (0, _dom.h)('span', {
+    props: {
+      className: 'label label-' + (selected.response.code === 0 ? 'info' // 0
+      : selected.response.code < 500 ? selected.response.code < 400 ? selected.response.code < 300 ? selected.response.code < 200 ? 'default' // 1xx
+      : 'success' // 2xx
+      : 'inverse' // 3xx
+      : 'warning' // 4xx
+      : 'important' // 5xx
+      )
+    }
+  }, selected.response.code)]), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]) : null])]);
 }
 
 function endpointForm() {
@@ -46291,4 +46321,4 @@ function empty() {
   return (0, _dom.h)('div');
 }
 
-},{"./helpers":408,"@motorcycle/dom":202,"codemirror":214,"loads-css":221,"pretty-date":382}]},{},[409]);
+},{"./helpers":408,"@motorcycle/dom":202,"codemirror":214,"fwitch":219,"loads-css":221,"pretty-date":382}]},{},[409]);

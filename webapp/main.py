@@ -74,9 +74,20 @@ def pusher_auth():
 @app.route('/w/<identifier>/', methods=all_methods)
 @app.route('/w/<identifier>', methods=all_methods)
 def proxy_webhook(identifier):
+    # find endpoint
+    endpoint = pg.select1(
+        'endpoints',
+        what=['definition', 'method', 'pass_headers',
+              'headers', 'url', 'url_dynamic'],
+        where={'id': identifier}
+    )
+    if not endpoint:
+        return 'endpoint not found, create it at ' \
+               '<a href="/dashboard">dashboard</a>', 404
+
     # parse incoming data
     data = parse_incoming_data()
-    print('incoming data', data)
+    print('incoming data', data, 'at', identifier)
 
     event = {
         'in': {},
@@ -95,31 +106,28 @@ def proxy_webhook(identifier):
         key = 'events:%s' % identifier
         rpipe = redis.pipeline()
         rpipe.lpush(key, eventjson)
-        rpipe.ltrim(key, 0, 2)
+        rpipe.ltrim(key, 0, 8)
         rpipe.expire(key, 86400)  # 24h
         rpipe.execute()
-
-    endpoint = pg.select1(
-        'endpoints',
-        what=['definition', 'method', 'pass_headers',
-              'headers', 'url', 'url_dynamic'],
-        where={'id': identifier}
-    )
 
     event['in'] = {
         'time': time.time(),
         'method': request.method,
-        'body': data[:1800] + ' [truncated]' if len(data) > 1807 else data
+        'body': data[:2300] + ' [truncated]' if len(data) > 2207 else data
     }
 
     if endpoint['url_dynamic']:
-        endpoint['url'] = jq(endpoint['url'], data=data)
-        if not endpoint['url']:
+        url, error = jq(endpoint['url'], data=data)
+        print('URL', url, 'ERROR', error)
+        if not url:
+            event['out']['url_error'] = error.decode('utf-8')
             publish()
             return 'url building has failed', 200
+        endpoint['url'] = url.decode('utf-8')
 
-    mutated = jq(endpoint['definition'], data=data)
-    if not mutated:
+    mutated, error = jq(endpoint['definition'], data=data)
+    if not mutated or error:
+        event['out']['error'] = error.decode('utf-8')
         publish()
         return 'transmutated into null and aborted', 201
 
@@ -129,7 +137,7 @@ def proxy_webhook(identifier):
     h.update(endpoint['headers'])
 
     # reformat the mutated data
-    mutatedjson = json.loads(mutated)
+    mutatedjson = json.loads(mutated.decode('utf-8'))
     if h.get('content-type') == 'application/x-www-form-urlencoded':
         # oops, not json
         mutated = urlencode(mutatedjson)

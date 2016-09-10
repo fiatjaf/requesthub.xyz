@@ -15,7 +15,7 @@ Cycle.run(app, {
       fetchAll: gql`
 query {
   endpoints {
-    id, method, url, createdAt
+    id, method, url, createdAt, eventCount
   }
 }
       `,

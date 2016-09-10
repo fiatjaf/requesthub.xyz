@@ -6,11 +6,6 @@ body
 .wordmark ahover 
   text-decoration none
 
-.container-fluid 
-  max-width 757px
-  margin 0 auto
-  padding 20px 0
-
 label 
   margin-right 10px
 
@@ -30,14 +25,18 @@ body
   padding-top 20px
   padding-bottom 40px
 
-.container-fluid 
-  margin 0 auto
-  max-width 700px
-  padding 0
+.container-fluid
+  padding-right 20px
+  padding-left 20px
 
 .container-fluid > hr 
   margin 30px 0
 
+.row-fluid:not(.events)
+  max-width 757px
+  margin auto
+
+/* master head */
 .masterhead h3 a 
   color inherit
   text-decoration none
@@ -53,7 +52,7 @@ body
 // .footer 
 //   color #aaa
 
-/* Main marketing message and sign up button */
+/* main marketing */
 .jumbotron 
   margin 30px 0 60px
   text-align left
@@ -94,3 +93,20 @@ input:focus, textarea:focus, select:focus, .CodeMirror-focused
   background-color #efeee8 !important
   border-color rgba(0, 0, 0, 0.14902) !important
   box-shadow none !important
+
+/* basic */
+$blue = #78a5ea
+.btn-primary
+  background-blend-mode multiply
+  background-color $blue
+  background-color darken($blue, 30%)
+  background-image -moz-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
+  background-image -webkit-gradient(linear, 0 0, 0 100%, from(darken($blue, 10%)), to(darken($blue, 40%)))
+  background-image -webkit-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
+  background-image -o-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
+  background-image linear-gradient(to bottom, darken($blue, 10%), darken($blue, 40%))
+  border-color $blue darken($blue, 20%) darken($blue, 30%)
+
+  &:hover
+    background-color darken($blue, 30%)
+    

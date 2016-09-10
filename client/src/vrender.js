@@ -1,6 +1,7 @@
 import {h} from '@motorcycle/dom'
 import CodeMirror from 'codemirror'
 import loadCSS from 'loads-css'
+import fwitch from 'fwitch'
 import prettydate from 'pretty-date'
 
 import {prettify} from './helpers'
@@ -24,23 +25,50 @@ export function create (nheaders) {
 export function list (endpoints) {
   return h('div.row-fluid', [
     h('div.span12', [
-      h('h4', 'Your endpoints')
+      h('h3', 'Your endpoints')
     ]),
     Object.keys(endpoints).length
       ? h('table.table.table-hover', [
+        h('thead', [
+          h('th.text-right', 'identifier'),
+          h('th', 'target URL'),
+          h('th', {style: {textAlign: 'center'}}, 'recent events')
+        ]),
         h('tbody', Object.keys(endpoints).map(id =>
           h('tr', {key: id}, [
-            h('th', [
+            h('th.text-right', {style: {whiteSpace: 'nowrap'}}, [
               h('a', {props: {href: `#/endpoints/${id}`}}, id)
             ]),
-            h('td', endpoints[id].url)
+            h('td',
+              {style: {wordBreak: 'break-all'}},
+              endpoints[id].url || '/dev/null'),
+            h('th', [
+              h('span', {
+                props: {
+                  className: 'text-center label label-' + fwitch(
+                    endpoints[id].eventCount, {
+                      0: 'default',
+                      1: 'info',
+                      2: 'info',
+                      3: 'info',
+                      default: 'warning'
+                    })
+                },
+                style: {maxWidth: '12px', display: 'block', margin: 'auto'}
+              }, endpoints[id].eventCount)
+            ])
           ])
         ))
       ])
       : h('p', [
         'Your have no endpoints. ',
-        h('a', {props: {href: '#/create'}}, 'Create one.')
-      ])
+        h('a.text-center.btn-primary.btn-large.btn-block',
+          {props: {href: '#/create'}}, 'Create one!')
+      ]),
+    h('a.text-center.btn-primary.btn-block', {
+      props: {href: '#/create'},
+      style: {padding: '8px', maxWidth: '80%', margin: 'auto'}
+    }, 'Create new')
   ])
 }
 
@@ -53,6 +81,7 @@ export function endpoint (end, nheaders, recentEvents = [],
       (end && end.recentEvents || [])
         .map(JSON.parse.bind(JSON))
     )
+    .sort((a, b) => b.in.time - a.in.time)
 
   return h('div.container-fluid', [
     eventsView(end, recentEvents, showing, selectedEvent),
@@ -70,7 +99,13 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
     return h('div.container-fluid', [
       h('div.row-fluid', [
         h('div.span12.text-center', [
-          h('button.btn.btn-info.s-events', 'See recent activity')
+          h('button.btn.btn-large.btn-info.s-events', [
+            'See recent activity',
+            h('br'),
+            recentEvents.length +
+            (recentEvents.length >= 8 ? ' (or more)' : '') +
+            ' in the last 24h'
+          ])
         ])
       ])
     ])
@@ -92,7 +127,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
       h('tr', {
         props: {
           id: 'ev-' + ev.in.time,
-          className: ev.in.time === selectedEvent ? 'info event' : 'event'
+          className: ev.in.time.toString() === selectedEvent ? 'info event' : 'event'
         }
       }, [
         h('td', prettydate.format(new Date(parseInt(ev.in.time * 1000)))),
@@ -117,26 +152,65 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
       h('div.span6', [
         h('h3', [
           'Recent activity ',
-          h('a.btn.btn-small.btn-info.h-events', {props: {href: '#'}}, '▲')
+          h('a.btn.btn-small.btn-info.h-events',
+            {props: {title: 'Hide', href: '#'}},
+            '▲')
         ])
       ]),
-      h('div.span6', {style: {paddingTop: '1.5em'}}, ENDPOINTURLPREFIX + end.id)
+      h('div.span6', {style: {paddingTop: '1.5em'}}, [
+        h('span.label.label-info', ENDPOINTURLPREFIX + end.id)
+      ])
     ]),
-    h('div.row-fluid', [
-      h('div', {props: {className: selected ? 'span6' : 'span12'}}, [
+    h('div.row-fluid.events', [
+      h('div', {props: {className: selected ? 'span4' : 'span12'}}, [
         h('table.table.table-hover.table-stripped', [
-          h('tbody', recentEvents.slice(0, 5).map(makeTr))
+          h('tbody', recentEvents.slice(0, 12).map(makeTr))
         ])
       ]),
-      selected ? h('div.span6', [
+      selected ? h('div.span8', [
         h('p', [
-          h('span.label.label-info', selected.out.url || '/dev/null'),
+          selected.out.url_error
+            ? h('span.label.label-important',
+                {props: {title: 'URL building failed.'}},
+                selected.out.url_error)
+            : selected.out.url
+              ? h('span.label.label-info',
+                  {props: {title: 'Dispatched to this destination.'}},
+                  selected.out.url)
+              : h('span.label.label-inverse',
+                  {props: {title: 'No URL given, just debugging.'}},
+                  '/dev/null'),
           ' ',
-          h('span.label', selected.response.code)
+          h('span', {
+            props: {
+              className: 'label label-' + (selected.response.code === 0
+                ? 'info' // 0
+                : selected.response.code < 500
+                  ? selected.response.code < 400
+                    ? selected.response.code < 300
+                      ? selected.response.code < 200
+                        ? 'default' // 1xx
+                        : 'success' // 2xx
+                      : 'inverse' // 3xx
+                    : 'warning' // 4xx
+                  : 'important' // 5xx
+              )
+            }
+          }, selected.response.code)
         ]),
-        h('pre', [prettify(selected.in.body)]),
-        h('pre', [prettify(selected.out.body)]),
-        h('pre', [prettify(selected.response.body)])
+        h('div.row-fluid', [
+          h('div.span6', [
+            h('pre', {props: {title: 'Data received.'}}, [prettify(selected.in.body)])
+          ]),
+          h('div.span6', [
+            h('pre', {props: {title: 'Data sent.'}}, [
+              prettify(selected.out.body) || selected.out.error
+            ])
+          ])
+        ]),
+        selected.response.body ? h('pre',
+          {props: {title: 'Response from destination'}},
+          [prettify(selected.response.body)]) : null
       ]) : null
     ])
   ])
