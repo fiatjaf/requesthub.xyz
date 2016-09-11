@@ -34,8 +34,16 @@ export function list (endpoints) {
           h('th', 'target URL'),
           h('th', {style: {textAlign: 'center'}}, 'recent events')
         ]),
-        h('tbody', Object.keys(endpoints).map(id =>
-          h('tr', {key: id}, [
+        h('tbody', Object.keys(endpoints).map(id => {
+          let nevents = endpoints[id].recentEvents
+            ? endpoints[id].recentEvents.length
+            : endpoints[id].eventCount
+
+          if (nevents > 10) {
+            nevents = '>10'
+          }
+
+          return h('tr', {key: id}, [
             h('th.text-right', {style: {whiteSpace: 'nowrap'}}, [
               h('a', {props: {href: `#/endpoints/${id}`}}, id)
             ]),
@@ -54,35 +62,32 @@ export function list (endpoints) {
                       default: 'warning'
                     })
                 },
-                style: {maxWidth: '12px', display: 'block', margin: 'auto'}
-              }, endpoints[id].eventCount)
+                style: {maxWidth: '21px', display: 'block', margin: 'auto'}
+              }, nevents)
             ])
           ])
-        ))
+        })),
+        h('tfoot', [
+          h('tr', [
+            h('td', {props: {colSpan: 3}}, [
+              h('a.text-center.btn-primary.btn-block', {
+                props: {href: '#/create'},
+                style: {padding: '8px', maxWidth: '80%', margin: 'auto'}
+              }, 'Create new')
+            ])
+          ])
+        ])
       ])
       : h('p', [
         'Your have no endpoints. ',
         h('a.text-center.btn-primary.btn-large.btn-block',
           {props: {href: '#/create'}}, 'Create one!')
-      ]),
-    h('a.text-center.btn-primary.btn-block', {
-      props: {href: '#/create'},
-      style: {padding: '8px', maxWidth: '80%', margin: 'auto'}
-    }, 'Create new')
+      ])
   ])
 }
 
 export function endpoint (end, nheaders, recentEvents = [],
                           showing = true, selectedEvent = null) {
-  recentEvents = recentEvents
-    .filter(([id]) => id = end.id)
-    .map(([_, data]) => data)
-    .concat(
-      (end && end.recentEvents || [])
-        .map(JSON.parse.bind(JSON))
-    )
-    .sort((a, b) => b.in.time - a.in.time)
-
   return h('div.container-fluid', [
     eventsView(end, recentEvents, showing, selectedEvent),
     h('div.row-fluid', [
@@ -102,9 +107,11 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
           h('button.btn.btn-large.btn-info.s-events', [
             'See recent activity',
             h('br'),
-            recentEvents.length +
-            (recentEvents.length >= 8 ? ' (or more)' : '') +
-            ' in the last 24h'
+            recentEvents.length
+              ? recentEvents.length +
+                (recentEvents.length >= 8 ? ' (or more)' : '') +
+                ' recently.'
+              : 'No events in the last 24h.'
           ])
         ])
       ])
@@ -168,36 +175,40 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
         ])
       ]),
       selected ? h('div.span8', [
-        h('p', [
-          selected.out.url_error
-            ? h('span.label.label-important',
-                {props: {title: 'URL building failed.'}},
-                selected.out.url_error)
-            : selected.out.url
-              ? h('span.label.label-info',
-                  {props: {title: 'Dispatched to this destination.'}},
-                  selected.out.url)
-              : h('span.label.label-inverse',
-                  {props: {title: 'No URL given, just debugging.'}},
-                  '/dev/null'),
-          ' ',
-          h('span', {
-            props: {
-              className: 'label label-' + (selected.response.code === 0
-                ? 'info' // 0
-                : selected.response.code < 500
-                  ? selected.response.code < 400
-                    ? selected.response.code < 300
-                      ? selected.response.code < 200
-                        ? 'default' // 1xx
-                        : 'success' // 2xx
-                      : 'inverse' // 3xx
-                    : 'warning' // 4xx
-                  : 'important' // 5xx
-              )
-            }
-          }, selected.response.code)
+        h('div.row-fluid', [
+          h('div.span12', [
+            selected.out.url_error
+              ? h('span.label.label-important',
+                  {props: {title: 'URL building failed.'}},
+                  selected.out.url_error)
+              : selected.out.url
+                ? h('span.label.label-info',
+                    {props: {title: 'Dispatched to this destination.'}},
+                    selected.out.url)
+                : h('span.label.label-inverse',
+                    {props: {title: 'No URL given, just debugging.'}},
+                    '/dev/null'),
+            ' ',
+            h('span', {
+              props: {
+                className: 'label label-' + (selected.response.code === 0
+                  ? 'info' // 0
+                  : selected.response.code < 500
+                    ? selected.response.code < 400
+                      ? selected.response.code < 300
+                        ? selected.response.code < 200
+                          ? 'default' // 1xx
+                          : 'success' // 2xx
+                        : 'inverse' // 3xx
+                      : 'warning' // 4xx
+                    : 'important' // 5xx
+                )
+              }
+            }, selected.response.code),
+            h('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')
+          ])
         ]),
+        h('br'),
         h('div.row-fluid', [
           h('div.span6', [
             h('pre', {props: {title: 'Data received.'}}, [prettify(selected.in.body)])
@@ -301,7 +312,9 @@ function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
         id: 'definition',
         name: 'definition',
         placeholder: 'The jq script that will be used to transform the incoming data.',
-        value: end.definition
+        value: end.definition === null || end.definition === undefined
+          ? 'loading...'
+          : end.definition
       },
       hook: {
         insert (vnode) {
@@ -370,7 +383,7 @@ function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
     end.id ? h('button.btn.btn-danger.delete', {
       props: {title: 'Delete endpoint'}
     }, 'Delete endpoint') : null,
-    h('button.btn.btn-primary.pull-right.set', {
+    h('button.btn.pull-right.set', {
       props: {title: end.id ? 'Update endpoint' : 'Create endpoint'}
     }, end.id ? 'Update endpoint' : 'Create endpoint')
   ])

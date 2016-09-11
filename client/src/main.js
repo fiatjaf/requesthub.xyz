@@ -53,7 +53,14 @@ mutation set(
       deleteEndpoint: gql`
 mutation del($id: ID!) {
   deleteEndpoint (id: $id) {
-    ok, error, id
+    ok, id
+  }
+}
+      `,
+      replayEvent: gql`
+mutation replay($id: ID!, $index: Int!) {
+  replayEvent (id: $id, index: $index) {
+    ok, id, index
   }
 }
       `

@@ -91,18 +91,3 @@ select:focus,
   border-color: rgba(0,0,0,0.149) !important;
   box-shadow: none !important;
 }
-/* basic */
-.btn-primary {
-  background-blend-mode: multiply;
-  background-color: #78a5ea;
-  background-color: #2169d6;
-  background-image: -moz-linear-gradient(top, #5991e5, #1d5ab8);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#5991e5), to(#1d5ab8));
-  background-image: -webkit-linear-gradient(top, #5991e5, #1d5ab8);
-  background-image: -o-linear-gradient(top, #5991e5, #1d5ab8);
-  background-image: linear-gradient(to bottom, #5991e5, #1d5ab8);
-  border-color: #78a5ea #3b7ce0 #2169d6;
-}
-.btn-primary:hover {
-  background-color: #2169d6;
-}

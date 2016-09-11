@@ -10,6 +10,7 @@ from graphene.core.types import custom_scalars
 from helpers import modifier_check, is_valid_url, is_valid_headers, \
                     MapStringString, snake
 from third import pg, redis
+from request_handler import proxy
 
 haiku = Haikunator().haikunate
 logger = logging.getLogger('graphql.execution.executor')
@@ -30,11 +31,17 @@ class Endpoint(graphene.ObjectType):
     event_count = graphene.Int()
 
     def resolve_event_count(self, args, info):
-        key = 'events:%s' % self.id
+        try:
+            key = 'events:%s' % self.id
+        except AttributeError:
+            return 0
         return redis.llen(key)
 
     def resolve_recent_events(self, args, info):
-        key = 'events:%s' % self.id
+        try:
+            key = 'events:%s' % self.id
+        except AttributeError:
+            return []
         return [e.decode('utf-8') for e in redis.lrange(key, 0, 8)]
 
 
@@ -226,15 +233,46 @@ class DeleteEndpoint(graphene.Mutation):
         where = {'id': args['id']}
 
         if not ctx['graphiql']:
-            where['owner_id'] = ctx['owner']
+            where['owner_id'] = ctx['user_id']
 
         pg.delete('endpoints', where=where)
         pg.commit()
-        return DeleteEndpoint(id, True)
+        return DeleteEndpoint(args['id'], True)
+
+
+class ReplayEvent(graphene.Mutation):
+    class Input:
+        id = graphene.ID()
+        index = graphene.Int()
+
+    id = graphene.String()
+    index = graphene.Int()
+    error = graphene.String()
+    ok = graphene.Boolean()
+
+    @classmethod
+    @with_context
+    def mutate(cls, instance, args, ctx, info):
+        key = 'events:%s' % args['id']
+        eventjson = redis.lindex(key, args['index'])
+        event = json.loads(eventjson.decode('utf-8'))
+
+        text, code, _ = proxy(
+            args['id'],
+            event['in']['method'],
+            event['in']['headers'],
+            event['in']['body']
+        )
+
+        if 300 > code >= 200:
+            return ReplayEvent(args['id'], args['index'], '', True)
+        else:
+            return ReplayEvent(args['id'], args['index'], text, False)
 
 
 class Mutations(graphene.ObjectType):
     set_endpoint = graphene.Field(SetEndpoint)
     delete_endpoint = graphene.Field(DeleteEndpoint)
+    replay_event = graphene.Field(ReplayEvent)
 
 schema = graphene.Schema(query=Query, mutation=Mutations)

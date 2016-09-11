@@ -45669,6 +45669,9 @@ arguments[4][184][0].apply(exports,arguments)
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 exports.default = main;
 
 var _most = require('most');
@@ -45737,6 +45740,8 @@ function main(_ref) {
   });
   var deleted$ = response$.filter(function (r) {
     return r.deleteEndpoint;
+  }).map(function (r) {
+    return r.deleteEndpoint;
   });
   var endpoint$ = response$.filter(function (r) {
     return r.endpoint;
@@ -45747,16 +45752,33 @@ function main(_ref) {
     return r.endpoints;
   }).map(function (r) {
     return r.endpoints;
-  }).merge(endpoint$).scan(function (map, cur) {
+  }).merge(endpoint$).merge(deleted$.map(function (_ref4) {
+    var id = _ref4.id;
+    return { deleted: id };
+  })).scan(function (map, cur) {
     if (Array.isArray(cur)) {
       for (var i = 0; i < cur.length; i++) {
         map[cur[i].id] = cur[i];
       }
-    } else {
+    } else if (cur.id) {
       map[cur.id] = cur;
+    } else if (cur.deleted) {
+      delete map[cur.deleted];
     }
     return map;
   }, {});
+
+  var selectedEndpointId$ = match$.filter(function (m) {
+    return m.value.where === 'ENDPOINT';
+  }).map(function (m) {
+    return m.value.id;
+  });
+
+  var selectedEndpoint$ = _most2.default.combine(function (endpointId, endpoints) {
+    return endpoints[endpointId];
+  }, selectedEndpointId$, endpoints$).merge(match$.filter(function (m) {
+    return m.value.where !== 'ENDPOINT';
+  }).constant(null)).multicast();
 
   var nheaders$ = _most2.default.merge(DOM.select('.a-header').events('click').tap(function (e) {
     return e.preventDefault();
@@ -45777,27 +45799,52 @@ function main(_ref) {
   }) // id="ev-{ timestring }"
   .scan(function (cur, next) {
     return cur === next ? null : next;
-  }, null);
+  }, null).multicast();
 
-  var events$ = PUSHER.event$.map(function (ev) {
+  var pusherEvents$ = PUSHER.event$.map(function (ev) {
     return [ev.id, ev.data];
   }).scan(function (events, ev) {
     events.unshift(ev);
     return events;
   }, []);
 
-  var vtree$ = _most2.default.combine(function (match, endpoints, nheaders, events, showingEvents, selectedEvent, _) {
+  var endpointEvents$ = _most2.default.combine(function (endpoint, pusherEvents) {
+    return pusherEvents.filter(function (_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 1);
+
+      var id = _ref6[0];
+      return id = endpoint.id;
+    }).map(function (_ref7) {
+      var _ref8 = _slicedToArray(_ref7, 2);
+
+      var _ = _ref8[0];
+      var data = _ref8[1];
+      return data;
+    }).concat((endpoint && endpoint.recentEvents || []).map(JSON.parse.bind(JSON)));
+  }, selectedEndpoint$, pusherEvents$).startWith([]).multicast();
+
+  var vtree$ = _most2.default.combine(function (match, endpoints, nheaders, events, showingEvents, selectedEvent) {
     return (0, _fwitch2.default)(match.value.where, {
       CREATE: vrender.create.bind(null, nheaders),
       ENDPOINTS: vrender.list.bind(null, endpoints),
       ENDPOINT: endpoints[match.value.id] ? vrender.endpoint.bind(null, endpoints[match.value.id], nheaders, events, showingEvents, selectedEvent) : vrender.empty,
       default: vrender.empty
     });
-  }, match$, endpoints$, nheaders$, events$, showEvents$, selectedEvent$, DOM.select('button.flush').events('click').tap(function (e) {
-    return e.preventDefault();
-  }).startWith(null));
+  }, match$, endpoints$, nheaders$, endpointEvents$.combine(function (ee, _) {
+    return ee;
+  }, _most2.default.periodic(8000, 'x')), showEvents$, selectedEvent$);
 
-  var endpointGQL$ = DOM.select('form button.set').events('click').tap(function (e) {
+  var replayEvent$ = DOM.select('.replay').events('click').tap(function (e) {
+    return e.preventDefault();
+  }).throttle(800).sample(function (id, selectedEvent, events, _) {
+    for (var i = 0; i < events.length; i++) {
+      if (events[i].in.time.toString() === selectedEvent) {
+        return [id, i];
+      }
+    }
+  }, selectedEndpointId$, selectedEvent$, endpointEvents$);
+
+  var setEndpointGQL$ = DOM.select('form button.set').events('click').tap(function (e) {
     return e.preventDefault();
   }).map(function (e) {
     return e.ownerTarget.parentNode;
@@ -45846,42 +45893,52 @@ function main(_ref) {
     return m.value.where === 'ENDPOINTS';
   }).constant({ query: 'fetchAll', forceFetch: true });
 
-  var fetchEndpointGQL$ = match$.filter(function (m) {
-    return m.value.where === 'ENDPOINT';
-  }).map(function (m) {
+  var fetchEndpointGQL$ = selectedEndpointId$.map(function (id) {
     return {
       query: 'fetchOne',
       variables: {
-        id: m.value.id
+        id: id
       },
       forceFetch: true
     };
   });
 
-  var gql$ = _most2.default.merge(endpointGQL$, fetchEndpointsGQL$, fetchEndpointGQL$).thru(_hold2.default);
+  var replayEventGQL$ = replayEvent$.map(function (_ref9) {
+    var _ref10 = _slicedToArray(_ref9, 2);
 
-  var notification$ = _most2.default.merge(created$.map(function (_ref4) {
-    var s = _ref4.setEndpoint;
+    var id = _ref10[0];
+    var index = _ref10[1];
+    return {
+      mutation: 'replayEvent',
+      variables: {
+        id: id, index: index
+      }
+    };
+  });
+
+  var gql$ = _most2.default.merge(setEndpointGQL$, fetchEndpointsGQL$, fetchEndpointGQL$, replayEventGQL$).thru(_hold2.default);
+
+  var notification$ = _most2.default.merge(created$.map(function (_ref11) {
+    var s = _ref11.setEndpoint;
     return ['<b>' + s.id + '</b> saved', 'success', { timeout: 3000 }];
-  }), deleted$.constant(['endpoint deleted', { timeout: 4000 }]), userError$.map(function (err) {
+  }), deleted$.map(function (_ref12) {
+    var id = _ref12.id;
+    return ['<b>' + id + '</b> deleted', { timeout: 4000 }];
+  }), userError$.map(function (err) {
     return [err, 'error'];
-  }), PUSHER.event$.map(function (_ref5) {
-    var id = _ref5.id;
+  }), PUSHER.event$.map(function (_ref13) {
+    var id = _ref13.id;
     return ['detected webhook call on <b>' + id + '</b>', 'info', { timeout: 3000 }];
   }));
 
   return {
     DOM: vtree$,
     GRAPHQL: gql$,
-    ROUTER: _most2.default.empty().merge(created$.map(function (_ref6) {
-      var s = _ref6.setEndpoint;
+    ROUTER: _most2.default.empty().merge(created$.map(function (_ref14) {
+      var s = _ref14.setEndpoint;
       return '/endpoints/' + s.id;
     })).merge(deleted$.constant('/endpoints')).skipRepeats().multicast(),
-    PUSHER: match$.filter(function (m) {
-      return m.value.where === 'ENDPOINT';
-    }).map(function (m) {
-      return m.value.id;
-    }).tap(function (x) {
+    PUSHER: selectedEndpointId$.tap(function (x) {
       return console.log('PUSHER SUBSCRIBE', x);
     }),
     NOTIFICATION: notification$
@@ -45999,7 +46056,8 @@ _codemirror2.default.defineSimpleMode('jq', {
 var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      ']),
     _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      ']),
     _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
-    _templateObject4 = _taggedTemplateLiteral(['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, error, id\n  }\n}\n      ']);
+    _templateObject4 = _taggedTemplateLiteral(['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, id\n  }\n}\n      '], ['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, id\n  }\n}\n      ']),
+    _templateObject5 = _taggedTemplateLiteral(['\nmutation replay($id: ID!, $index: Int!) {\n  replayEvent (id: $id, index: $index) {\n    ok, id, index\n  }\n}\n      '], ['\nmutation replay($id: ID!, $index: Int!) {\n  replayEvent (id: $id, index: $index) {\n    ok, id, index\n  }\n}\n      ']);
 
 var _create = require('@most/create');
 
@@ -46038,7 +46096,8 @@ _mostRun2.default.run(_app2.default, {
       fetchAll: (0, _cycleGraphqlMostDriver.gql)(_templateObject),
       fetchOne: (0, _cycleGraphqlMostDriver.gql)(_templateObject2),
       setEndpoint: (0, _cycleGraphqlMostDriver.gql)(_templateObject3),
-      deleteEndpoint: (0, _cycleGraphqlMostDriver.gql)(_templateObject4)
+      deleteEndpoint: (0, _cycleGraphqlMostDriver.gql)(_templateObject4),
+      replayEvent: (0, _cycleGraphqlMostDriver.gql)(_templateObject5)
     }
   }),
   DOM: (0, _dom.makeDOMDriver)('#main', [require('snabbdom/modules/props'), require('snabbdom/modules/style')]),
@@ -46114,6 +46173,12 @@ function create(nheaders) {
 
 function list(endpoints) {
   return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('thead', [(0, _dom.h)('th.text-right', 'identifier'), (0, _dom.h)('th', 'target URL'), (0, _dom.h)('th', { style: { textAlign: 'center' } }, 'recent events')]), (0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
+    var nevents = endpoints[id].recentEvents ? endpoints[id].recentEvents.length : endpoints[id].eventCount;
+
+    if (nevents > 10) {
+      nevents = '>10';
+    }
+
     return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th.text-right', { style: { whiteSpace: 'nowrap' } }, [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, endpoints[id].url || '/dev/null'), (0, _dom.h)('th', [(0, _dom.h)('span', {
       props: {
         className: 'text-center label label-' + (0, _fwitch2.default)(endpoints[id].eventCount, {
@@ -46124,12 +46189,12 @@ function list(endpoints) {
           default: 'warning'
         })
       },
-      style: { maxWidth: '12px', display: 'block', margin: 'auto' }
-    }, endpoints[id].eventCount)])]);
-  }))]) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a.text-center.btn-primary.btn-large.btn-block', { props: { href: '#/create' } }, 'Create one!')]), (0, _dom.h)('a.text-center.btn-primary.btn-block', {
+      style: { maxWidth: '21px', display: 'block', margin: 'auto' }
+    }, nevents)])]);
+  })), (0, _dom.h)('tfoot', [(0, _dom.h)('tr', [(0, _dom.h)('td', { props: { colSpan: 3 } }, [(0, _dom.h)('a.text-center.btn-primary.btn-block', {
     props: { href: '#/create' },
     style: { padding: '8px', maxWidth: '80%', margin: 'auto' }
-  }, 'Create new')]);
+  }, 'Create new')])])])]) : (0, _dom.h)('p', ['Your have no endpoints. ', (0, _dom.h)('a.text-center.btn-primary.btn-large.btn-block', { props: { href: '#/create' } }, 'Create one!')])]);
 }
 
 function endpoint(end, nheaders) {
@@ -46137,27 +46202,12 @@ function endpoint(end, nheaders) {
   var showing = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
   var selectedEvent = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
 
-  recentEvents = recentEvents.filter(function (_ref) {
-    var _ref2 = _slicedToArray(_ref, 1);
-
-    var id = _ref2[0];
-    return id = end.id;
-  }).map(function (_ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2);
-
-    var _ = _ref4[0];
-    var data = _ref4[1];
-    return data;
-  }).concat((end && end.recentEvents || []).map(JSON.parse.bind(JSON))).sort(function (a, b) {
-    return b.in.time - a.in.time;
-  });
-
   return (0, _dom.h)('div.container-fluid', [eventsView(end, recentEvents, showing, selectedEvent), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Modify endpoint'), endpointForm(end, nheaders)])])]);
 }
 
 function eventsView(end, recentEvents, showing, selectedEvent) {
   if (!showing) {
-    return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-large.btn-info.s-events', ['See recent activity', (0, _dom.h)('br'), recentEvents.length + (recentEvents.length >= 8 ? ' (or more)' : '') + ' in the last 24h'])])])]);
+    return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-large.btn-info.s-events', ['See recent activity', (0, _dom.h)('br'), recentEvents.length ? recentEvents.length + (recentEvents.length >= 8 ? ' (or more)' : '') + ' recently.' : 'No events in the last 24h.'])])])]);
   }
 
   var selected;
@@ -46190,7 +46240,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
     };
   }
 
-  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('p', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '/dev/null'), ' ', (0, _dom.h)('span', {
+  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '/dev/null'), ' ', (0, _dom.h)('span', {
     props: {
       className: 'label label-' + (selected.response.code === 0 ? 'info' // 0
       : selected.response.code < 500 ? selected.response.code < 400 ? selected.response.code < 300 ? selected.response.code < 200 ? 'default' // 1xx
@@ -46200,7 +46250,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
       : 'important' // 5xx
       )
     }
-  }, selected.response.code)]), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]) : null])]);
+  }, selected.response.code), (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]) : null])]);
 }
 
 function endpointForm() {
@@ -46264,7 +46314,7 @@ function endpointForm() {
       id: 'definition',
       name: 'definition',
       placeholder: 'The jq script that will be used to transform the incoming data.',
-      value: end.definition
+      value: end.definition === null || end.definition === undefined ? 'loading...' : end.definition
     },
     hook: {
       insert: function insert(vnode) {
@@ -46288,11 +46338,11 @@ function endpointForm() {
   }), (0, _dom.h)('label.checkbox', ['Pass request headers on to the target URL', (0, _dom.h)('input', {
     style: { 'width': 'auto', 'display': 'inline' },
     props: { type: 'checkbox', name: 'pass_headers', value: 'true', checked: end.pass_headers }
-  })]), (0, _dom.h)('span.help-block', 'Forward all the received headers when calling the target URL. These will be superseded by any header specified below.'), (0, _dom.h)('label', ['Headers'].concat(headerPairs.map(function (_ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2);
+  })]), (0, _dom.h)('span.help-block', 'Forward all the received headers when calling the target URL. These will be superseded by any header specified below.'), (0, _dom.h)('label', ['Headers'].concat(headerPairs.map(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2);
 
-    var key = _ref6[0];
-    var value = _ref6[1];
+    var key = _ref2[0];
+    var value = _ref2[1];
     return (0, _dom.h)('div', { key: key, style: { marginBottom: '6px' } }, [(0, _dom.h)('input.span3', {
       style: { display: 'inline', margin: '0' },
       props: {
@@ -46312,7 +46362,7 @@ function endpointForm() {
     })]);
   })).concat([(0, _dom.h)('a.btn.btn-small.btn-warning.r-header', { props: { href: '#', title: 'less headers' } }, '-'), ' ', (0, _dom.h)('a.btn.btn-small.btn-success.a-header', { props: { href: '#', title: 'more headers' } }, '+')])), (0, _dom.h)('span.help-block', ['Headers can be used for setting Content-Type, Authorization tokens or other fancy things your target endpoint may require. ', (0, _dom.h)('code', 'application/json'), ' is the default Content-Type.']), end.id ? (0, _dom.h)('button.btn.btn-danger.delete', {
     props: { title: 'Delete endpoint' }
-  }, 'Delete endpoint') : null, (0, _dom.h)('button.btn.btn-primary.pull-right.set', {
+  }, 'Delete endpoint') : null, (0, _dom.h)('button.btn.pull-right.set', {
     props: { title: end.id ? 'Update endpoint' : 'Create endpoint' }
   }, end.id ? 'Update endpoint' : 'Create endpoint')]);
 }

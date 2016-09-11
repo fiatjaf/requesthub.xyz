@@ -36,7 +36,9 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
 
   let created$ = response$
     .filter(r => r.setEndpoint && r.setEndpoint.ok)
-  let deleted$ = response$.filter(r => r.deleteEndpoint)
+  let deleted$ = response$
+    .filter(r => r.deleteEndpoint)
+    .map(r => r.deleteEndpoint)
   let endpoint$ = response$
     .filter(r => r.endpoint)
     .map(r => r.endpoint)
@@ -44,16 +46,35 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     .filter(r => r.endpoints)
     .map(r => r.endpoints)
     .merge(endpoint$)
+    .merge(deleted$.map(({id}) => ({deleted: id})))
     .scan((map, cur) => {
       if (Array.isArray(cur)) {
         for (let i = 0; i < cur.length; i++) {
           map[cur[i].id] = cur[i]
         }
-      } else {
+      } else if (cur.id) {
         map[cur.id] = cur
+      } else if (cur.deleted) {
+        delete map[cur.deleted]
       }
       return map
     }, {})
+
+  let selectedEndpointId$ = match$
+    .filter(m => m.value.where === 'ENDPOINT')
+    .map(m => m.value.id)
+
+  let selectedEndpoint$ = most.combine(
+    (endpointId, endpoints) => endpoints[endpointId],
+    selectedEndpointId$,
+    endpoints$
+  )
+    .merge(
+      match$
+        .filter(m => m.value.where !== 'ENDPOINT')
+        .constant(null)
+    )
+    .multicast()
 
   let nheaders$ = most.merge(
     DOM.select('.a-header').events('click').tap(e => e.preventDefault()).constant(1),
@@ -70,16 +91,33 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
   let selectedEvent$ = DOM.select('tr.event').events('click')
     .map(e => e.ownerTarget.id.slice(3)) // id="ev-{ timestring }"
     .scan((cur, next) => cur === next ? null : next, null)
+    .multicast()
 
-  let events$ = PUSHER.event$
+  let pusherEvents$ = PUSHER.event$
     .map(ev => [ev.id, ev.data])
     .scan((events, ev) => {
       events.unshift(ev)
       return events
     }, [])
 
+  let endpointEvents$ = most.combine(
+    (endpoint, pusherEvents) =>
+      pusherEvents
+        .filter(([id]) => id = endpoint.id)
+        .map(([_, data]) => data)
+        .concat(
+          (endpoint && endpoint.recentEvents || [])
+            .map(JSON.parse.bind(JSON))
+        )
+    ,
+    selectedEndpoint$,
+    pusherEvents$
+  )
+    .startWith([])
+    .multicast()
+
   let vtree$ = most.combine(
-    (match, endpoints, nheaders, events, showingEvents, selectedEvent, _) =>
+    (match, endpoints, nheaders, events, showingEvents, selectedEvent) =>
       fwitch(match.value.where, {
         CREATE: vrender.create.bind(null, nheaders),
         ENDPOINTS: vrender.list.bind(null, endpoints),
@@ -97,15 +135,28 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     match$,
     endpoints$,
     nheaders$,
-    events$,
+    endpointEvents$.combine((ee, _) => ee, most.periodic(8000, 'x')),
     showEvents$,
-    selectedEvent$,
-    DOM.select('button.flush').events('click')
-      .tap(e => e.preventDefault())
-      .startWith(null)
+    selectedEvent$
   )
 
-  let endpointGQL$ = DOM.select('form button.set').events('click')
+  let replayEvent$ = DOM.select('.replay').events('click')
+    .tap(e => e.preventDefault())
+    .throttle(800)
+    .sample(
+      (id, selectedEvent, events, _) => {
+        for (let i = 0; i < events.length; i++) {
+          if (events[i].in.time.toString() === selectedEvent) {
+            return [id, i]
+          }
+        }
+      },
+      selectedEndpointId$,
+      selectedEvent$,
+      endpointEvents$
+    )
+
+  let setEndpointGQL$ = DOM.select('form button.set').events('click')
     .tap(e => e.preventDefault())
     .map(e => e.ownerTarget.parentNode)
     .map(form => ({
@@ -153,27 +204,36 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     .filter(m => m.value.where === 'ENDPOINTS')
     .constant({query: 'fetchAll', forceFetch: true})
 
-  let fetchEndpointGQL$ = match$
-    .filter(m => m.value.where === 'ENDPOINT')
-    .map(m => ({
+  let fetchEndpointGQL$ = selectedEndpointId$
+    .map(id => ({
       query: 'fetchOne',
       variables: {
-        id: m.value.id
+        id
       },
       forceFetch: true
     }))
 
+  let replayEventGQL$ = replayEvent$
+    .map(([id, index]) => ({
+      mutation: 'replayEvent',
+      variables: {
+        id, index
+      }
+    }))
+
   let gql$ = most.merge(
-    endpointGQL$,
+    setEndpointGQL$,
     fetchEndpointsGQL$,
-    fetchEndpointGQL$
+    fetchEndpointGQL$,
+    replayEventGQL$
   ).thru(hold)
 
   let notification$ = most.merge(
     created$.map(({setEndpoint: s}) => [`<b>${s.id}</b> saved`, 'success', {timeout: 3000}]),
-    deleted$.constant(['endpoint deleted', {timeout: 4000}]),
+    deleted$.map(({id}) => [`<b>${id}</b> deleted`, {timeout: 4000}]),
     userError$.map(err => [err, 'error']),
-    PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info', {timeout: 3000}])
+    PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info',
+                                 {timeout: 3000}])
   )
 
   return {
@@ -184,9 +244,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
       .merge(deleted$.constant('/endpoints'))
       .skipRepeats()
       .multicast(),
-    PUSHER: match$
-      .filter(m => m.value.where === 'ENDPOINT')
-      .map(m => m.value.id)
+    PUSHER: selectedEndpointId$
       .tap(x => console.log('PUSHER SUBSCRIBE', x)),
     NOTIFICATION: notification$
   }

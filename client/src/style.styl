@@ -93,20 +93,3 @@ input:focus, textarea:focus, select:focus, .CodeMirror-focused
   background-color #efeee8 !important
   border-color rgba(0, 0, 0, 0.14902) !important
   box-shadow none !important
-
-/* basic */
-$blue = #78a5ea
-.btn-primary
-  background-blend-mode multiply
-  background-color $blue
-  background-color darken($blue, 30%)
-  background-image -moz-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
-  background-image -webkit-gradient(linear, 0 0, 0 100%, from(darken($blue, 10%)), to(darken($blue, 40%)))
-  background-image -webkit-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
-  background-image -o-linear-gradient(top, darken($blue, 10%), darken($blue, 40%))
-  background-image linear-gradient(to bottom, darken($blue, 10%), darken($blue, 40%))
-  border-color $blue darken($blue, 20%) darken($blue, 30%)
-
-  &:hover
-    background-color darken($blue, 30%)
-    

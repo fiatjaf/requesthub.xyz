@@ -42,57 +42,21 @@
       <h4>Step 1: Get a shared URL for some Workflowy project</h4>
       <img src="/static/share.png">
       <h4>Step 2: Register it</h4>
-      <p>(If you already have an account you can just reuse your name and password)</p>
-      <form class="form-horizontal" action="/setup" method="POST">
-        <fieldset>
-          <div class="control-group">
-            <label class="control-label">Username: </label>
-            <input type="text" placeholder="happydog101"
-                   name="username" value="{{ request.args.get('username', '') }}">
-          </div>
-          <div class="control-group">
-            <label class="control-label">Password: </label>
-            <input type="password" placeholder="donotfreakout" name="password">
-          </div>
-          <div class="control-group">
-            <label class="control-label">Workflowy shared URL: </label>
-            <input type="text" placeholder="https://workflowy.com/s/cqFyu4cFba"
-                   name="wfitem" value="{{ request.args.get('wfitem', '') }}">
-          </div>
-          <button type="submit" style="display: block; margin: auto;" class="btn btn-large btn-primary">Go</button>
-        </fieldset>
-      </form>
       <h4>Step 3: Enable apps!</h4>
       <p>Inside the <a href="/dashboard">dashboard</a> you'll be able to choose from one of the apps.</p>
     </div>
   </div>
 
-  {% if quotes %}
-  <hr>
-  <div class="row-fluid quotes">
-    <div class="span6">
-      <blockquote>{{ quote }}
-        <small>@{{ user }}</small> 
-      </blockquote>
-    </div>
-    <div class="span6">
-      <blockquote>{{ quote }}
-        <small>@{{ user }}</small> 
-      </blockquote>
-    </div>
-  </div>
-  {% endif %}
-
   <hr>
   <div class="row-fluid">
     <div class="span6">
-      <h3>Suggest an app</h3>
-      <p>You want some feature added to your Workflowy? We want to build it.</p>
+      <h3>Contact us</h3>
+      <p>Have anything to say about {{ config.SERVICE_NAME }}? Please, we would like to hear!</p>
     </div>
     <div class="span6">
       <form method="POST" action="https://formspree.io/fiatjaf@boardthreads.com">
         <div class="form-control">
-          <textarea class="input-block-level" rows="3" name="idea" placeholder="Your idea."></textarea>
+          <textarea class="input-block-level" rows="3" name="idea" placeholder="Your message"></textarea>
         </div>
         <div class="form-control">
           <input class="input-block-level" type="text" name="email" placeholder="Optionally, your email.">

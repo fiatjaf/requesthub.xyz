@@ -1,17 +1,12 @@
-import json
-import time
-import requests
-from urllib.parse import urlencode
-from requests import Response
-from requests.structures import CaseInsensitiveDict
 from flask import request, jsonify, redirect, make_response, \
                   render_template, flash, url_for, g
 from flask_login import login_user, logout_user, login_required
 
 from app import app
-from third import pg, pusher, redis, github
-from helpers import jq, user_can_access_endpoint, all_methods, \
+from third import pusher, github
+from helpers import user_can_access_endpoint, all_methods, \
                     parse_incoming_data, User
+from request_handler import proxy
 import settings
 
 
@@ -74,115 +69,14 @@ def pusher_auth():
 @app.route('/w/<identifier>/', methods=all_methods)
 @app.route('/w/<identifier>', methods=all_methods)
 def proxy_webhook(identifier):
-    # find endpoint
-    endpoint = pg.select1(
-        'endpoints',
-        what=['definition', 'method', 'pass_headers',
-              'headers', 'url', 'url_dynamic'],
-        where={'id': identifier}
-    )
-    if not endpoint:
-        return 'endpoint not found, create it at ' \
-               '<a href="/dashboard">dashboard</a>', 404
-
     # parse incoming data
     data = parse_incoming_data()
     print('incoming data', data, 'at', identifier)
 
-    event = {
-        'in': {},
-        'out': {'method': '', 'url': '', 'body': 'null', 'headers': {}},
-        'response': {'code': 0, 'body': ''}
-    }
-
-    def publish():
-        eventjson = json.dumps(event)
-
-        try:
-            pusher.trigger('private-' + identifier, 'webhook', eventjson)
-        except ValueError:
-            print('couldn\'t send webhook to pusher', e)
-
-        key = 'events:%s' % identifier
-        rpipe = redis.pipeline()
-        rpipe.lpush(key, eventjson)
-        rpipe.ltrim(key, 0, 8)
-        rpipe.expire(key, 86400)  # 24h
-        rpipe.execute()
-
-    event['in'] = {
-        'time': time.time(),
-        'method': request.method,
-        'body': data[:2300] + ' [truncated]' if len(data) > 2207 else data
-    }
-
-    if endpoint['url_dynamic']:
-        url, error = jq(endpoint['url'], data=data)
-        print('URL', url, 'ERROR', error)
-        if not url:
-            event['out']['url_error'] = error.decode('utf-8')
-            publish()
-            return 'url building has failed', 200
-        endpoint['url'] = url.decode('utf-8')
-
-    mutated, error = jq(endpoint['definition'], data=data)
-    if not mutated or error:
-        event['out']['error'] = error.decode('utf-8')
-        publish()
-        return 'transmutated into null and aborted', 201
-
-    h = CaseInsensitiveDict({'Content-Type': 'application/json'})
-    if endpoint['pass_headers']:
-        h.update(request.headers)
-    h.update(endpoint['headers'])
-
-    # reformat the mutated data
-    mutatedjson = json.loads(mutated.decode('utf-8'))
-    if h.get('content-type') == 'application/x-www-form-urlencoded':
-        # oops, not json
-        mutated = urlencode(mutatedjson)
-    else:
-        mutated = json.dumps(mutatedjson)
-
-    event['out'] = {
-        'method': endpoint['method'],
-        'url': endpoint['url'][:120] + ' [-truncated-]'
-        if len(endpoint['url']) > 127 else endpoint['url'],
-        'body': mutated[:1500] + ' [-truncated-]'
-        if len(mutated) > 1507 else mutated,
-        'headers': endpoint['headers'],
-    }
-
-    if endpoint['url']:
-        try:
-            s = requests.Session()
-            req = requests.Request(endpoint['method'], endpoint['url'],
-                                   data=mutated, headers=h).prepare()
-            resp = s.send(req, timeout=4)
-
-            if not resp.ok:
-                print('FAILED TO POST', resp.text, identifier, mutated)
-
-        except requests.exceptions.RequestException as e:
-            print('FAILED TO POST', e, identifier, mutated)
-            resp = Response()
-            resp.status_code = 503
-            resp.body = "<request failed: '%s'>" % e
-
-        event['response'] = {
-            'code': resp.status_code,
-            'body': resp.text[:200] + ' [-truncated-]'
-            if len(resp.text) > 207 else resp.text
-        }
-    else:
-        # not URL, just testing
-        event['response'] = {'code': 0, 'body': '~'}
-        publish()
-        return 'no URL to send this to', 201
-
-    response = make_response(resp.text, resp.status_code)
-    response.headers.extend(resp.headers.items())
-    publish()
+    body, code, headers = proxy(
+        identifier, request.method, request.headers, data)
+    response = make_response(body, headers)
+    response.headers.extend(headers.items())
     return response
 
 
