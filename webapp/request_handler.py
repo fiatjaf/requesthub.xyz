@@ -99,7 +99,7 @@ def proxy(identifier, in_method, in_headers, data):
         event['response']['body'] = resp.text[:200] + ' [-truncated-]' \
             if len(resp.text) > 207 else resp.text
         publish(identifier, event)
-        return resp.text, resp.status_code, resp.headers
+        return resp.text, resp.status_code, dict(resp.headers)
     else:
         # no valid URL, just testing
         publish(identifier, event)
