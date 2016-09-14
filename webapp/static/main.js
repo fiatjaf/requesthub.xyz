@@ -46236,11 +46236,11 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
         props: {
           id: 'ev-' + ev.in.time
         }
-      }, [(0, _dom.h)('td', ev.in.method), (0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', ev.out.url || '/dev/null'), (0, _dom.h)('td', ev.response.code)]);
+      }, [(0, _dom.h)('td', ev.in.method), (0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', { props: { style: { wordBreak: 'break-all' } } }, ev.out.url || '/dev/null'), (0, _dom.h)('td', ev.response.code)]);
     };
   }
 
-  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '/dev/null'), ' ', (0, _dom.h)('span', {
+  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.method + ' ' + selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '> /dev/null'), ' ', (0, _dom.h)('span', {
     props: {
       className: 'label label-' + (selected.response.code === 0 ? 'info' // 0
       : selected.response.code < 500 ? selected.response.code < 400 ? selected.response.code < 300 ? selected.response.code < 200 ? 'default' // 1xx
@@ -46329,7 +46329,9 @@ function endpointForm() {
         });
       },
       update: function update(old, curr) {
-        cm.setValue(curr.elm.value);
+        if (curr.elm.value !== old.elm.value) {
+          cm.setValue(curr.elm.value);
+        }
       },
       destroy: function destroy(vnode) {
         cm.toTextArea();

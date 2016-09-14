@@ -149,7 +149,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
       }, [
         h('td', ev.in.method),
         h('td', prettydate.format(new Date(parseInt(ev.in.time * 1000)))),
-        h('td', ev.out.url || '/dev/null'),
+        h('td', {props: {style: {wordBreak: 'break-all'}}}, ev.out.url || '/dev/null'),
         h('td', ev.response.code)
       ])
   }
@@ -184,10 +184,10 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
               : selected.out.url
                 ? h('span.label.label-info',
                     {props: {title: 'Dispatched to this destination.'}},
-                    selected.out.url)
+                    selected.out.method + ' ' + selected.out.url)
                 : h('span.label.label-inverse',
                     {props: {title: 'No URL given, just debugging.'}},
-                    '/dev/null'),
+                    '> /dev/null'),
             ' ',
             h('span', {
               props: {
@@ -327,7 +327,9 @@ function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
           cm.on('changes', cm => cm.save())
         },
         update (old, curr) {
-          cm.setValue(curr.elm.value)
+          if (curr.elm.value !== old.elm.value) {
+            cm.setValue(curr.elm.value)
+          }
         },
         destroy (vnode) {
           cm.toTextArea()
