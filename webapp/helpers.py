@@ -7,16 +7,18 @@ import random
 from flask import request
 from urllib.parse import urlparse
 from graphql.language import ast
-from subprocess import Popen, PIPE
-from flask_graphql import GraphQLView
-from flask_login import current_user
 from graphene.core.classtypes import Scalar
+from haikunator import Haikunator
+from subprocess import Popen, PIPE
+from flask_login import current_user
+from flask_graphql import GraphQLView
 
 from third import pg
 
 
-all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
+haiku = Haikunator().haikunate
 
+all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 
 JQPATH = './jq'
 if not os.path.isfile(JQPATH):

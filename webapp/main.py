@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required
 
 from app import app
 from third import pusher, github
-from helpers import user_can_access_endpoint, all_methods, \
+from helpers import user_can_access_endpoint, all_methods, haiku, \
                     parse_incoming_data, User, sources_and_targets
 from request_handler import proxy
 import settings
@@ -52,7 +52,8 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html',
+                           haiku=[haiku(token_length=0) for _ in range(7)])
 
 
 @app.route('/pusher/auth', methods=['POST'])

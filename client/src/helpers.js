@@ -140,3 +140,10 @@ CodeMirror.defineSimpleMode('jq', {
     {regex: /\[/, token: 'bracket', push: 'array'}
   ]
 })
+
+export function haiku () {
+  let base = window.HAIKU.pop()
+  window.HAIKU.unshift(base)
+  let suffix = parseInt(Math.random() * 10000)
+  return base + '-' + suffix
+}

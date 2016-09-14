@@ -4,15 +4,13 @@ import graphene
 import psycopg2
 from slugify import slugify
 from graphene import with_context
-from haikunator import Haikunator
 from graphene.core.types import custom_scalars
 
 from helpers import modifier_check, is_valid_url, is_valid_headers, \
-                    MapStringString, snake
+                    MapStringString, snake, haiku
 from third import pg, redis
 from request_handler import proxy
 
-haiku = Haikunator().haikunate
 logger = logging.getLogger('graphql.execution.executor')
 logger.addHandler(logging.StreamHandler())
 

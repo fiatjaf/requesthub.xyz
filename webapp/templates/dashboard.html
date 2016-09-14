@@ -5,6 +5,7 @@
 <div class="container-fluid" id="main"></div>
 <script>
 window.PUSHER_SOCKET_URL = '{{ config.PUSHER_SOCKET_URL }}'
+window.HAIKU = {{ haiku|safe }}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/msgpack-lite/0.1.20/msgpack.min.js"></script>
 <script src="/static/main.js"></script>
