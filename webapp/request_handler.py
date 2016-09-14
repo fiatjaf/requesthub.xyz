@@ -120,3 +120,5 @@ def publish(identifier, event):
     rpipe.ltrim(key, 0, 8)  # leave only the last 9
     rpipe.expire(key, 86400)  # 24h
     rpipe.execute()
+
+    print('published event.')

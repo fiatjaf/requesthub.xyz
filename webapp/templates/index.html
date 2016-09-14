@@ -16,12 +16,19 @@
   <hr>
   <div class="row-fluid">
     <div class="span6">
-      <h4>Start building webhooks integrations</h4>
-      <p>Many online services provide actually very interesting webhooks, if only it weren't so complicated to setup a server to listen to each one of them parse, gather the important data and send it to another service! Save yourself time <!--and frustration-->while {{ config.SERVICE_NAME }} handle these for you.</p>
+      <h4>Unleash the realtime power of the apps you use</h4>
+      <p>Many online services provide actually very interesting webhooks, if only it weren't so complicated to setup a server to listen to each one of them parse, gather the important data and send it to another service! Save yourself time <!--and frustration-->while {{ config.SERVICE_NAME }} handle these tasks for you.</p>
     </div>
     <div class="span6">
-      <h4>No code, but still flexibility</h4>
-      <p>{{ config.SERVICE_NAME }} reads the data from the incoming request, runs it through <a href="https://stedolan.github.io/jq/manual/#Objects-{}">a jq filter</a>, then sends it to the target URL. It's like writing JSON with variables, but with a lot of utility functions. <a href="#howitworks">Read more</a>.</p>
+      <h4>No code, and yet maximum flexibility</h4>
+      <p>{{ config.SERVICE_NAME }} reads the data from the incoming request, runs it through <a href="https://stedolan.github.io/jq/manual/#Objects-{}">a jq modifier</a>, then sends it to the target URL. With much less errors and debugging it's like writing a relaxed JSON template with variables and utility <a href="https://stedolan.github.io/jq/manual/#Builtinoperatorsandfunctions">functions</a>.</p>
+    </div>
+    <div class="span6">
+      <h4>Painless debugging</h4>
+      <p>When you actually need to debug the modifier or inspect the target server responses, you can do it through {{ config.SERVICE_NAME }}'s simple interface, from where you can view incoming, outgoing and response bodies and <em>replay events</em> while being able to edit the endpoint definitions.</p>
+    </div>
+    <div class="span6">
+
     </div>
   </div>
   <hr>
@@ -29,29 +36,69 @@
   <hr>
   <div class="row-fluid">
     <div class="span12">
-      <p style="color:#555" class="lead">
-        
+      <p style="color:#555" class="lead text-center">
+        Make your life better by setting up the world of webhooks to work for you!
       </p>
     </div>
   </div>
   <hr>
-  <div class="container-fluid">
-    <div class="row-fluid" id="start">
-      <h2>Sign up now</h2>
-      <p>It only takes a username, a password and a shared Workflowy project URL.</p>
-      <h4>Step 1: Get a shared URL for some Workflowy project</h4>
-      <img src="/static/share.png">
-      <h4>Step 2: Register it</h4>
-      <h4>Step 3: Enable apps!</h4>
-      <p>Inside the <a href="/dashboard">dashboard</a> you'll be able to choose from one of the apps.</p>
+  <div class="row-fluid">
+    <div class="span12" id="howitworks">
+    <h2>How it works</h2>
+      <p>When you <a href="/dashboard#/create">create an endpoint</a> you must define a <strong>target URL</strong> and a <strong>modifier</strong>, then you'll be assigned a <strong>listening URL</strong> for that endpoint. You may also specify a method other than <code>POST</code> and any HTTP headers necessary (with, for example, API credentials)</p>
+      <p>Whenever something gets <code>POST</code>ed to that listening URL, the data sent with the request will be piped through the modifier and the result will be sent to the target URL. Other types of requests, including <code>x-www-form-urlencoded</code>, <code>PUT</code>s and <code>GET</code>s are supported.</p>
+      <p>The modifier is a <a target="_blank" href="https://stedolan.github.io/jq/manual/#Objects-{}">jq filter</a> that builds an object based on the input data. If you're not familiar with <em>jq</em>, imagine there is a service that sends JSON webhooks with the contents in the following format:</p>
+      <pre><code>{
+  "Type": "FruitEvent",
+  "Date": "2009-10-25",
+  "Entity" {
+    "Type": "Fruit",
+    "Id": "3784323",
+    "Name": "Tomato"
+  }
+}</code></pre>
+      <p>And you want to pipe that to a service that expects a JSON structure like the following:</p>
+      <pre><code>{
+  "date": "2009-10-25",
+  "value": "tomato",
+  "kind": "currentFruit"
+}</code></pre>
+      <p>Then you write the modifier:</p>
+      <pre><code>{
+  date: .Date,
+  value: (.Entity.Name | ascii_downcase),
+  kind: "currentFruit"
+}</code></pre>
+      <p>(<a target="_blank" href="https://goo.gl/xioW5M\">see this example in the jq playground</a>)</p>
+      <p>And that's it.</p>
+      <p><em>jq</em> is very flexible and you can transform data in almost anything using its filters. If you're curious, try looking at its <a target="_blank" href="https://stedolan.github.io/jq/manual/">manual</a>, <a target="_blank" href="https://stedolan.github.io/jq/download/">installing</a> it or <a target=_blank" href="https://jqplay.org/">experimenting it online</a>.</p>
     </div>
   </div>
-
+  <hr>
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span6">
+      <h3>Where to get webhooks from:</h3>
+      <ul>{% for source in sources %}
+        <li>{{ source|safe }}</li>
+      {% endfor %}</ul>
+      </div>
+      <div class="span6">
+      <h3>Targets to dispatch them to:</h3>
+      <ul>{% for target in targets %}
+        <li>{{ target|safe }}</li>
+      {% endfor %}</ul>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <p><h4>Some <a target="_blank" href="https://gist.github.com/fiatjaf/1d57953aa285b9bf5b51712268cfb97b">real world examples</a> of modifiers connecting 2 services.</h4></p>
+    </div>
+  </div>
   <hr>
   <div class="row-fluid">
     <div class="span6">
       <h3>Contact us</h3>
-      <p>Have anything to say about {{ config.SERVICE_NAME }}? Please, we would like to hear!</p>
+      <p>Have anything to say about us? Please, we would like to hear!</p>
     </div>
     <div class="span6">
       <form method="POST" action="https://formspree.io/fiatjaf@boardthreads.com">

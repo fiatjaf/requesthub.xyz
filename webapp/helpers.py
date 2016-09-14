@@ -1,7 +1,9 @@
 import os
 import re
 import json
+import yaml
 import base64
+import random
 from flask import request
 from urllib.parse import urlparse
 from graphql.language import ast
@@ -19,6 +21,23 @@ all_methods = ['GET', 'POST', 'HEAD', 'DELETE', 'PUT', 'PATCH']
 JQPATH = './jq'
 if not os.path.isfile(JQPATH):
     JQPATH = '../jq'
+
+COPYPATH = './copy.yaml'
+if not os.path.isfile(COPYPATH):
+    COPYPATH = '../copy.yaml'
+
+
+def sources_and_targets():
+    try:
+        with open(COPYPATH) as f:
+            d = yaml.load(f.read())
+            return (
+                random.sample(d['sources'], 5),
+                random.sample(d['targets'], 5)
+            )
+    except:
+        pass
+    return [], []
 
 
 def user_can_access_endpoint(identifier):

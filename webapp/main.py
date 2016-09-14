@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user, login_required
 from app import app
 from third import pusher, github
 from helpers import user_can_access_endpoint, all_methods, \
-                    parse_incoming_data, User
+                    parse_incoming_data, User, sources_and_targets
 from request_handler import proxy
 import settings
 
@@ -15,7 +15,9 @@ github.init_app(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    sources, targets = sources_and_targets()
+    return render_template('index.html',
+                           sources=sources, targets=targets)
 
 
 @app.route('/login/github')

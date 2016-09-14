@@ -1,0 +1,61 @@
+sources:
+- Fine-grained webpage change events from <a target="_blank" href="https://documentation.superfeedr.com/subscribers.html">Superfeedr</a>
+- Live chat events from <a target="_blank" href="https://www.olark.com/help/webhooks">Olark</a>
+- CRMs like <a target="_blank" href="http://developer.onepagecrm.com/webhooksmore/">OnePageCRM</a>, <a target="_blank" href="https://solve360.com/help/integration-walkthroughs/solve-webhooks-examples/">Solve</a>, <a target="_blank" href="https://www.zoho.com/crm/help/automation/webhooks.html#Set_Up_Webhooks">Zoho</a> and others
+- Events from helpdesk software such as <a target="_blank" href="https://support.freshdesk.com/support/solutions/articles/132589-using-webhooks-in-the-observer">Freshdesk</a> and <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/204890268-Creating-integrations-using-the-HTTP-target">Zendesk</a>
+- <a target="_blank" href="https://mixpanel.com/help/reference/webhooks">Mixpanel</a> target matching
+- <a target="_blank" href="https://segment.com/docs/integrations/webhooks/#track">Segment</a> track and identify events
+- <a target="_blank" href="https://documentation.mailgun.com/quickstart-receiving.html#how-to-start-receiving-inbound-email">Mailgun</a> incoming email
+- <a target="_blank" href="http://help.papertrailapp.com/kb/how-it-works/web-hooks/">Papertrail</a> alerts based on custom searches
+- <a target="_blank" href="http://dev.iron.io/mq/reference/push_queues/#overview">Iron.io</a> push queues or <a target="_blank" href="http://docs.aws.amazon.com/sns/latest/dg/SendMessageToHttp.html">Amazon SNS</a> messages
+- Plain HTML forms
+- package changes on <a target="_blank" href="http://blog.npmjs.org/post/145260155635/introducing-hooks-get-notifications-of-npm">npm</a>
+- <a target="_blank" href="https://docs.travis-ci.com/user/notifications/#Webhook-notification">Travis</a> builds
+- Hosted form providers like <a target="_blank" href="http://docs.typeform.io/docs/results-introduction">Typeform</a>, <a target="_blank" href="https://www.jotform.com/help/244-How-[to-Setup-Webhook-with-JotForm">Jotform</a> and many others
+- Anything that may happen with a <a target="_blank" href="https://developers.trello.com/apis/webhooks">Trello</a> board, user or card
+- <a target="_blank" href="https://www.twilio.com/platform/webhooks">Twilio</a> incoming calls and SMS
+- <a target="_blank" href="https://developer.github.com/webhooks/">GitHub</a> or <a target="_blank" href="https://confluence.atlassian.com/bitbucket/manage-webhooks-735643732.html">Bitbucket</a> webhooks for many things that may happen in a repository
+- Subscribe or unsubscribe events from <a target="_blank" href="http://kb.mailchimp.com/integrations/other-integrations/how-to-set-up-webhooks">MailChimp</a>
+- <a target="_blank" href="https://www.box.com/blog/box-webhooks-beta/">Box</a> file management and download events
+- <a target="_blank" href="https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook">Heroku</a> deploy hooks
+- <a target="_blank" href="https://context.io/docs/lite/users/webhooks">Context.io</a> webhooks for when email arrives at personal connected email accounts
+- <a target="_blank" href="https://stripe.com/docs/webhooks">Stripe</a> or <a target="_blank" href="https://developer.paypal.com/docs/integration/direct/rest-webhooks-overview/#webhook-registration">Paypal</a> payment or subscription events
+- <a target="_blank" href="https://help.modulus.io/customer/portal/articles/1701214-webhook-notifications">Modulus</a> server status changes
+- <a target="_blank" href="https://asana.com/developers/api-reference/webhooks">Asana</a>, <a target="_blank" href="https://www.pingdom.com/resources/webhooks">Pingdom</a>, <a target="_blank" href="https://docs.intercom.io/integrations/webhooks">Intercom</a>, <a target="_blank" href="http://docs.fieldbook.com/blog/well-call-you-back-webhooks-in-the-fieldbook-api">Fieldbook</a>, <a target="_blank" href="https://www.eventbrite.com/developer/v3/reference/webhooks/">Eventbrite</a>, <a target="_blank" href="https://help.shopify.com/api/reference/webhook">Shopify</a> and many others
+- <a target="_blank" href="https://zapier.com/zapbook/">All services that interface with Zapier</a>, through their <a target="_blank" href="https://zapier.com/zapbook/webhook/">outgoing webhooks</a> integration
+- <a target="_blank" href="https://ifttt.com/channels">All services that interface with IFTTT</a>, through their <a target="_blank" href="https://ifttt.com/maker">outgoing webhooks</a> channel
+targets:
+- Push data to dashboards like <a target="_blank" href="https://developer.geckoboard.com/#push-overview">Geckoboard</a>, <a target="_blank" href="https://mondash.org/welcome">Mondash</a>, <a target="_blank" href="http://www.cyfe.com/api">Cyfe</a> or <a target="_blank" href="http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/">Dasheroo</a>
+- Queue a task on <a target="_blank" href="http://dev.iron.io/worker/reference/api/#queue_a_task_from_a_webhook">Iron.io</a>
+- <a target="_blank" href="https://dev.twitter.com/rest/reference/post/statuses/update">Twitter</a>
+- <a target="_blank" href="https://sheetsu.com/docs/beta#post">Sheetsu</a> to add or update rows in a Google Sheet
+- Get notified on your phone with <a target="_blank" href="https://docs.pushbullet.com/#create-push">Pushbullet</a> or <a target="_blank" href="https://pushover.net/">Pushover</a>
+- Post to a <a target="_blank" href="https://github.com/basecamp/campfire-api#api-endpoints">Campfire</a> room or a <a target="_blank" href="https://api.slack.com/incoming-webhooks">Slack</a> or <a target="_blank" href="http://docs.mattermost.com/developer/webhooks-incoming.html">Mattermost</a> channel
+- Send custom email through <a target="_blank" href="https://documentation.mailgun.com/quickstart-sending.html">Mailgun</a> and other transactional email services
+- Push structured data to <a target="_blank" href="https://github.com/fieldbook/api-docs">Fieldbook</a> or <a target="_blank" href="https://airtable.com/api">Airtable</a>
+- Track data to <a target="_blank" href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics</a> using the <a target="_blank" href="https://ga-dev-tools.appspot.com/hit-builder/">Measurement Protocol</a> directly
+- Interact with databases with HTTP support like <a target="_blank" href="http://docs.couchdb.org/en/1.6.1/http-api.html">CouchDB</a>, <a target="_blank" href="http://docs.couchbase.com/admin/admin/REST/overview-rest-api.html">Couchbase</a> or even <a target="_blank" href="http://postgrest.com/">Postgres</a>
+- Send email from personal accounts with <a target="_blank" href="https://nylas.com/cloud/docs#sending">Nylas</a>
+- Dispatch an email from a <a target="_blank" href="https://www.sendwithus.com/docs/api">Sendwithus</a> template
+- Send SMS via <a target="_blank" href="https://www.twilio.com/docs/api/rest/sending-messages">Twilio</a> and others
+- Publish to Facebook and Twitter by <a target="_blank" href="https://indiewebcamp.com/Webmention">webmention</a>ing <a target="_blank" href="https://brid.gy/about#outgoing">Bridgy</a>
+- Metrics services like <a target="_blank" href="http://docs.datadoghq.com/api/?lang=console#metrics">Datadog</a>, <a target="_blank" href="https://www.librato.com/docs/api/#submit-metrics">Librato</a> or <a target="_blank" href="https://www.stathat.com/manual/send">StatHat</a>
+- <a target="_blank" href="https://zapier.com/zapbook/">All services that interface with Zapier</a>, through their <a target="_blank" href="https://zapier.com/zapbook/webhook/">incoming webhooks</a> integration
+- <a target="_blank" href="https://ifttt.com/channels">All services that interface with IFTTT</a>, through their <a target="_blank" href="https://ifttt.com/maker">incoming webhooks</a> channel
+examples:
+- Get notified of unexpected errors or better events from Papertrail logs in your
+  phone
+- Log data from events you're already tracking with Segment to a Dasheroo dashboard
+- Do super fine-grained logging of Trello events in a board to a Slack channel
+- Get incoming SMS posted as comments to a Trello card
+- Make specifically prefixed Slack messages trigger URL posts elsewhere
+- Send an email to yourself whenever a document tracked with Superfeedr changes
+- Get your Cloudwatch alerts in realtime on your phone
+- Render and send an email from a Sendwithus template to a user that has triggered
+  an event on Segment
+- Get incoming emails fully posted to your chat room using just Mailgun
+- Add data from plain HTML forms directly to your Fieldbook database
+- Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has
+  changed
+- Send yourself an email every time a new version of some library is released
+- Track Bitbucket code changes and Modulus server status changes on StatHat
