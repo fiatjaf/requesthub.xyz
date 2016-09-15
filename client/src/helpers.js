@@ -87,13 +87,21 @@ function jsonMarkup (doc) {
 }
 
 export function prettify (raw) {
-  raw = raw.trim()
+  var parsed
   try {
-    let parsed = JSON.parse(raw)
-    return h('code', {props: {innerHTML: jsonMarkup(parsed)}})
+    if (typeof raw === 'object') {
+      parsed = raw
+    } else {
+      parsed = JSON.parse(raw)
+    }
   } catch (e) {
-    return h('code', raw)
+    try {
+      parsed = eval('(' + raw + ')')
+    } catch (e) {
+      return h('code', raw.trim())
+    }
   }
+  return h('code', {props: {innerHTML: jsonMarkup(parsed)}})
 }
 
 CodeMirror.defineSimpleMode('jq', {

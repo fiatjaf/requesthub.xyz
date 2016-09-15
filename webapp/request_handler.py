@@ -3,6 +3,7 @@ import time
 import requests
 from urllib.parse import urlencode
 from requests.structures import CaseInsensitiveDict
+from json5dumps import dumps as json5dumps
 
 from third import pg, redis, pusher
 from helpers import jq, is_valid_url
@@ -25,12 +26,12 @@ def proxy(identifier, in_method, in_headers, data):
             'time': time.time(),
             'method': in_method,
             'headers': dict(in_headers),
-            'body': data[:2300] + ' [truncated]' if len(data) > 2207 else data
+            'body': data
         },
         'out': {
             'method': endpoint['method'],
             'url': endpoint['url'],
-            'body': '',
+            'body': None,
             'headers': {}
         },
         'response': {
@@ -59,8 +60,7 @@ def proxy(identifier, in_method, in_headers, data):
     else:
         mutated = json.dumps(mutatedjson)
 
-    event['out']['body'] = mutated[:1500] + ' [-truncated-]' \
-        if len(mutated) > 1507 else mutated
+    event['out']['body'] = mutated
 
     if endpoint['url_dynamic']:
         urlb, error = jq(endpoint['url'], data=data)
@@ -70,8 +70,7 @@ def proxy(identifier, in_method, in_headers, data):
             publish(identifier, event)
             return 'url building has failed', 200, {}
         url = urlb.decode('utf-8')
-        event['out']['url'] = url[:120] + ' [-truncated-]' \
-            if len(url) > 127 else url
+        event['out']['url'] = url
     else:
         url = endpoint['url']
 
@@ -96,8 +95,7 @@ def proxy(identifier, in_method, in_headers, data):
             return "<request failed: '%s'>" % e, 503, {}
 
         event['response']['code'] = resp.status_code
-        event['response']['body'] = resp.text[:200] + ' [-truncated-]' \
-            if len(resp.text) > 207 else resp.text
+        event['response']['body'] = resp.text
         publish(identifier, event)
         return resp.text, resp.status_code, dict(resp.headers)
     else:
@@ -107,10 +105,66 @@ def proxy(identifier, in_method, in_headers, data):
 
 
 def publish(identifier, event):
+    # first we try to turn response data into json
+    if event['response']['body']:
+        try:
+            event['response']['body'] = json.loads(event['response']['body'])
+        except ValueError:
+            # otherwise it is a string, we don't care
+            pass
+
+    # then we stringify these important values
+    # we turn them into lists to make the reducing process easier
+    inbody = list(json5dumps(event['in']['body']))
+    outbody = list(json5dumps(event['out']['body']))
+    outurl = list(event['out']['url'])
+    responsebody = list(json5dumps(event['response']['body']))
+
+    # now we are going to reduce the event size in an intelligent way
+    things = [
+        (inbody, 2200),
+        (outbody, 1900),
+        (outurl, 127),
+        (responsebody, 400)
+    ]
+
+    threshold = sum([maximum for (_, maximum) in things]) + 300
+
+    while sum([len(val) for (val, _) in things]) > threshold:
+        passing = sum([len(val) for (val, _) in things])
+        ratio = passing / threshold
+
+        # reduce the values which are further away from its maximum value
+        for value, maximum in things:
+            if len(value) > (ratio * maximum):
+                truncate = int(maximum * ratio * 0.8)
+                value[truncate:] = []
+                value[-11:] = list('[truncated]')
+
+    # bring those lists back
+    inbody = ''.join(inbody)
+    outbody = ''.join(outbody)
+    outurl = ''.join(outurl)
+    responsebody = ''.join(responsebody)
+
+    if inbody.endswith('[truncated]'):
+        event['in']['body'] = inbody
+        event['in']['replay'] = False
+
+    if outbody.endswith('[truncated]'):
+        event['out']['body'] = outbody
+
+    if outurl.endswith('[truncated]'):
+        event['out']['url'] = outurl
+
+    if responsebody.endswith('[truncated]'):
+        event['response']['body'] = responsebody
+
     eventjson = json.dumps(event)
+    eventjson5 = json5dumps(event)
 
     try:
-        pusher.trigger('private-' + identifier, 'webhook', eventjson)
+        pusher.trigger('private-' + identifier, 'webhook', eventjson5)
     except ValueError as e:
         print('couldn\'t send webhook to pusher', e)
 

@@ -94,17 +94,18 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     .multicast()
 
   let pusherEvents$ = PUSHER.event$
-    .map(ev => [ev.id, ev.data])
+    .map(ev => [ev.id, ev.data, 'pusher'])
     .scan((events, ev) => {
       events.unshift(ev)
       return events
     }, [])
+    .thru(hold)
 
   let endpointEvents$ = most.combine(
     (endpoint, pusherEvents) =>
       pusherEvents
         .filter(([id]) => id = endpoint.id)
-        .map(([_, data]) => data)
+        .map(([_, data]) => eval('(' + data + ')'))
         .concat(
           (endpoint && endpoint.recentEvents || [])
             .map(JSON.parse.bind(JSON))
@@ -234,7 +235,16 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     deleted$.map(({id}) => [`<b>${id}</b> deleted`, {timeout: 4000}]),
     userError$.map(err => [err, 'error']),
     PUSHER.event$.map(({id}) => [`detected webhook call on <b>${id}</b>`, 'info',
-                                 {timeout: 3000}])
+                                 {timeout: 3000}]),
+    most.from((() => {
+      var messages = []
+      let divs = document.querySelectorAll('.flashed-messages .alert')
+      for (let i = 0; i < divs.length; i++) {
+        messages.push([divs[i].innerHTML, 'error'])
+      }
+      document.querySelector('.flashed-messages').style.display = 'none'
+      return messages
+    })())
   )
 
   return {

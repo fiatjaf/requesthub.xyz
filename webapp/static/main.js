@@ -45802,11 +45802,11 @@ function main(_ref) {
   }, null).multicast();
 
   var pusherEvents$ = PUSHER.event$.map(function (ev) {
-    return [ev.id, ev.data];
+    return [ev.id, ev.data, 'pusher'];
   }).scan(function (events, ev) {
     events.unshift(ev);
     return events;
-  }, []);
+  }, []).thru(_hold2.default);
 
   var endpointEvents$ = _most2.default.combine(function (endpoint, pusherEvents) {
     return pusherEvents.filter(function (_ref5) {
@@ -45819,7 +45819,7 @@ function main(_ref) {
 
       var _ = _ref8[0];
       var data = _ref8[1];
-      return data;
+      return eval('(' + data + ')');
     }).concat((endpoint && endpoint.recentEvents || []).map(JSON.parse.bind(JSON)));
   }, selectedEndpoint$, pusherEvents$).startWith([]).multicast();
 
@@ -45930,7 +45930,15 @@ function main(_ref) {
   }), PUSHER.event$.map(function (_ref13) {
     var id = _ref13.id;
     return ['detected webhook call on <b>' + id + '</b>', 'info', { timeout: 3000 }];
-  }));
+  }), _most2.default.from(function () {
+    var messages = [];
+    var divs = document.querySelectorAll('.flashed-messages .alert');
+    for (var i = 0; i < divs.length; i++) {
+      messages.push([divs[i].innerHTML, 'error']);
+    }
+    document.querySelector('.flashed-messages').style.display = 'none';
+    return messages;
+  }()));
 
   return {
     DOM: vtree$,
@@ -46033,13 +46041,21 @@ function jsonMarkup(doc) {
 }
 
 function prettify(raw) {
-  raw = raw.trim();
+  var parsed;
   try {
-    var parsed = JSON.parse(raw);
-    return (0, _dom.h)('code', { props: { innerHTML: jsonMarkup(parsed) } });
+    if ((typeof raw === 'undefined' ? 'undefined' : _typeof(raw)) === 'object') {
+      parsed = raw;
+    } else {
+      parsed = JSON.parse(raw);
+    }
   } catch (e) {
-    return (0, _dom.h)('code', raw);
+    try {
+      parsed = eval('(' + raw + ')');
+    } catch (e) {
+      return (0, _dom.h)('code', raw.trim());
+    }
   }
+  return (0, _dom.h)('code', { props: { innerHTML: jsonMarkup(parsed) } });
 }
 
 _codemirror2.default.defineSimpleMode('jq', {
