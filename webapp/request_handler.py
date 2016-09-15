@@ -26,7 +26,8 @@ def proxy(identifier, in_method, in_headers, data):
             'time': time.time(),
             'method': in_method,
             'headers': dict(in_headers),
-            'body': data
+            'body': data,
+            'replay': True
         },
         'out': {
             'method': endpoint['method'],
