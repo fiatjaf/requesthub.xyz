@@ -16,6 +16,7 @@ CREATE TABLE endpoints (
   definition text NOT NULL,
   pass_headers boolean NOT NULL,
   headers jsonb NOT NULL,
+  description text,
 
   UNIQUE(owner, definition, url, headers)
 );

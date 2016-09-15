@@ -15,15 +15,17 @@ Cycle.run(app, {
       fetchAll: gql`
 query {
   endpoints {
-    id, method, url, createdAt, eventCount
+    id, url, description, eventCount
   }
 }
       `,
       fetchOne: gql`
 query fetchOne($id: ID!) {
   endpoint (id: $id) {
-    id, definition, method, url, urlDynamic,
-    passHeaders, headers, createdAt, recentEvents
+    id, description,
+    definition, method, url, urlDynamic,
+    passHeaders, headers,
+    recentEvents
   }
 }
       `,
@@ -31,6 +33,7 @@ query fetchOne($id: ID!) {
 mutation set(
   $currentId: ID
   $id: ID
+  $description: String
   $definition: String
   $method: String
   $url: String
@@ -40,6 +43,7 @@ mutation set(
   setEndpoint (
     currentId: $currentId
     id: $id
+    description: $description
     definition: $definition
     method: $method
     url: $url

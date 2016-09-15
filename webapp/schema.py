@@ -17,6 +17,7 @@ logger.addHandler(logging.StreamHandler())
 
 class Endpoint(graphene.ObjectType):
     id = graphene.ID()
+    description = graphene.String()
     owner_id = graphene.ID()
     created_at = custom_scalars.DateTime()
     method = graphene.String()
@@ -93,7 +94,7 @@ class Query(graphene.ObjectType):
 
 
 def get_endpoints(owner=None, id=None,
-                  fields=['owner_id', 'created_at', 'definition', 'method',
+                  fields=['owner_id', 'description', 'definition', 'method',
                           'url', 'url_dynamic', 'headers', 'pass_headers']):
     # always fetch the id
     fields.append('id')
@@ -107,7 +108,8 @@ def get_endpoints(owner=None, id=None,
         where['id'] = id
 
     try:
-        res = pg.select('endpoints', what=fields, where=where)
+        res = pg.select('endpoints', what=fields,
+                        where=where, order_by='created_at')
     except psycopg2.ProgrammingError as e:
         print(e)
         pg.rollback()
@@ -119,6 +121,7 @@ class SetEndpoint(graphene.Mutation):
     class Input:
         current_id = graphene.ID()
         id = graphene.ID()
+        description = graphene.String()
         method = graphene.String()
         url = graphene.String()
         definition = graphene.String()
@@ -133,7 +136,7 @@ class SetEndpoint(graphene.Mutation):
     @with_context
     def mutate(cls, instance, args, ctx, info):
         params = dict(args)
-        params.setdefault('id', haiku(token_length=4))
+        params['id'] = params.get('id') or haiku(token_length=4)
 
         if not ctx['graphiql']:
             params['owner'] = ctx['user_id']
@@ -151,7 +154,10 @@ def set_endpoint(props):
     # 'id' can be changed, this is the value of the new id
     # the old one, when it exists, comes in 'current_id'
     if 'id' in props:
-        values['id'] = slugify(props['id'])[:30]
+        values['id'] = slugify(props['id'])[:30].strip()
+
+    if 'description' in props:
+        values['description'] = props['description'][:80].strip()
 
     if 'owner' in props:
         values['owner_id'] = props['owner']
@@ -161,7 +167,7 @@ def set_endpoint(props):
 
     if 'url' in props:
         if not props['url']:
-            values['url'] = props['url']
+            values['url'] = props['url'].strip()
         else:
             if not is_valid_url(props['url']):
                 # url is not static, but a modifier

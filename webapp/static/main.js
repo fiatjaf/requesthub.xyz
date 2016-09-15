@@ -45847,13 +45847,14 @@ function main(_ref) {
   var setEndpointGQL$ = DOM.select('form button.set').events('click').tap(function (e) {
     return e.preventDefault();
   }).map(function (e) {
-    return e.ownerTarget.parentNode;
+    return e.ownerTarget.parentNode.parentNode.parentNode;
   }).map(function (form) {
     return {
       mutation: 'setEndpoint',
       variables: {
         currentId: form.querySelector('[name="current_id"]') ? form.querySelector('[name="current_id"]').value : undefined,
         id: form.querySelector('[name="identifier"]').value,
+        description: form.querySelector('[name="description"]').value,
         method: function () {
           var buttons = form.querySelectorAll('[name="method"]');
           for (var i = 0; i < buttons.length; i++) {
@@ -45881,7 +45882,7 @@ function main(_ref) {
   }).merge(DOM.select('form button.delete').events('click').tap(function (e) {
     return e.preventDefault();
   }).map(function (e) {
-    return e.ownerTarget.parentNode;
+    return e.ownerTarget.parentNode.parentNode.parentNode;
   }).map(function (form) {
     return {
       mutation: 'deleteEndpoint',
@@ -46061,9 +46062,9 @@ function haiku() {
 },{"@motorcycle/dom":202,"codemirror":214,"codemirror/addon/mode/simple":213}],409:[function(require,module,exports){
 'use strict';
 
-var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, method, url, createdAt, eventCount\n  }\n}\n      ']),
-    _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, definition, method, url, urlDynamic,\n    passHeaders, headers, createdAt, recentEvents\n  }\n}\n      ']),
-    _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
+var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, url, description, eventCount\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, url, description, eventCount\n  }\n}\n      ']),
+    _templateObject2 = _taggedTemplateLiteral(['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, description,\n    definition, method, url, urlDynamic,\n    passHeaders, headers,\n    recentEvents\n  }\n}\n      '], ['\nquery fetchOne($id: ID!) {\n  endpoint (id: $id) {\n    id, description,\n    definition, method, url, urlDynamic,\n    passHeaders, headers,\n    recentEvents\n  }\n}\n      ']),
+    _templateObject3 = _taggedTemplateLiteral(['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $description: String\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    description: $description\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      '], ['\nmutation set(\n  $currentId: ID\n  $id: ID\n  $description: String\n  $definition: String\n  $method: String\n  $url: String\n  $pass_headers: Boolean\n  $headers: String\n) {\n  setEndpoint (\n    currentId: $currentId\n    id: $id\n    description: $description\n    definition: $definition\n    method: $method\n    url: $url\n    passHeaders: $pass_headers\n    headers: $headers\n  ) {\n    ok, error, id\n  }\n}\n      ']),
     _templateObject4 = _taggedTemplateLiteral(['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, id\n  }\n}\n      '], ['\nmutation del($id: ID!) {\n  deleteEndpoint (id: $id) {\n    ok, id\n  }\n}\n      ']),
     _templateObject5 = _taggedTemplateLiteral(['\nmutation replay($id: ID!, $index: Int!) {\n  replayEvent (id: $id, index: $index) {\n    ok, id, index\n  }\n}\n      '], ['\nmutation replay($id: ID!, $index: Int!) {\n  replayEvent (id: $id, index: $index) {\n    ok, id, index\n  }\n}\n      ']);
 
@@ -46176,18 +46177,18 @@ var ENDPOINTURLPREFIX = location.protocol + '//' + location.host + '/w/';
 var cm;
 
 function create(nheaders) {
-  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h4', 'Create a new endpoint'), (0, _dom.thunk)('form', endpointForm, undefined, nheaders)])]);
+  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h4', 'Create a new endpoint'), (0, _dom.thunk)('div', endpointForm, undefined, nheaders)])]);
 }
 
 function list(endpoints) {
-  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('thead', [(0, _dom.h)('th.text-right', 'identifier'), (0, _dom.h)('th', 'target URL'), (0, _dom.h)('th', { style: { textAlign: 'center' } }, 'recent events')]), (0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
+  return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('thead', [(0, _dom.h)('th.text-right', 'identifier'), (0, _dom.h)('th'), (0, _dom.h)('th', { style: { textAlign: 'center' } }, 'recent events')]), (0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
     var nevents = endpoints[id].recentEvents ? endpoints[id].recentEvents.length : endpoints[id].eventCount;
 
     if (nevents > 10) {
       nevents = '>10';
     }
 
-    return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th.text-right', { style: { whiteSpace: 'nowrap' } }, [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, endpoints[id].url || '/dev/null'), (0, _dom.h)('th', [(0, _dom.h)('span', {
+    return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th.text-right', { style: { whiteSpace: 'nowrap' } }, [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, endpoints[id].description || endpoints[id].url || '/dev/null'), (0, _dom.h)('th', [(0, _dom.h)('span', {
       props: {
         className: 'text-center label label-' + (0, _fwitch2.default)(endpoints[id].eventCount, {
           0: 'default',
@@ -46210,7 +46211,7 @@ function endpoint(end, nheaders) {
   var showing = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
   var selectedEvent = arguments.length <= 4 || arguments[4] === undefined ? null : arguments[4];
 
-  return (0, _dom.h)('div.container-fluid', [eventsView(end, recentEvents, showing, selectedEvent), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Modify endpoint'), (0, _dom.thunk)('form', endpointForm, end, nheaders)])])]);
+  return (0, _dom.h)('div.container-fluid', [eventsView(end, recentEvents, showing, selectedEvent), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Modify endpoint'), (0, _dom.thunk)('div', endpointForm, end, nheaders, end.definition)])])]);
 }
 
 function eventsView(end, recentEvents, showing, selectedEvent) {
@@ -46292,15 +46293,26 @@ function endpointForm() {
   // default method
   end.method = end.method || 'POST';
 
-  return (0, _dom.h)('form', { key: 'create-form' }, [end.id ? (0, _dom.h)('input', { props: { type: 'hidden', name: 'current_id', value: end.id } }) : null, (0, _dom.h)('label', { props: { htmlFor: 'identifier' } }, 'Identifier'), (0, _dom.h)('div.input-prepend', [(0, _dom.h)('span.add-on', ENDPOINTURLPREFIX), (0, _dom.h)('input', {
+  return (0, _dom.h)('form', { key: 'create-form' }, [end.id ? (0, _dom.h)('input', { props: { type: 'hidden', name: 'current_id', value: end.id } }) : null, (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span8', [(0, _dom.h)('label', { props: { htmlFor: 'identifier' } }, 'Identifier'), (0, _dom.h)('div.input-prepend', { props: { style: { display: 'inline' } } }, [(0, _dom.h)('span.add-on', ENDPOINTURLPREFIX), (0, _dom.h)('input', {
     props: {
       type: 'text',
       id: 'identifier',
       name: 'identifier',
-      placeholder: 'Leave blank for an autogenerated name.',
+      maxLength: 30,
+      placeholder: 'Leave blank to autogenerate.',
       value: end.id || (0, _helpers.haiku)()
     }
-  })]), (0, _dom.h)('label', ['Method'].concat(['POST', 'PUT', 'GET', 'DELETE'].map(function (m) {
+  })]), (0, _dom.h)('span.help-block', 'This is the URL that will listen for the webhooks.')]), (0, _dom.h)('div.span4', [(0, _dom.h)('label', { props: { htmlFor: 'description' } }, 'Short description'), (0, _dom.h)('input', {
+    props: {
+      style: { display: 'inline' },
+      type: 'text',
+      id: 'description',
+      name: 'description',
+      maxLength: 80,
+      placeholder: 'From A to B.',
+      value: end.description
+    }
+  }), (0, _dom.h)('span.help-block', 'Optional text to help you find this.')]), (0, _dom.h)('div.span12', [(0, _dom.h)('label', ['Method'].concat(['POST', 'PUT', 'GET', 'DELETE'].map(function (m) {
     return (0, _dom.h)('label', {
       style: { display: 'inline', 'margin-left': '20px' },
       props: { htmlFor: m }
@@ -46337,7 +46349,7 @@ function endpointForm() {
         });
       },
       update: function update(old, curr) {
-        if (curr.elm.value !== old.elm.value) {
+        if (curr.elm.value !== old.elm.value || curr.elm.value !== cm.getValue()) {
           cm.setValue(curr.elm.value);
         }
       },
@@ -46361,7 +46373,7 @@ function endpointForm() {
         type: 'text',
         value: key
       }
-    }), ': ', (0, _dom.h)('input.span8', {
+    }), (0, _dom.h)('span.hidden-table.hidden-phone', ': '), (0, _dom.h)('input.span8', {
       style: { display: 'inline', margin: '0', marginLeft: '1%' },
       props: {
         name: 'header-val',
@@ -46370,11 +46382,11 @@ function endpointForm() {
         value: value
       }
     })]);
-  })).concat([(0, _dom.h)('a.btn.btn-small.btn-warning.r-header', { props: { href: '#', title: 'less headers' } }, '-'), ' ', (0, _dom.h)('a.btn.btn-small.btn-success.a-header', { props: { href: '#', title: 'more headers' } }, '+')])), (0, _dom.h)('span.help-block', ['Headers can be used for setting Content-Type, Authorization tokens or other fancy things your target endpoint may require. ', (0, _dom.h)('code', 'application/json'), ' is the default Content-Type.']), end.id ? (0, _dom.h)('button.btn.btn-danger.delete', {
+  })).concat([(0, _dom.h)('a.btn.btn-small.btn-warning.r-header', { props: { href: '#', title: 'less headers' } }, '-'), ' ', (0, _dom.h)('a.btn.btn-small.btn-success.a-header', { props: { href: '#', title: 'more headers' } }, '+')])), (0, _dom.h)('span.help-block', ['Headers can be used to set Content-Type, Authorization tokens or other fancy things your target endpoint may require. ', (0, _dom.h)('code', 'application/json'), ' is the default Content-Type.']), end.id ? (0, _dom.h)('button.btn.btn-danger.delete', {
     props: { title: 'Delete endpoint' }
   }, 'Delete endpoint') : null, (0, _dom.h)('button.btn.pull-right.set', {
     props: { title: end.id ? 'Update endpoint' : 'Create endpoint' }
-  }, end.id ? 'Update endpoint' : 'Create endpoint')]);
+  }, end.id ? 'Update endpoint' : 'Create endpoint')])])]);
 }
 
 function empty() {

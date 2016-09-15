@@ -158,7 +158,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
 
   let setEndpointGQL$ = DOM.select('form button.set').events('click')
     .tap(e => e.preventDefault())
-    .map(e => e.ownerTarget.parentNode)
+    .map(e => e.ownerTarget.parentNode.parentNode.parentNode)
     .map(form => ({
       mutation: 'setEndpoint',
       variables: {
@@ -166,6 +166,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
           ? form.querySelector('[name="current_id"]').value
           : undefined,
         id: form.querySelector('[name="identifier"]').value,
+        description: form.querySelector('[name="description"]').value,
         method: (() => {
           let buttons = form.querySelectorAll('[name="method"]')
           for (let i = 0; i < buttons.length; i++) {
@@ -193,7 +194,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     .merge(
       DOM.select('form button.delete').events('click')
         .tap(e => e.preventDefault())
-        .map(e => e.ownerTarget.parentNode)
+        .map(e => e.ownerTarget.parentNode.parentNode.parentNode)
         .map(form => ({
           mutation: 'deleteEndpoint',
           variables: {id: form.querySelector('[name="identifier"]').value}

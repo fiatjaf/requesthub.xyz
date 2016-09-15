@@ -46,7 +46,7 @@
     <div class="span12" id="howitworks">
     <h2>How it works</h2>
       <p>When you <a href="/dashboard#/create">create an endpoint</a> you must define a <strong>target URL</strong> and a <strong>modifier</strong>, then you'll be assigned a <strong>listening URL</strong> for that endpoint. You may also specify a method other than <code>POST</code> and any HTTP headers necessary (with, for example, API credentials)</p>
-      <p>Whenever something gets <code>POST</code>ed to that listening URL, the data sent with the request will be piped through the modifier and the result will be sent to the target URL. Other types of requests, including <code>x-www-form-urlencoded</code>, <code>PUT</code>s and <code>GET</code>s are supported.</p>
+      <p>Whenever something gets <code>POST</code>ed to that listening URL, the data sent with the request will be piped through the modifier and the result will be sent to the target URL. Other types of requests, including <code>x-www-form-urlencoded</code>, <code>PUT</code>s and <code>GET</code>s, are supported.</p>
       <p>The modifier is a <a target="_blank" href="https://stedolan.github.io/jq/manual/#Objects-{}">jq filter</a> that builds an object based on the input data. If you're not familiar with <em>jq</em>, imagine there is a service that sends JSON webhooks with the contents in the following format:</p>
       <pre><code>{
   "Type": "FruitEvent",
