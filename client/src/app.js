@@ -95,7 +95,6 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
       events.unshift(ev)
       return events
     }, [])
-    .thru(hold)
 
   let endpointEvents$ = most.combine(
     (endpoint, pusherEvents) =>

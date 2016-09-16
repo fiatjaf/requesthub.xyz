@@ -45808,7 +45808,7 @@ function main(_ref) {
   }).scan(function (events, ev) {
     events.unshift(ev);
     return events;
-  }, []).thru(_hold2.default);
+  }, []);
 
   var endpointEvents$ = _most2.default.combine(function (endpoint, pusherEvents) {
     return pusherEvents.filter(function (_ref5) {
@@ -45971,7 +45971,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.prettify = prettify;
 exports.haiku = haiku;
-exports.antijq = antijq;
 
 var _dom = require('@motorcycle/dom');
 
@@ -46082,48 +46081,6 @@ function haiku() {
   return base + '-' + suffix;
 }
 
-function antijq(def) {
-  var input = {};
-
-  def.replace(/[^\]\w](\.[\w\.\[\]]+)/g, function (_, m) {
-    var parts = [];
-    m.split('.').slice(1).forEach(function (part) {
-      var idx = part.split(']')[0].split('[');
-      if (idx.length === 2) {
-        parts.push(idx[0]);
-        parts.push(parseInt(idx[1]));
-      } else {
-        parts.push(part.trim());
-      }
-    });
-
-    var o = input;
-
-    parts = parts.filter(function (x) {
-      return x;
-    });
-
-    for (var i = 0; i < parts.length; i++) {
-      var k = parts[i];
-
-      if (i === parts.length - 1) {
-        var charCode = parseInt(1000 * Math.random());
-        charCode = charCode % 120 + 60;
-        o[k] = String.fromCharCode(charCode).repeat(parseInt(15 * Math.random()));
-        return;
-      } else if (typeof parts[i + 1] === 'string') {
-        o[k] = {};
-      } else if (typeof parts[i + 1] === 'number') {
-        o[k] = [];
-      }
-
-      o = o[k];
-    }
-  });
-
-  return input;
-}
-
 },{"@motorcycle/dom":202,"codemirror":214,"codemirror/addon/mode/simple":213}],409:[function(require,module,exports){
 'use strict';
 
@@ -46140,6 +46097,10 @@ var _create2 = _interopRequireDefault(_create);
 var _mostRun = require('@cycle/most-run');
 
 var _mostRun2 = _interopRequireDefault(_mostRun);
+
+var _hold = require('@most/hold');
+
+var _hold2 = _interopRequireDefault(_hold);
 
 var _pusherJs = require('pusher-js');
 
@@ -46194,11 +46155,11 @@ function pusherDriver(identifier$) {
       }).map(function (ev) {
         return { id: id, data: ev };
       });
-    })
+    }).thru(_hold2.default)
   };
 }
 
-},{"./app":407,"@cycle/most-run":188,"@most/create":189,"@motorcycle/dom":202,"cycle-graphql-most-driver":1,"cycle-hashrouter-most-driver":215,"cycle-notification-most-driver":217,"pusher-js":384,"snabbdom/modules/props":401,"snabbdom/modules/style":402}],410:[function(require,module,exports){
+},{"./app":407,"@cycle/most-run":188,"@most/create":189,"@most/hold":191,"@motorcycle/dom":202,"cycle-graphql-most-driver":1,"cycle-hashrouter-most-driver":215,"cycle-notification-most-driver":217,"pusher-js":384,"snabbdom/modules/props":401,"snabbdom/modules/style":402}],410:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46326,7 +46287,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
         : 'important' // 5xx
         )
       }
-    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
+    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [selected.out.error ? (0, _dom.h)('span', { props: { style: { color: 'red' } } }, selected.out.error) : (0, _helpers.prettify)(selected.out.body)])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
   }
 
   /* recent activity is open, show everything */

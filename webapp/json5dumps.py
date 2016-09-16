@@ -30,7 +30,7 @@ def dumps(data):
     elif t is list:
         return '[' + ','.join([dumps(v) for v in data]) + ']'
     else:
-        return ''
+        return 'null'
 
 
 def _dumpkey(k):

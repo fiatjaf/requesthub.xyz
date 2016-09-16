@@ -1,5 +1,6 @@
 import create from '@most/create'
 import Cycle from '@cycle/most-run'
+import hold from '@most/hold'
 import Pusher from 'pusher-js'
 import {makeDOMDriver} from '@motorcycle/dom'
 import {makeGraphQLDriver, gql} from 'cycle-graphql-most-driver'
@@ -92,5 +93,6 @@ function pusherDriver (identifier$) {
         return create(add => channel.bind('webhook', add))
           .map(ev => ({id, data: ev}))
       })
+      .thru(hold)
   }
 }

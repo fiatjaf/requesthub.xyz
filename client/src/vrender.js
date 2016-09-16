@@ -199,7 +199,9 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
         ]),
         h('div.span6', [
           h('pre', {props: {title: 'Data sent.'}}, [
-            prettify(selected.out.body) || selected.out.error
+            selected.out.error
+              ? h('span', {props: {style: {color: 'red'}}}, selected.out.error)
+              : prettify(selected.out.body)
           ])
         ])
       ]),
