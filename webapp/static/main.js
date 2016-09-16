@@ -45766,7 +45766,7 @@ function main(_ref) {
       delete map[cur.deleted];
     }
     return map;
-  }, {});
+  }, {}).multicast();
 
   var selectedEndpointId$ = match$.filter(function (m) {
     return m.value.where === 'ENDPOINT';
@@ -45776,9 +45776,11 @@ function main(_ref) {
 
   var selectedEndpoint$ = _most2.default.combine(function (endpointId, endpoints) {
     return endpoints[endpointId];
-  }, selectedEndpointId$, endpoints$).merge(match$.filter(function (m) {
-    return m.value.where !== 'ENDPOINT';
-  }).constant(null)).multicast();
+  }, selectedEndpointId$, endpoints$.tap(function (x) {
+    return console.log('all', x);
+  })).tap(function (x) {
+    return console.log('selected', x);
+  });
 
   var nheaders$ = _most2.default.merge(DOM.select('.a-header').events('click').tap(function (e) {
     return e.preventDefault();
@@ -45820,8 +45822,12 @@ function main(_ref) {
       var _ = _ref8[0];
       var data = _ref8[1];
       return eval('(' + data + ')');
-    }).concat((endpoint && endpoint.recentEvents || []).map(JSON.parse.bind(JSON)));
-  }, selectedEndpoint$, pusherEvents$).startWith([]).multicast();
+    }).concat((endpoint && endpoint.recentEvents || []).map(function (data) {
+      return JSON.parse(data);
+    }));
+  }, selectedEndpoint$.tap(function (x) {
+    return console.log('this', x);
+  }), pusherEvents$).startWith([]).thru(_hold2.default);
 
   var vtree$ = _most2.default.combine(function (match, endpoints, nheaders, events, showingEvents, selectedEvent) {
     return (0, _fwitch2.default)(match.value.where, {

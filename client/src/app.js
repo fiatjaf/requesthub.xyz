@@ -59,6 +59,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
       }
       return map
     }, {})
+    .multicast()
 
   let selectedEndpointId$ = match$
     .filter(m => m.value.where === 'ENDPOINT')
@@ -67,14 +68,9 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
   let selectedEndpoint$ = most.combine(
     (endpointId, endpoints) => endpoints[endpointId],
     selectedEndpointId$,
-    endpoints$
+    endpoints$.tap(x => console.log('all', x))
   )
-    .merge(
-      match$
-        .filter(m => m.value.where !== 'ENDPOINT')
-        .constant(null)
-    )
-    .multicast()
+    .tap(x => console.log('selected', x))
 
   let nheaders$ = most.merge(
     DOM.select('.a-header').events('click').tap(e => e.preventDefault()).constant(1),
@@ -108,14 +104,15 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
         .map(([_, data]) => eval('(' + data + ')'))
         .concat(
           (endpoint && endpoint.recentEvents || [])
-            .map(JSON.parse.bind(JSON))
+            .map(data => JSON.parse(data))
         )
     ,
-    selectedEndpoint$,
+    selectedEndpoint$
+      .tap(x => console.log('this', x)),
     pusherEvents$
   )
     .startWith([])
-    .multicast()
+    .thru(hold)
 
   let vtree$ = most.combine(
     (match, endpoints, nheaders, events, showingEvents, selectedEvent) =>

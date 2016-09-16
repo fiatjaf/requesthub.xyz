@@ -205,7 +205,9 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
                 )
               }
             }, selected.response.code),
-            h('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')
+            selected.in.replay
+              ? h('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')
+              : null
           ])
         ]),
         h('br'),
