@@ -23,17 +23,17 @@
       <h4>No code, and yet maximum flexibility</h4>
       <p>{{ config.SERVICE_NAME }} reads the data from the incoming request, runs it through <a href="https://stedolan.github.io/jq/manual/#Objects-{}">a jq modifier</a>, then sends it to the target URL. With much less errors and debugging it's like writing a relaxed JSON template with variables and utility <a href="https://stedolan.github.io/jq/manual/#Builtinoperatorsandfunctions">functions</a>.</p>
     </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span6">
+      <h4>Step out of limited UI-heavy solutions for handling webhooks</h4>
+      <p>Don't get trapped into IFTTT and Zapier crap. Now everytime you see a webhook you can cook a custom endpoint for it in 2 minutes and start dispatching notifications, storing data or making calls to other places. All under your fine control. Speed matters.</p>
+    </div>
     <div class="span6">
       <h4>Painless debugging</h4>
       <p>When you actually need to debug the modifier or inspect the target server responses, you can do it through {{ config.SERVICE_NAME }}'s simple interface, from where you can view incoming, outgoing and response bodies and <em>replay events</em> while being able to edit the endpoint definitions.</p>
     </div>
-    <div class="span6">
-
-    </div>
   </div>
-  <hr>
-  <!--<img src="/static/img/demo.png">-->
-  <hr>
   <div class="row-fluid">
     <div class="span12">
       <p style="color:#555" class="lead text-center">
@@ -42,6 +42,9 @@
     </div>
   </div>
   <hr>
+  <div class="row-fluid">
+    <img src=/static/handdrawn.png>
+  </div>
   <div class="row-fluid">
     <div class="span12" id="howitworks">
     <h2>How it works</h2>
@@ -93,12 +96,36 @@
     <div class="row-fluid">
       <p><h4>Some <a target="_blank" href="https://gist.github.com/fiatjaf/1d57953aa285b9bf5b51712268cfb97b">real world examples</a> of modifiers connecting 2 services.</h4></p>
     </div>
+    <hr>
+    <div class="row-fluid">
+      <h3>Some questions you might have:</h3>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
+        <h5>How much does it cost?</h5>
+        <p>While in the beta, everything is free. Later on, we will have some limits on the number of endpoints and webhooks handled per month. However we will probably grandfather people who used us during beta, if they are over the limit -- unless they're truly abusing the service, anyway, don't worry.</p>
+      </div>
+      <div class="span6">
+        <h5>I want to connect 2 services using webhooks, but don't know how.</h5>
+        <p>Great, we really would like to help. We will do it for you for a cheap price (starting at <em>$5</em> for simple tasks). Contact us through the form on the bottom and describe the task you want done.</p>
+      </div>
+    </div>
+    <div class="row-fluid">
+      <div class="span6">
+        <h5>Can I have a new feature?</h5>
+        <p>We hope so! Please let us know through the form on the bottom what kind of feature do you need and we will consider implementing it.</p>
+      </div>
+      <div class="span6">
+        <h5>Can I trust this for mission-critical tasks involving webhooks or other requests?</h5>
+        <p>Not yet. When we are ready to provide such guarantees we will write that down in this page, but not yet. Consider using {{ config.SERVICE_NAME }} for personal tasks and not-so-crucial business tasks, that will truly help us improve.</p>
+      </div>
+    </div>
   </div>
   <hr>
   <div class="row-fluid">
     <div class="span6">
       <h3>Contact us</h3>
-      <p>Have anything to say about us? Please, we would like to hear!</p>
+      <p>Have anything to say? Please, we would like to hear!</p>
     </div>
     <div class="span6">
       <form method="POST" action="https://formspree.io/fiatjaf@boardthreads.com">
