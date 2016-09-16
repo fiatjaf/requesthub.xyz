@@ -45971,6 +45971,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 exports.prettify = prettify;
 exports.haiku = haiku;
+exports.antijq = antijq;
 
 var _dom = require('@motorcycle/dom');
 
@@ -46079,6 +46080,48 @@ function haiku() {
   window.HAIKU.unshift(base);
   var suffix = parseInt(Math.random() * 10000);
   return base + '-' + suffix;
+}
+
+function antijq(def) {
+  var input = {};
+
+  def.replace(/[^\]\w](\.[\w\.\[\]]+)/g, function (_, m) {
+    var parts = [];
+    m.split('.').slice(1).forEach(function (part) {
+      var idx = part.split(']')[0].split('[');
+      if (idx.length === 2) {
+        parts.push(idx[0]);
+        parts.push(parseInt(idx[1]));
+      } else {
+        parts.push(part.trim());
+      }
+    });
+
+    var o = input;
+
+    parts = parts.filter(function (x) {
+      return x;
+    });
+
+    for (var i = 0; i < parts.length; i++) {
+      var k = parts[i];
+
+      if (i === parts.length - 1) {
+        var charCode = parseInt(1000 * Math.random());
+        charCode = charCode % 120 + 60;
+        o[k] = String.fromCharCode(charCode).repeat(parseInt(15 * Math.random()));
+        return;
+      } else if (typeof parts[i + 1] === 'string') {
+        o[k] = {};
+      } else if (typeof parts[i + 1] === 'number') {
+        o[k] = [];
+      }
+
+      o = o[k];
+    }
+  });
+
+  return input;
 }
 
 },{"@motorcycle/dom":202,"codemirror":214,"codemirror/addon/mode/simple":213}],409:[function(require,module,exports){
@@ -46238,6 +46281,7 @@ function endpoint(end, nheaders) {
 
 function eventsView(end, recentEvents, showing, selectedEvent) {
   if (!showing) {
+    /* recent activity is hidden, just show a button */
     return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12.text-center', [(0, _dom.h)('button.btn.btn-large.btn-info.s-events', ['See recent activity', (0, _dom.h)('br'), recentEvents.length ? recentEvents.length + (recentEvents.length >= 8 ? ' (or more)' : '') + ' recently.' : 'No events in the last 24h.'])])])]);
   }
 
@@ -46271,17 +46315,22 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
     };
   }
 
-  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? (0, _dom.h)('div.span8', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.method + ' ' + selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '> /dev/null'), ' ', (0, _dom.h)('span', {
-    props: {
-      className: 'label label-' + (selected.response.code === 0 ? 'info' // 0
-      : selected.response.code < 500 ? selected.response.code < 400 ? selected.response.code < 300 ? selected.response.code < 200 ? 'default' // 1xx
-      : 'success' // 2xx
-      : 'inverse' // 3xx
-      : 'warning' // 4xx
-      : 'important' // 5xx
-      )
-    }
-  }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]) : null])]);
+  function displaySelected(selected) {
+    return (0, _dom.h)('div.span8', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [selected.out.url_error ? (0, _dom.h)('span.label.label-important', { props: { title: 'URL building failed.' } }, selected.out.url_error) : selected.out.url ? (0, _dom.h)('span.label.label-info', { props: { title: 'Dispatched to this destination.' } }, selected.out.method + ' ' + selected.out.url) : (0, _dom.h)('span.label.label-inverse', { props: { title: 'No URL given, just debugging.' } }, '> /dev/null'), ' ', (0, _dom.h)('span', {
+      props: {
+        className: 'label label-' + (selected.response.code === 0 ? 'info' // 0
+        : selected.response.code < 500 ? selected.response.code < 400 ? selected.response.code < 300 ? selected.response.code < 200 ? 'default' // 1xx
+        : 'success' // 2xx
+        : 'inverse' // 3xx
+        : 'warning' // 4xx
+        : 'important' // 5xx
+        )
+      }
+    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [(0, _helpers.prettify)(selected.out.body) || selected.out.error])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
+  }
+
+  /* recent activity is open, show everything */
+  return (0, _dom.h)('div.container-fluid', [(0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('h3', ['Recent activity ', (0, _dom.h)('a.btn.btn-small.btn-info.h-events', { props: { title: 'Hide', href: '#' } }, '▲')])]), (0, _dom.h)('div.span6', { style: { paddingTop: '1.5em' } }, [(0, _dom.h)('span.label.label-info', ENDPOINTURLPREFIX + end.id)])]), (0, _dom.h)('div.row-fluid.events', [(0, _dom.h)('div', { props: { className: selected ? 'span4' : 'span12' } }, [(0, _dom.h)('table.table.table-hover.table-stripped', [(0, _dom.h)('tbody', recentEvents.slice(0, 12).map(makeTr))])]), selected ? displaySelected(selected) : null])]);
 }
 
 function endpointForm() {

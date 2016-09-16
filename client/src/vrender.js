@@ -101,6 +101,7 @@ export function endpoint (end, nheaders, recentEvents = [],
 
 function eventsView (end, recentEvents, showing, selectedEvent) {
   if (!showing) {
+    /* recent activity is hidden, just show a button */
     return h('div.container-fluid', [
       h('div.row-fluid', [
         h('div.span12.text-center', [
@@ -154,6 +155,61 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
       ])
   }
 
+  function displaySelected (selected) {
+    return h('div.span8', [
+      h('div.row-fluid', [
+        h('div.span12', [
+          selected.out.url_error
+            ? h('span.label.label-important',
+                {props: {title: 'URL building failed.'}},
+                selected.out.url_error)
+            : selected.out.url
+              ? h('span.label.label-info',
+                  {props: {title: 'Dispatched to this destination.'}},
+                  selected.out.method + ' ' + selected.out.url)
+              : h('span.label.label-inverse',
+                  {props: {title: 'No URL given, just debugging.'}},
+                  '> /dev/null'),
+          ' ',
+          h('span', {
+            props: {
+              className: 'label label-' + (selected.response.code === 0
+                ? 'info' // 0
+                : selected.response.code < 500
+                  ? selected.response.code < 400
+                    ? selected.response.code < 300
+                      ? selected.response.code < 200
+                        ? 'default' // 1xx
+                        : 'success' // 2xx
+                      : 'inverse' // 3xx
+                    : 'warning' // 4xx
+                  : 'important' // 5xx
+              )
+            }
+          }, selected.response.code),
+          selected.in.replay
+            ? h('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')
+            : null
+        ])
+      ]),
+      h('br'),
+      h('div.row-fluid', [
+        h('div.span6', [
+          h('pre', {props: {title: 'Data received.'}}, [prettify(selected.in.body)])
+        ]),
+        h('div.span6', [
+          h('pre', {props: {title: 'Data sent.'}}, [
+            prettify(selected.out.body) || selected.out.error
+          ])
+        ])
+      ]),
+      selected.response.body ? h('pre',
+        {props: {title: 'Response from destination'}},
+        [prettify(selected.response.body)]) : null
+    ])
+  }
+
+  /* recent activity is open, show everything */
   return h('div.container-fluid', [
     h('div.row-fluid', [
       h('div.span6', [
@@ -174,57 +230,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
           h('tbody', recentEvents.slice(0, 12).map(makeTr))
         ])
       ]),
-      selected ? h('div.span8', [
-        h('div.row-fluid', [
-          h('div.span12', [
-            selected.out.url_error
-              ? h('span.label.label-important',
-                  {props: {title: 'URL building failed.'}},
-                  selected.out.url_error)
-              : selected.out.url
-                ? h('span.label.label-info',
-                    {props: {title: 'Dispatched to this destination.'}},
-                    selected.out.method + ' ' + selected.out.url)
-                : h('span.label.label-inverse',
-                    {props: {title: 'No URL given, just debugging.'}},
-                    '> /dev/null'),
-            ' ',
-            h('span', {
-              props: {
-                className: 'label label-' + (selected.response.code === 0
-                  ? 'info' // 0
-                  : selected.response.code < 500
-                    ? selected.response.code < 400
-                      ? selected.response.code < 300
-                        ? selected.response.code < 200
-                          ? 'default' // 1xx
-                          : 'success' // 2xx
-                        : 'inverse' // 3xx
-                      : 'warning' // 4xx
-                    : 'important' // 5xx
-                )
-              }
-            }, selected.response.code),
-            selected.in.replay
-              ? h('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY')
-              : null
-          ])
-        ]),
-        h('br'),
-        h('div.row-fluid', [
-          h('div.span6', [
-            h('pre', {props: {title: 'Data received.'}}, [prettify(selected.in.body)])
-          ]),
-          h('div.span6', [
-            h('pre', {props: {title: 'Data sent.'}}, [
-              prettify(selected.out.body) || selected.out.error
-            ])
-          ])
-        ]),
-        selected.response.body ? h('pre',
-          {props: {title: 'Response from destination'}},
-          [prettify(selected.response.body)]) : null
-      ]) : null
+      selected ? displaySelected(selected) : null
     ])
   ])
 }
