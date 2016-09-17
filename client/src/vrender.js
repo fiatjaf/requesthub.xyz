@@ -206,7 +206,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
         ])
       ]),
       selected.response.body ? h('pre',
-        {props: {title: 'Response from destination'}},
+        {props: {title: 'Response received.'}},
         [prettify(selected.response.body)]) : null
     ])
   }

@@ -57,7 +57,6 @@ def dashboard():
 
 
 @app.route('/pusher/auth', methods=['POST'])
-@login_required
 def pusher_auth():
     identifier = request.form['channel_name'][8:]
     if not user_can_access_endpoint(identifier):

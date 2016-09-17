@@ -46287,7 +46287,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
         : 'important' // 5xx
         )
       }
-    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [selected.out.error ? (0, _dom.h)('span', { props: { style: { color: 'red' } } }, selected.out.error) : (0, _helpers.prettify)(selected.out.body)])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response from destination' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
+    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [selected.out.error ? (0, _dom.h)('span', { props: { style: { color: 'red' } } }, selected.out.error) : (0, _helpers.prettify)(selected.out.body)])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response received.' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
   }
 
   /* recent activity is open, show everything */
