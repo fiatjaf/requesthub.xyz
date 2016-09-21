@@ -172,7 +172,7 @@ def publish(identifier, event):
     key = 'events:%s' % identifier
     rpipe = redis.pipeline()
     rpipe.lpush(key, eventjson)  # prepend
-    rpipe.ltrim(key, 0, 8)  # leave only the last 9
+    rpipe.ltrim(key, 0, 9)  # leave only the last 10
     rpipe.expire(key, 86400)  # 24h
     rpipe.execute()
 

@@ -39,8 +39,8 @@ export function list (endpoints) {
             ? endpoints[id].recentEvents.length
             : endpoints[id].eventCount
 
-          if (nevents > 10) {
-            nevents = '>10'
+          if (nevents > 9) {
+            nevents = '10+'
           }
 
           return h('tr', {key: id}, [
@@ -150,7 +150,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
       }, [
         h('td', ev.in.method),
         h('td', prettydate.format(new Date(parseInt(ev.in.time * 1000)))),
-        h('td', {props: {style: {wordBreak: 'break-all'}}}, ev.out.url || '/dev/null'),
+        h('td', {style: {wordBreak: 'break-all'}}, ev.out.url || '/dev/null'),
         h('td', ev.response.code)
       ])
   }
@@ -200,7 +200,7 @@ function eventsView (end, recentEvents, showing, selectedEvent) {
         h('div.span6', [
           h('pre', {props: {title: 'Data sent.'}}, [
             selected.out.error
-              ? h('span', {props: {style: {color: 'red'}}}, selected.out.error)
+              ? h('span', {style: {color: 'red'}}, selected.out.error)
               : prettify(selected.out.body)
           ])
         ])
@@ -273,7 +273,7 @@ function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
     h('div.row-fluid', [
       h('div.span8', [
         h('label', {props: {htmlFor: 'identifier'}}, 'Identifier'),
-        h('div.input-prepend', {props: {style: {display: 'inline'}}}, [
+        h('div.input-prepend', {style: {display: 'inline'}}, [
           h('span.add-on', ENDPOINTURLPREFIX),
           h('input', {
             props: {
@@ -291,8 +291,8 @@ function endpointForm (end = {headers: {}, definition: '{\n  key: "value"\n}'},
       h('div.span4', [
         h('label', {props: {htmlFor: 'description'}}, 'Short description'),
         h('input', {
+          style: {display: 'inline'},
           props: {
-            style: {display: 'inline'},
             type: 'text',
             id: 'description',
             name: 'description',

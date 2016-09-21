@@ -46210,8 +46210,8 @@ function list(endpoints) {
   return (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span12', [(0, _dom.h)('h3', 'Your endpoints')]), Object.keys(endpoints).length ? (0, _dom.h)('table.table.table-hover', [(0, _dom.h)('thead', [(0, _dom.h)('th.text-right', 'identifier'), (0, _dom.h)('th'), (0, _dom.h)('th', { style: { textAlign: 'center' } }, 'recent events')]), (0, _dom.h)('tbody', Object.keys(endpoints).map(function (id) {
     var nevents = endpoints[id].recentEvents ? endpoints[id].recentEvents.length : endpoints[id].eventCount;
 
-    if (nevents > 10) {
-      nevents = '>10';
+    if (nevents > 9) {
+      nevents = '10+';
     }
 
     return (0, _dom.h)('tr', { key: id }, [(0, _dom.h)('th.text-right', { style: { whiteSpace: 'nowrap' } }, [(0, _dom.h)('a', { props: { href: '#/endpoints/' + id } }, id)]), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, endpoints[id].description || endpoints[id].url || '/dev/null'), (0, _dom.h)('th', [(0, _dom.h)('span', {
@@ -46272,7 +46272,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
         props: {
           id: 'ev-' + ev.in.time
         }
-      }, [(0, _dom.h)('td', ev.in.method), (0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', { props: { style: { wordBreak: 'break-all' } } }, ev.out.url || '/dev/null'), (0, _dom.h)('td', ev.response.code)]);
+      }, [(0, _dom.h)('td', ev.in.method), (0, _dom.h)('td', _prettyDate2.default.format(new Date(parseInt(ev.in.time * 1000)))), (0, _dom.h)('td', { style: { wordBreak: 'break-all' } }, ev.out.url || '/dev/null'), (0, _dom.h)('td', ev.response.code)]);
     };
   }
 
@@ -46287,7 +46287,7 @@ function eventsView(end, recentEvents, showing, selectedEvent) {
         : 'important' // 5xx
         )
       }
-    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [selected.out.error ? (0, _dom.h)('span', { props: { style: { color: 'red' } } }, selected.out.error) : (0, _helpers.prettify)(selected.out.body)])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response received.' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
+    }, selected.response.code), selected.in.replay ? (0, _dom.h)('button.btn.btn-small.btn-warning.pull-right.replay', 'REPLAY') : null])]), (0, _dom.h)('br'), (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data received.' } }, [(0, _helpers.prettify)(selected.in.body)])]), (0, _dom.h)('div.span6', [(0, _dom.h)('pre', { props: { title: 'Data sent.' } }, [selected.out.error ? (0, _dom.h)('span', { style: { color: 'red' } }, selected.out.error) : (0, _helpers.prettify)(selected.out.body)])])]), selected.response.body ? (0, _dom.h)('pre', { props: { title: 'Response received.' } }, [(0, _helpers.prettify)(selected.response.body)]) : null]);
   }
 
   /* recent activity is open, show everything */
@@ -46325,7 +46325,7 @@ function endpointForm() {
   // default method
   end.method = end.method || 'POST';
 
-  return (0, _dom.h)('form', { key: 'create-form' }, [end.id ? (0, _dom.h)('input', { props: { type: 'hidden', name: 'current_id', value: end.id } }) : null, (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span8', [(0, _dom.h)('label', { props: { htmlFor: 'identifier' } }, 'Identifier'), (0, _dom.h)('div.input-prepend', { props: { style: { display: 'inline' } } }, [(0, _dom.h)('span.add-on', ENDPOINTURLPREFIX), (0, _dom.h)('input', {
+  return (0, _dom.h)('form', { key: 'create-form' }, [end.id ? (0, _dom.h)('input', { props: { type: 'hidden', name: 'current_id', value: end.id } }) : null, (0, _dom.h)('div.row-fluid', [(0, _dom.h)('div.span8', [(0, _dom.h)('label', { props: { htmlFor: 'identifier' } }, 'Identifier'), (0, _dom.h)('div.input-prepend', { style: { display: 'inline' } }, [(0, _dom.h)('span.add-on', ENDPOINTURLPREFIX), (0, _dom.h)('input', {
     props: {
       type: 'text',
       id: 'identifier',
@@ -46335,8 +46335,8 @@ function endpointForm() {
       value: end.id || (0, _helpers.haiku)()
     }
   })]), (0, _dom.h)('span.help-block', 'This is the URL that will listen for the webhooks.')]), (0, _dom.h)('div.span4', [(0, _dom.h)('label', { props: { htmlFor: 'description' } }, 'Short description'), (0, _dom.h)('input', {
+    style: { display: 'inline' },
     props: {
-      style: { display: 'inline' },
       type: 'text',
       id: 'description',
       name: 'description',
