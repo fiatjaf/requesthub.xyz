@@ -3,7 +3,7 @@ sources:
 - Live chat events from <a target="_blank" href="https://www.olark.com/help/webhooks">Olark</a>
 - CRMs like <a target="_blank" href="http://developer.onepagecrm.com/webhooksmore/">OnePageCRM</a>, <a target="_blank" href="https://solve360.com/help/integration-walkthroughs/solve-webhooks-examples/">Solve</a>, <a target="_blank" href="https://www.zoho.com/crm/help/automation/webhooks.html#Set_Up_Webhooks">Zoho</a> and others
 - Events from helpdesk software such as <a target="_blank" href="https://support.freshdesk.com/support/solutions/articles/132589-using-webhooks-in-the-observer">Freshdesk</a> and <a target="_blank" href="https://support.zendesk.com/hc/en-us/articles/204890268-Creating-integrations-using-the-HTTP-target">Zendesk</a>
-- <a target="_blank" href="https://mixpanel.com/help/reference/webhooks">Mixpanel</a> target matching
+- Notifications based on <a target="_blank" href="https://mixpanel.com/help/reference/webhooks">Mixpanel</a> queries
 - <a target="_blank" href="https://segment.com/docs/integrations/webhooks/#track">Segment</a> track and identify events
 - <a target="_blank" href="https://documentation.mailgun.com/quickstart-receiving.html#how-to-start-receiving-inbound-email">Mailgun</a> incoming email
 - <a target="_blank" href="http://help.papertrailapp.com/kb/how-it-works/web-hooks/">Papertrail</a> alerts based on custom searches
@@ -25,6 +25,7 @@ sources:
 - <a target="_blank" href="https://zapier.com/zapbook/">All services that interface with Zapier</a>, through their <a target="_blank" href="https://zapier.com/zapbook/webhook/">outgoing webhooks</a> integration
 - <a target="_blank" href="https://ifttt.com/channels">All services that interface with IFTTT</a>, through their <a target="_blank" href="https://ifttt.com/maker">outgoing webhooks</a> channel
 targets:
+- Execute custom actions on Trello using [Butler bot scripts](https://trello.com/c/qo3SOQIP/134-scripts-commands-triggered-by-a-link-beta)
 - Push data to dashboards like <a target="_blank" href="https://developer.geckoboard.com/#push-overview">Geckoboard</a>, <a target="_blank" href="https://mondash.org/welcome">Mondash</a>, <a target="_blank" href="http://www.cyfe.com/api">Cyfe</a> or <a target="_blank" href="http://www.dasheroo.com/blog/our-new-push-api-is-live-why-does-it-matter-to-your-dashboards/">Dasheroo</a>
 - Queue a task on <a target="_blank" href="http://dev.iron.io/worker/reference/api/#queue_a_task_from_a_webhook">Iron.io</a>
 - <a target="_blank" href="https://dev.twitter.com/rest/reference/post/statuses/update">Twitter</a>
@@ -48,14 +49,13 @@ examples:
 - Log data from events you're already tracking with Segment to a Dasheroo dashboard
 - Do super fine-grained logging of Trello events in a board to a Slack channel
 - Get incoming SMS posted as comments to a Trello card
-- Make specifically prefixed Slack messages trigger URL posts elsewhere
-- Send an email to yourself whenever a document tracked with Superfeedr changes
+- Make specifically prefixed Slack messages trigger the creation of Trello cards
+- Post URLs to a chat room whenever a webpage tracked with Superfeedr changes
 - Get your Cloudwatch alerts in realtime on your phone
-- Render and send an email from a Sendwithus template to a user that has triggered
-  an event on Segment
+- Send an email to yourself whenever a special event happens on Segment
 - Get incoming emails fully posted to your chat room using just Mailgun
 - Add data from plain HTML forms directly to your Fieldbook database
-- Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has
-  changed
+- Trigger an Iron.io task that will parse a webpage whenever Superfeedr says it has changed
 - Send yourself an email every time a new version of some library is released
 - Track Bitbucket code changes and Modulus server status changes on StatHat
+- Automate your email marketing with notifications from Mixpanel triggering templates on Sendwithus
