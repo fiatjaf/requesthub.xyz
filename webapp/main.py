@@ -1,6 +1,7 @@
 from flask import request, jsonify, redirect, make_response, \
                   render_template, flash, url_for, g
 from flask_login import login_user, logout_user, login_required
+from flask_cors import cross_origin
 
 from app import app
 from third import pusher, github
@@ -70,6 +71,7 @@ def pusher_auth():
 
 @app.route('/w/<identifier>/', methods=all_methods)
 @app.route('/w/<identifier>', methods=all_methods)
+@cross_origin()
 def proxy_webhook(identifier):
     # parse incoming data
     data = parse_incoming_data()
