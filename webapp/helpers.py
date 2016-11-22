@@ -64,6 +64,8 @@ def modifier_check(modifier):
                       'strings can be parsed' or \
             stderr == 'jq: error (at <stdin>:0): Cannot iterate over ' + \
                       'null (null)' or \
+            stderr == 'jq: error (at <stdin>:0): split input and ' + \
+                      'separator must be strings' or \
             stderr == 'jq: error (at <stdin>:1): strptime/1 ' + \
                       'requires string inputs and arguments':
         return True, ''
