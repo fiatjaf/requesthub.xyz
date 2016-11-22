@@ -154,7 +154,7 @@ var MostAdapter = {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = MostAdapter;
 
-},{"@most/create":4,"@most/hold":6,"most-subject":122}],3:[function(require,module,exports){
+},{"@most/create":4,"@most/hold":6,"most-subject":117}],3:[function(require,module,exports){
 "use strict";
 var base_1 = require('@cycle/base');
 var most_adapter_1 = require('@cycle/most-adapter');
@@ -378,7 +378,7 @@ exports.default = Cycle;
   return index;
 
 }));
-},{"@most/multicast":7,"most":258}],5:[function(require,module,exports){
+},{"@most/multicast":7,"most":253}],5:[function(require,module,exports){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('most')) :
   typeof define === 'function' && define.amd ? define(['exports', 'most'], factory) :
@@ -662,7 +662,7 @@ exports.default = Cycle;
 })));
 
 
-},{"most":258}],6:[function(require,module,exports){
+},{"most":253}],6:[function(require,module,exports){
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
     define('@most/hold', ['exports', '@most/multicast'], factory);
@@ -1283,7 +1283,7 @@ var DOMSource = exports.DOMSource = function () {
 
   return DOMSource;
 }();
-},{"./ElementFinder":10,"./EventDelegator":11,"./isolate/isolation":18,"./util":26,"@most/dom-event":5,"most-subject":122}],10:[function(require,module,exports){
+},{"./ElementFinder":10,"./EventDelegator":11,"./isolate/isolation":18,"./util":26,"@most/dom-event":5,"most-subject":117}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1583,7 +1583,7 @@ var VNodeWrapper = exports.VNodeWrapper = function () {
 
   return VNodeWrapper;
 }();
-},{"./hyperscript/h":14,"snabbdom-selector/lib/classNameFromVNode":272,"snabbdom-selector/lib/selectorParser":273}],14:[function(require,module,exports){
+},{"./hyperscript/h":14,"snabbdom-selector/lib/classNameFromVNode":267,"snabbdom-selector/lib/selectorParser":268}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1659,7 +1659,7 @@ function h(sel, b, c) {
   }
   return vnode(sel, data, children, text, undefined);
 };
-},{"snabbdom/is":283,"snabbdom/vnode":291}],15:[function(require,module,exports){
+},{"snabbdom/is":278,"snabbdom/vnode":286}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2272,7 +2272,7 @@ function makeDOMDriver(container) {
     return new _DOMSource.DOMSource(rootElement$, [], isolateModule, delegators);
   };
 }
-},{"./DOMSource":9,"./VNodeWrapper":13,"./isolate/module":19,"./modules":24,"./transposition":25,"./util":26,"@most/hold":6,"snabbdom":290}],21:[function(require,module,exports){
+},{"./DOMSource":9,"./VNodeWrapper":13,"./isolate/module":19,"./modules":24,"./transposition":25,"./util":26,"@most/hold":6,"snabbdom":285}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2333,7 +2333,7 @@ function makeHTMLDriver() {
     return new HTMLSource(preprocessedVNode$);
   };
 }
-},{"./transposition":25,"most":258,"snabbdom-to-html":275}],22:[function(require,module,exports){
+},{"./transposition":25,"most":253,"snabbdom-to-html":270}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2397,7 +2397,7 @@ var MockedDOMSource = exports.MockedDOMSource = function () {
 function mockDOMSource(mockConfig) {
   return new MockedDOMSource(mockConfig);
 }
-},{"most":258}],23:[function(require,module,exports){
+},{"most":253}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2472,7 +2472,7 @@ exports.AttrsModule = _attributes2.default;
 exports.HeroModule = _hero2.default;
 exports.EventsModule = _eventlisteners2.default;
 exports.DatasetModule = _dataset.DatasetModule;
-},{"./dataset":23,"snabbdom/modules/attributes":284,"snabbdom/modules/class":285,"snabbdom/modules/eventlisteners":286,"snabbdom/modules/hero":287,"snabbdom/modules/props":288,"snabbdom/modules/style":289}],25:[function(require,module,exports){
+},{"./dataset":23,"snabbdom/modules/attributes":279,"snabbdom/modules/class":280,"snabbdom/modules/eventlisteners":281,"snabbdom/modules/hero":282,"snabbdom/modules/props":283,"snabbdom/modules/style":284}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2518,7 +2518,7 @@ function transposeVNode(vNode) {
     throw new TypeError('transposition: Unhandled vNode type');
   }
 }
-},{"most":258}],26:[function(require,module,exports){
+},{"most":253}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2574,194 +2574,852 @@ function getSelectors(namespace) {
 }
 
 var eventTypesThatDontBubble = exports.eventTypesThatDontBubble = ['load', 'unload', 'focus', 'blur', 'mouseenter', 'mouseleave', 'submit', 'change', 'reset', 'timeupdate', 'playing', 'waiting', 'seeking', 'seeked', 'ended', 'loadedmetadata', 'loadeddata', 'canplay', 'canplaythrough', 'durationchange', 'play', 'pause', 'ratechange', 'volumechange', 'suspend', 'emptied', 'stalled', 'scroll'];
-},{"matches-selector":118}],27:[function(require,module,exports){
+},{"matches-selector":113}],27:[function(require,module,exports){
 "use strict";
-var networkInterface_1 = require('./transport/networkInterface');
-var isUndefined = require('lodash.isundefined');
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var Observable_1 = require('./util/Observable');
+var errors_1 = require('./errors');
+var errorHandling_1 = require('./util/errorHandling');
 var assign = require('lodash.assign');
-var isString = require('lodash.isstring');
-var store_1 = require('./store');
-var QueryManager_1 = require('./core/QueryManager');
-var storeUtils_1 = require('./data/storeUtils');
-var fragments_1 = require('./fragments');
-var getFromAST_1 = require('./queries/getFromAST');
-var DEFAULT_REDUX_ROOT_KEY = 'apollo';
-function defaultReduxRootSelector(state) {
-    return state[DEFAULT_REDUX_ROOT_KEY];
-}
-var ApolloClient = (function () {
-    function ApolloClient(_a) {
+var isEqual = require('lodash.isequal');
+var ObservableQuery = (function (_super) {
+    __extends(ObservableQuery, _super);
+    function ObservableQuery(_a) {
         var _this = this;
-        var _b = _a === void 0 ? {} : _a, networkInterface = _b.networkInterface, reduxRootKey = _b.reduxRootKey, reduxRootSelector = _b.reduxRootSelector, initialState = _b.initialState, dataIdFromObject = _b.dataIdFromObject, resultTransformer = _b.resultTransformer, resultComparator = _b.resultComparator, _c = _b.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _b.ssrForceFetchDelay, ssrForceFetchDelay = _d === void 0 ? 0 : _d, _e = _b.mutationBehaviorReducers, mutationBehaviorReducers = _e === void 0 ? {} : _e, _f = _b.addTypename, addTypename = _f === void 0 ? true : _f, queryTransformer = _b.queryTransformer, customResolvers = _b.customResolvers;
-        this.middleware = function () {
-            return function (store) {
-                _this.setStore(store);
-                return function (next) { return function (action) {
-                    var returnValue = next(action);
-                    _this.queryManager.broadcastNewStore(store.getState());
-                    return returnValue;
-                }; };
+        var scheduler = _a.scheduler, options = _a.options, _b = _a.shouldSubscribe, shouldSubscribe = _b === void 0 ? true : _b;
+        var queryManager = scheduler.queryManager;
+        var queryId = queryManager.generateQueryId();
+        var isPollingQuery = !!options.pollInterval;
+        var subscriberFunction = function (observer) {
+            var retQuerySubscription = {
+                unsubscribe: function () {
+                    if (isPollingQuery) {
+                        scheduler.stopPollingQuery(queryId);
+                    }
+                    queryManager.stopQuery(queryId);
+                },
             };
+            if (shouldSubscribe) {
+                queryManager.addObservableQuery(queryId, _this);
+                queryManager.addQuerySubscription(queryId, retQuerySubscription);
+            }
+            if (isPollingQuery) {
+                if (_this.options.noFetch) {
+                    throw new Error('noFetch option should not use query polling.');
+                }
+                _this.scheduler.startPollingQuery(_this.options, queryId);
+            }
+            queryManager.startQuery(queryId, _this.options, queryManager.queryListenerForObserver(queryId, _this.options, observer));
+            return retQuerySubscription;
         };
-        if (reduxRootKey && reduxRootSelector) {
-            throw new Error('Both "reduxRootKey" and "reduxRootSelector" are configured, but only one of two is allowed.');
+        _super.call(this, subscriberFunction);
+        this.options = options;
+        this.variables = this.options.variables || {};
+        this.scheduler = scheduler;
+        this.queryManager = queryManager;
+        this.queryId = queryId;
+        this.refetch = function (variables) {
+            _this.variables = assign({}, _this.variables, variables);
+            if (_this.options.noFetch) {
+                throw new Error('noFetch option should not use query refetch.');
+            }
+            return _this.queryManager.fetchQuery(_this.queryId, assign(_this.options, {
+                forceFetch: true,
+                variables: _this.variables,
+            }))
+                .then(function (result) { return _this.queryManager.transformResult(result); });
+        };
+        this.setOptions = function (opts) {
+            _this.options = assign({}, _this.options, opts);
+            if (opts.pollInterval) {
+                _this.startPolling(opts.pollInterval);
+            }
+            else if (opts.pollInterval === 0) {
+                _this.stopPolling();
+            }
+            return _this.setVariables(opts.variables);
+        };
+        this._setOptionsNoResult = function (opts) {
+            _this.options = assign({}, _this.options, opts);
+            if (opts.pollInterval) {
+                _this.startPolling(opts.pollInterval);
+            }
+            else if (opts.pollInterval === 0) {
+                _this.stopPolling();
+            }
+            _this._setVariablesNoResult(opts.variables);
+        };
+        this.setVariables = function (variables) {
+            var newVariables = assign({}, _this.variables, variables);
+            if (isEqual(newVariables, _this.variables)) {
+                return _this.result();
+            }
+            else {
+                _this.variables = newVariables;
+                return _this.queryManager.fetchQuery(_this.queryId, assign(_this.options, {
+                    variables: _this.variables,
+                }))
+                    .then(function (result) { return _this.queryManager.transformResult(result); });
+            }
+        };
+        this._setVariablesNoResult = function (variables) {
+            var newVariables = assign({}, _this.variables, variables);
+            if (isEqual(newVariables, _this.variables)) {
+                return;
+            }
+            else {
+                _this.variables = newVariables;
+                _this.queryManager.fetchQuery(_this.queryId, assign(_this.options, {
+                    variables: _this.variables,
+                }));
+            }
+        };
+        this.fetchMore = function (fetchMoreOptions) {
+            return Promise.resolve()
+                .then(function () {
+                var qid = _this.queryManager.generateQueryId();
+                var combinedOptions = null;
+                if (fetchMoreOptions.query) {
+                    combinedOptions = fetchMoreOptions;
+                }
+                else {
+                    var variables = assign({}, _this.variables, fetchMoreOptions.variables);
+                    combinedOptions = assign({}, _this.options, fetchMoreOptions, {
+                        variables: variables,
+                    });
+                }
+                combinedOptions = assign({}, combinedOptions, {
+                    forceFetch: true,
+                });
+                return _this.queryManager.fetchQuery(qid, combinedOptions);
+            })
+                .then(function (fetchMoreResult) {
+                var reducer = fetchMoreOptions.updateQuery;
+                var mapFn = function (previousResult, _a) {
+                    var queryVariables = _a.queryVariables;
+                    return reducer(previousResult, {
+                        fetchMoreResult: fetchMoreResult,
+                        queryVariables: queryVariables,
+                    });
+                };
+                _this.updateQuery(mapFn);
+                return fetchMoreResult;
+            });
+        };
+        this.updateQuery = function (mapFn) {
+            var _a = _this.queryManager.getQueryWithPreviousResult(_this.queryId), previousResult = _a.previousResult, queryVariables = _a.queryVariables, querySelectionSet = _a.querySelectionSet, _b = _a.queryFragments, queryFragments = _b === void 0 ? [] : _b;
+            var newResult = errorHandling_1.tryFunctionOrLogError(function () { return mapFn(previousResult, { queryVariables: queryVariables }); });
+            if (newResult) {
+                _this.queryManager.store.dispatch({
+                    type: 'APOLLO_UPDATE_QUERY_RESULT',
+                    newResult: newResult,
+                    queryVariables: queryVariables,
+                    querySelectionSet: querySelectionSet,
+                    queryFragments: queryFragments,
+                });
+            }
+        };
+        this.stopPolling = function () {
+            if (isPollingQuery) {
+                _this.scheduler.stopPollingQuery(_this.queryId);
+            }
+        };
+        this.startPolling = function (pollInterval) {
+            if (_this.options.noFetch) {
+                throw new Error('noFetch option should not use query polling.');
+            }
+            if (isPollingQuery) {
+                _this.scheduler.stopPollingQuery(_this.queryId);
+            }
+            _this.options.pollInterval = pollInterval;
+            _this.scheduler.startPollingQuery(_this.options, _this.queryId, false);
+        };
+    }
+    ObservableQuery.prototype.result = function () {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            var subscription = _this.subscribe({
+                next: function (result) {
+                    resolve(result);
+                    setTimeout(function () {
+                        subscription.unsubscribe();
+                    }, 0);
+                },
+                error: function (error) {
+                    reject(error);
+                },
+            });
+        });
+    };
+    ObservableQuery.prototype.currentResult = function () {
+        var _a = this.queryManager.getCurrentQueryResult(this), data = _a.data, partial = _a.partial;
+        var queryStoreValue = this.queryManager.getApolloState().queries[this.queryId];
+        if (queryStoreValue && (queryStoreValue.graphQLErrors || queryStoreValue.networkError)) {
+            var error = new errors_1.ApolloError({
+                graphQLErrors: queryStoreValue.graphQLErrors,
+                networkError: queryStoreValue.networkError,
+            });
+            return { data: {}, loading: false, error: error };
         }
-        if (reduxRootKey) {
-            console.warn('"reduxRootKey" option is deprecated and might be removed in the upcoming versions, ' +
-                'please use the "reduxRootSelector" instead.');
-            this.reduxRootKey = reduxRootKey;
-        }
-        if (queryTransformer) {
-            throw new Error('queryTransformer option no longer supported in Apollo Client 0.5. ' +
-                'Instead, there is a new "addTypename" option, which is on by default.');
-        }
-        if (!reduxRootSelector && reduxRootKey) {
-            this.reduxRootSelector = function (state) { return state[reduxRootKey]; };
-        }
-        else if (isString(reduxRootSelector)) {
-            this.reduxRootKey = reduxRootSelector;
-            this.reduxRootSelector = function (state) { return state[reduxRootSelector]; };
-        }
-        else if (typeof reduxRootSelector === 'function') {
-            this.reduxRootSelector = reduxRootSelector;
-        }
-        else {
-            this.reduxRootSelector = null;
-        }
-        this.initialState = initialState ? initialState : {};
-        this.networkInterface = networkInterface ? networkInterface :
-            networkInterface_1.createNetworkInterface({ uri: '/graphql' });
-        this.addTypename = addTypename;
+        var queryLoading = !queryStoreValue || queryStoreValue.loading;
+        var loading = (this.options.forceFetch && queryLoading)
+            || (partial && !this.options.noFetch);
+        return { data: data, loading: loading };
+    };
+    return ObservableQuery;
+}(Observable_1.Observable));
+exports.ObservableQuery = ObservableQuery;
+
+},{"./errors":41,"./util/Observable":56,"./util/errorHandling":57,"lodash.assign":82,"lodash.isequal":93}],28:[function(require,module,exports){
+"use strict";
+var forOwn = require('lodash.forown');
+var isEqual = require('lodash.isequal');
+var store_1 = require('./store');
+var getFromAST_1 = require('./queries/getFromAST');
+var queryTransform_1 = require('./queries/queryTransform');
+var printer_1 = require('graphql-tag/printer');
+var readFromStore_1 = require('./data/readFromStore');
+var diffAgainstStore_1 = require('./data/diffAgainstStore');
+var queryPrinting_1 = require('./queryPrinting');
+var batching_1 = require('./batching');
+var scheduler_1 = require('./scheduler');
+var Observable_1 = require('./util/Observable');
+var errorHandling_1 = require('./util/errorHandling');
+var errors_1 = require('./errors');
+var ObservableQuery_1 = require('./ObservableQuery');
+;
+var QueryManager = (function () {
+    function QueryManager(_a) {
+        var _this = this;
+        var networkInterface = _a.networkInterface, store = _a.store, reduxRootSelector = _a.reduxRootSelector, queryTransformer = _a.queryTransformer, resultTransformer = _a.resultTransformer, resultComparator = _a.resultComparator, _b = _a.shouldBatch, shouldBatch = _b === void 0 ? false : _b, _c = _a.batchInterval, batchInterval = _c === void 0 ? 10 : _c;
+        this.idCounter = 0;
+        this.networkInterface = networkInterface;
+        this.store = store;
+        this.reduxRootSelector = reduxRootSelector;
+        this.queryTransformer = queryTransformer;
         this.resultTransformer = resultTransformer;
         this.resultComparator = resultComparator;
-        this.shouldForceFetch = !(ssrMode || ssrForceFetchDelay > 0);
-        this.dataId = dataIdFromObject;
-        this.fieldWithArgs = storeUtils_1.storeKeyNameFromFieldNameAndArgs;
-        if (ssrForceFetchDelay) {
-            setTimeout(function () { return _this.shouldForceFetch = true; }, ssrForceFetchDelay);
+        this.pollingTimers = {};
+        this.batchInterval = batchInterval;
+        this.queryListeners = {};
+        this.scheduler = new scheduler_1.QueryScheduler({
+            queryManager: this,
+        });
+        this.batcher = new batching_1.QueryBatcher({
+            shouldBatch: shouldBatch,
+            networkInterface: this.networkInterface,
+        });
+        this.batcher.start(this.batchInterval);
+        this.fetchQueryPromises = {};
+        this.observableQueries = {};
+        this.queryIdsByName = {};
+        if (this.store['subscribe']) {
+            var currentStoreData_1;
+            this.store['subscribe'](function () {
+                var previousStoreData = currentStoreData_1 || {};
+                var previousStoreHasData = Object.keys(previousStoreData).length;
+                currentStoreData_1 = _this.getApolloState();
+                if (isEqual(previousStoreData, currentStoreData_1) && previousStoreHasData) {
+                    return;
+                }
+                _this.broadcastQueries();
+            });
         }
-        this.reducerConfig = {
-            dataIdFromObject: dataIdFromObject,
-            mutationBehaviorReducers: mutationBehaviorReducers,
-            customResolvers: customResolvers,
-        };
-        this.watchQuery = this.watchQuery.bind(this);
-        this.query = this.query.bind(this);
-        this.mutate = this.mutate.bind(this);
-        this.setStore = this.setStore.bind(this);
-        this.resetStore = this.resetStore.bind(this);
     }
-    ApolloClient.prototype.watchQuery = function (options) {
-        this.initStore();
-        if (!this.shouldForceFetch && options.forceFetch) {
-            options = assign({}, options, {
-                forceFetch: false,
+    QueryManager.prototype.broadcastNewStore = function (store) {
+        this.broadcastQueries();
+    };
+    QueryManager.prototype.mutate = function (_a) {
+        var _this = this;
+        var mutation = _a.mutation, variables = _a.variables, _b = _a.resultBehaviors, resultBehaviors = _b === void 0 ? [] : _b, _c = _a.fragments, fragments = _c === void 0 ? [] : _c, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _d = _a.refetchQueries, refetchQueries = _d === void 0 ? [] : _d;
+        var mutationId = this.generateQueryId();
+        mutation = getFromAST_1.addFragmentsToDocument(mutation, fragments);
+        if (this.queryTransformer) {
+            mutation = queryTransform_1.applyTransformers(mutation, [this.queryTransformer]);
+        }
+        var mutationDef = getFromAST_1.getMutationDefinition(mutation);
+        var mutationString = printer_1.print(mutation);
+        var queryFragmentMap = getFromAST_1.createFragmentMap(getFromAST_1.getFragmentDefinitions(mutation));
+        var request = {
+            query: mutation,
+            variables: variables,
+            operationName: getFromAST_1.getOperationName(mutation),
+        };
+        var updateQueriesResultBehaviors = !optimisticResponse ? [] :
+            this.collectResultBehaviorsFromUpdateQueries(updateQueries, { data: optimisticResponse }, true);
+        this.store.dispatch({
+            type: 'APOLLO_MUTATION_INIT',
+            mutationString: mutationString,
+            mutation: {
+                id: 'ROOT_MUTATION',
+                typeName: 'Mutation',
+                selectionSet: mutationDef.selectionSet,
+            },
+            variables: variables,
+            mutationId: mutationId,
+            fragmentMap: queryFragmentMap,
+            optimisticResponse: optimisticResponse,
+            resultBehaviors: resultBehaviors.concat(updateQueriesResultBehaviors),
+        });
+        return new Promise(function (resolve, reject) {
+            _this.networkInterface.query(request)
+                .then(function (result) {
+                if (result.errors) {
+                    reject(new errors_1.ApolloError({
+                        graphQLErrors: result.errors,
+                    }));
+                }
+                _this.store.dispatch({
+                    type: 'APOLLO_MUTATION_RESULT',
+                    result: result,
+                    mutationId: mutationId,
+                    resultBehaviors: resultBehaviors.concat(_this.collectResultBehaviorsFromUpdateQueries(updateQueries, result)),
+                });
+                refetchQueries.forEach(function (name) { _this.refetchQueryByName(name); });
+                resolve(_this.transformResult(result));
+            })
+                .catch(function (err) {
+                _this.store.dispatch({
+                    type: 'APOLLO_MUTATION_ERROR',
+                    error: err,
+                    mutationId: mutationId,
+                });
+                reject(new errors_1.ApolloError({
+                    networkError: err,
+                }));
             });
-        }
-        fragments_1.createFragment(options.query);
-        var fullDocument = getFromAST_1.addFragmentsToDocument(options.query, options.fragments);
-        var realOptions = Object.assign({}, options, {
-            query: fullDocument,
         });
-        delete realOptions.fragments;
-        return this.queryManager.watchQuery(realOptions);
     };
-    ;
-    ApolloClient.prototype.query = function (options) {
-        this.initStore();
-        if (!this.shouldForceFetch && options.forceFetch) {
-            options = assign({}, options, {
-                forceFetch: false,
+    QueryManager.prototype.queryListenerForObserver = function (queryId, options, observer) {
+        var _this = this;
+        var lastResult;
+        return function (queryStoreValue) {
+            if (!queryStoreValue) {
+                return;
+            }
+            var shouldNotifyIfLoading = queryStoreValue.returnPartialData
+                || queryStoreValue.previousVariables;
+            if (!queryStoreValue.loading || shouldNotifyIfLoading) {
+                if (queryStoreValue.graphQLErrors || queryStoreValue.networkError) {
+                    var apolloError = new errors_1.ApolloError({
+                        graphQLErrors: queryStoreValue.graphQLErrors,
+                        networkError: queryStoreValue.networkError,
+                    });
+                    if (observer.error) {
+                        observer.error(apolloError);
+                    }
+                    else {
+                        console.error('Unhandled error', apolloError, apolloError.stack);
+                    }
+                }
+                else {
+                    try {
+                        var resultFromStore = {
+                            data: readFromStore_1.readSelectionSetFromStore({
+                                store: _this.getDataWithOptimisticResults(),
+                                rootId: queryStoreValue.query.id,
+                                selectionSet: queryStoreValue.query.selectionSet,
+                                variables: queryStoreValue.previousVariables || queryStoreValue.variables,
+                                returnPartialData: options.returnPartialData || options.noFetch,
+                                fragmentMap: queryStoreValue.fragmentMap,
+                            }),
+                            loading: queryStoreValue.loading,
+                        };
+                        if (observer.next) {
+                            if (_this.isDifferentResult(lastResult, resultFromStore)) {
+                                lastResult = resultFromStore;
+                                observer.next(_this.transformResult(resultFromStore));
+                            }
+                        }
+                    }
+                    catch (error) {
+                        if (observer.error) {
+                            observer.error(error);
+                        }
+                    }
+                }
+            }
+        };
+    };
+    QueryManager.prototype.watchQuery = function (options, shouldSubscribe) {
+        if (shouldSubscribe === void 0) { shouldSubscribe = true; }
+        getFromAST_1.getQueryDefinition(options.query);
+        var observableQuery = new ObservableQuery_1.ObservableQuery({
+            scheduler: this.scheduler,
+            options: options,
+            shouldSubscribe: shouldSubscribe,
+        });
+        return observableQuery;
+    };
+    QueryManager.prototype.query = function (options) {
+        var _this = this;
+        if (options.returnPartialData) {
+            throw new Error('returnPartialData option only supported on watchQuery.');
+        }
+        if (options.query.kind !== 'Document') {
+            throw new Error('You must wrap the query string in a "gql" tag.');
+        }
+        var requestId = this.idCounter;
+        var resPromise = new Promise(function (resolve, reject) {
+            _this.addFetchQueryPromise(requestId, resPromise, resolve, reject);
+            return _this.watchQuery(options, false).result().then(function (result) {
+                _this.removeFetchQueryPromise(requestId);
+                resolve(result);
+            }).catch(function (error) {
+                _this.removeFetchQueryPromise(requestId);
+                reject(error);
             });
-        }
-        fragments_1.createFragment(options.query);
-        var fullDocument = getFromAST_1.addFragmentsToDocument(options.query, options.fragments);
-        var realOptions = Object.assign({}, options, {
-            query: fullDocument,
         });
-        delete realOptions.fragments;
-        return this.queryManager.query(realOptions);
+        return resPromise;
     };
-    ;
-    ApolloClient.prototype.mutate = function (options) {
-        this.initStore();
-        var fullDocument = getFromAST_1.addFragmentsToDocument(options.mutation, options.fragments);
-        var realOptions = Object.assign({}, options, {
-            mutation: fullDocument,
+    QueryManager.prototype.fetchQuery = function (queryId, options) {
+        return this.fetchQueryOverInterface(queryId, options);
+    };
+    QueryManager.prototype.generateQueryId = function () {
+        var queryId = this.idCounter.toString();
+        this.idCounter++;
+        return queryId;
+    };
+    QueryManager.prototype.stopQueryInStore = function (queryId) {
+        this.store.dispatch({
+            type: 'APOLLO_QUERY_STOP',
+            queryId: queryId,
         });
-        delete realOptions.fragments;
-        return this.queryManager.mutate(realOptions);
     };
     ;
-    ApolloClient.prototype.subscribe = function (options) {
-        this.initStore();
-        var fullDocument = getFromAST_1.addFragmentsToDocument(options.query, options.fragments);
-        var realOptions = Object.assign({}, options, {
-            document: fullDocument,
-        });
-        delete realOptions.fragments;
-        delete realOptions.query;
-        return this.queryManager.startGraphQLSubscription(realOptions);
+    QueryManager.prototype.getApolloState = function () {
+        return this.reduxRootSelector(this.store.getState());
     };
-    ApolloClient.prototype.reducer = function () {
-        return store_1.createApolloReducer(this.reducerConfig);
+    QueryManager.prototype.getDataWithOptimisticResults = function () {
+        return store_1.getDataWithOptimisticResults(this.getApolloState());
     };
-    ApolloClient.prototype.initStore = function () {
-        if (this.store) {
-            return;
+    QueryManager.prototype.addQueryListener = function (queryId, listener) {
+        this.queryListeners[queryId] = this.queryListeners[queryId] || [];
+        this.queryListeners[queryId].push(listener);
+    };
+    QueryManager.prototype.addFetchQueryPromise = function (requestId, promise, resolve, reject) {
+        this.fetchQueryPromises[requestId.toString()] = { promise: promise, resolve: resolve, reject: reject };
+    };
+    QueryManager.prototype.removeFetchQueryPromise = function (requestId) {
+        delete this.fetchQueryPromises[requestId.toString()];
+    };
+    QueryManager.prototype.addObservableQuery = function (queryId, observableQuery) {
+        this.observableQueries[queryId] = { observableQuery: observableQuery, subscriptions: [] };
+        var queryDef = getFromAST_1.getQueryDefinition(observableQuery.options.query);
+        if (queryDef.name && queryDef.name.value) {
+            var queryName = getFromAST_1.getQueryDefinition(observableQuery.options.query).name.value;
+            this.queryIdsByName[queryName] = this.queryIdsByName[queryName] || [];
+            this.queryIdsByName[queryName].push(observableQuery.queryId);
         }
-        if (this.reduxRootSelector) {
-            throw new Error('Cannot initialize the store because "reduxRootSelector" or "reduxRootKey" is provided. ' +
-                'They should only be used when the store is created outside of the client. ' +
-                'This may lead to unexpected results when querying the store internally. ' +
-                "Please remove that option from ApolloClient constructor.");
-        }
-        this.setStore(store_1.createApolloStore({
-            reduxRootKey: DEFAULT_REDUX_ROOT_KEY,
-            initialState: this.initialState,
-            config: this.reducerConfig,
-        }));
-        this.reduxRootKey = DEFAULT_REDUX_ROOT_KEY;
     };
-    ;
-    ApolloClient.prototype.resetStore = function () {
-        this.queryManager.resetStore();
-    };
-    ;
-    ApolloClient.prototype.getInitialState = function () {
-        return this.queryManager.getInitialState();
-    };
-    ApolloClient.prototype.setStore = function (store) {
-        var reduxRootSelector;
-        if (this.reduxRootSelector) {
-            reduxRootSelector = this.reduxRootSelector;
+    QueryManager.prototype.addQuerySubscription = function (queryId, querySubscription) {
+        if (this.observableQueries.hasOwnProperty(queryId)) {
+            this.observableQueries[queryId].subscriptions.push(querySubscription);
         }
         else {
-            reduxRootSelector = defaultReduxRootSelector;
-            this.reduxRootKey = DEFAULT_REDUX_ROOT_KEY;
+            this.observableQueries[queryId] = {
+                observableQuery: null,
+                subscriptions: [querySubscription],
+            };
         }
-        if (isUndefined(reduxRootSelector(store.getState()))) {
-            throw new Error('Existing store does not use apolloReducer. Please make sure the store ' +
-                'is properly configured and "reduxRootSelector" is correctly specified.');
+    };
+    QueryManager.prototype.removeObservableQuery = function (queryId) {
+        var observableQuery = this.observableQueries[queryId].observableQuery;
+        var queryName = getFromAST_1.getQueryDefinition(observableQuery.options.query).name.value;
+        delete this.observableQueries[queryId];
+        this.queryIdsByName[queryName] = this.queryIdsByName[queryName].filter(function (val) {
+            return !(observableQuery.queryId === val);
+        });
+    };
+    QueryManager.prototype.resetStore = function () {
+        var _this = this;
+        Object.keys(this.fetchQueryPromises).forEach(function (key) {
+            var reject = _this.fetchQueryPromises[key].reject;
+            reject(new Error('Store reset while query was in flight.'));
+        });
+        this.store.dispatch({
+            type: 'APOLLO_STORE_RESET',
+            observableQueryIds: Object.keys(this.observableQueries),
+        });
+        Object.keys(this.observableQueries).forEach(function (queryId) {
+            if (!_this.observableQueries[queryId].observableQuery.options.noFetch) {
+                _this.observableQueries[queryId].observableQuery.refetch();
+            }
+        });
+    };
+    QueryManager.prototype.startQuery = function (queryId, options, listener) {
+        this.addQueryListener(queryId, listener);
+        if (!options.pollInterval) {
+            this.fetchQuery(queryId, options);
         }
-        this.store = store;
-        this.queryManager = new QueryManager_1.QueryManager({
-            networkInterface: this.networkInterface,
-            reduxRootSelector: reduxRootSelector,
-            store: store,
-            addTypename: this.addTypename,
-            resultTransformer: this.resultTransformer,
-            resultComparator: this.resultComparator,
-            reducerConfig: this.reducerConfig,
+        return queryId;
+    };
+    QueryManager.prototype.startGraphQLSubscription = function (options) {
+        var _this = this;
+        var query = options.query, variables = options.variables, _a = options.fragments, fragments = _a === void 0 ? [] : _a;
+        var queryDoc = getFromAST_1.addFragmentsToDocument(query, fragments);
+        if (this.queryTransformer) {
+            queryDoc = queryTransform_1.applyTransformers(queryDoc, [this.queryTransformer]);
+        }
+        var request = {
+            query: queryDoc,
+            variables: variables,
+            operationName: getFromAST_1.getOperationName(queryDoc),
+        };
+        var subId;
+        var observers = [];
+        return new Observable_1.Observable(function (observer) {
+            observers.push(observer);
+            if (observers.length === 1) {
+                var handler = function (error, result) {
+                    if (error) {
+                        observers.forEach(function (obs) {
+                            obs.error(error);
+                        });
+                    }
+                    else {
+                        observers.forEach(function (obs) {
+                            obs.next(result);
+                        });
+                    }
+                };
+                subId = _this.networkInterface.subscribe(request, handler);
+            }
+            return {
+                unsubscribe: function () {
+                    observers = observers.filter(function (obs) { return obs !== observer; });
+                    if (observers.length === 0) {
+                        _this.networkInterface.unsubscribe(subId);
+                    }
+                },
+                _networkSubscriptionId: subId,
+            };
         });
     };
     ;
-    return ApolloClient;
+    QueryManager.prototype.stopQuery = function (queryId) {
+        delete this.queryListeners[queryId];
+        this.stopQueryInStore(queryId);
+    };
+    QueryManager.prototype.getCurrentQueryResult = function (observableQuery, isOptimistic) {
+        if (isOptimistic === void 0) { isOptimistic = false; }
+        var _a = this.getQueryParts(observableQuery), queryVariables = _a.queryVariables, querySelectionSet = _a.querySelectionSet, queryFragments = _a.queryFragments;
+        var queryOptions = observableQuery.options;
+        var readOptions = {
+            store: isOptimistic ? this.getDataWithOptimisticResults() : this.getApolloState().data,
+            rootId: 'ROOT_QUERY',
+            selectionSet: querySelectionSet,
+            variables: queryVariables,
+            fragmentMap: getFromAST_1.createFragmentMap(queryFragments || []),
+            returnPartialData: false,
+        };
+        try {
+            var data = readFromStore_1.readSelectionSetFromStore(readOptions);
+            return { data: data, partial: false };
+        }
+        catch (e) {
+            if (queryOptions.returnPartialData || queryOptions.noFetch) {
+                try {
+                    readOptions.returnPartialData = true;
+                    var data = readFromStore_1.readSelectionSetFromStore(readOptions);
+                    return { data: data, partial: true };
+                }
+                catch (e) {
+                }
+            }
+            return { data: {}, partial: true };
+        }
+    };
+    QueryManager.prototype.getQueryWithPreviousResult = function (queryIdOrObservable, isOptimistic) {
+        if (isOptimistic === void 0) { isOptimistic = false; }
+        var observableQuery;
+        if (typeof queryIdOrObservable === 'string') {
+            if (!this.observableQueries[queryIdOrObservable]) {
+                throw new Error("ObservableQuery with this id doesn't exist: " + queryIdOrObservable);
+            }
+            observableQuery = this.observableQueries[queryIdOrObservable].observableQuery;
+        }
+        else {
+            observableQuery = queryIdOrObservable;
+        }
+        var _a = this.getQueryParts(observableQuery), queryVariables = _a.queryVariables, querySelectionSet = _a.querySelectionSet, queryFragments = _a.queryFragments;
+        var data = this.getCurrentQueryResult(observableQuery, isOptimistic).data;
+        return {
+            previousResult: data,
+            queryVariables: queryVariables,
+            querySelectionSet: querySelectionSet,
+            queryFragments: queryFragments,
+        };
+    };
+    QueryManager.prototype.transformResult = function (result) {
+        if (!this.resultTransformer) {
+            return result;
+        }
+        else {
+            return this.resultTransformer(result);
+        }
+    };
+    QueryManager.prototype.getQueryParts = function (observableQuery) {
+        var queryOptions = observableQuery.options;
+        var fragments = queryOptions.fragments;
+        var queryDefinition = getFromAST_1.getQueryDefinition(queryOptions.query);
+        if (this.queryTransformer) {
+            var doc = {
+                kind: 'Document',
+                definitions: [
+                    queryDefinition
+                ].concat((fragments || [])),
+            };
+            var transformedDoc = queryTransform_1.applyTransformers(doc, [this.queryTransformer]);
+            queryDefinition = getFromAST_1.getQueryDefinition(transformedDoc);
+            fragments = getFromAST_1.getFragmentDefinitions(transformedDoc);
+        }
+        return {
+            queryVariables: queryOptions.variables,
+            querySelectionSet: queryDefinition.selectionSet,
+            queryFragments: fragments,
+        };
+    };
+    QueryManager.prototype.collectResultBehaviorsFromUpdateQueries = function (updateQueries, mutationResult, isOptimistic) {
+        var _this = this;
+        if (isOptimistic === void 0) { isOptimistic = false; }
+        if (!updateQueries) {
+            return [];
+        }
+        var resultBehaviors = [];
+        Object.keys(updateQueries).forEach(function (queryName) {
+            var reducer = updateQueries[queryName];
+            var queryIds = _this.queryIdsByName[queryName];
+            if (!queryIds) {
+                return;
+            }
+            queryIds.forEach(function (queryId) {
+                var _a = _this.getQueryWithPreviousResult(queryId, isOptimistic), previousResult = _a.previousResult, queryVariables = _a.queryVariables, querySelectionSet = _a.querySelectionSet, queryFragments = _a.queryFragments;
+                var newResult = errorHandling_1.tryFunctionOrLogError(function () { return reducer(previousResult, {
+                    mutationResult: mutationResult,
+                    queryName: queryName,
+                    queryVariables: queryVariables,
+                }); });
+                if (newResult) {
+                    resultBehaviors.push({
+                        type: 'QUERY_RESULT',
+                        newResult: newResult,
+                        queryVariables: queryVariables,
+                        querySelectionSet: querySelectionSet,
+                        queryFragments: queryFragments,
+                    });
+                }
+            });
+        });
+        return resultBehaviors;
+    };
+    QueryManager.prototype.transformQueryDocument = function (options) {
+        var query = options.query, _a = options.fragments, fragments = _a === void 0 ? [] : _a;
+        var queryDoc = getFromAST_1.addFragmentsToDocument(query, fragments);
+        if (this.queryTransformer) {
+            queryDoc = queryTransform_1.applyTransformers(queryDoc, [this.queryTransformer]);
+        }
+        return {
+            queryDoc: queryDoc,
+            fragmentMap: getFromAST_1.createFragmentMap(getFromAST_1.getFragmentDefinitions(queryDoc)),
+        };
+    };
+    QueryManager.prototype.handleDiffQuery = function (_a) {
+        var queryDef = _a.queryDef, rootId = _a.rootId, variables = _a.variables, fragmentMap = _a.fragmentMap, noFetch = _a.noFetch;
+        var _b = diffAgainstStore_1.diffSelectionSetAgainstStore({
+            selectionSet: queryDef.selectionSet,
+            store: this.reduxRootSelector(this.store.getState()).data,
+            throwOnMissingField: false,
+            rootId: rootId,
+            variables: variables,
+            fragmentMap: fragmentMap,
+        }), missingSelectionSets = _b.missingSelectionSets, result = _b.result;
+        var initialResult = result;
+        var diffedQuery;
+        if (missingSelectionSets && missingSelectionSets.length && !noFetch) {
+            diffedQuery = queryPrinting_1.queryDocument({
+                missingSelectionSets: missingSelectionSets,
+                variableDefinitions: queryDef.variableDefinitions,
+                name: queryDef.name,
+                fragmentMap: fragmentMap,
+            });
+            diffAgainstStore_1.removeUnusedVariablesFromQuery(diffedQuery);
+        }
+        return {
+            diffedQuery: diffedQuery,
+            initialResult: initialResult,
+        };
+    };
+    QueryManager.prototype.fetchRequest = function (_a) {
+        var _this = this;
+        var requestId = _a.requestId, queryId = _a.queryId, query = _a.query, querySS = _a.querySS, options = _a.options, fragmentMap = _a.fragmentMap;
+        var variables = options.variables, noFetch = options.noFetch, returnPartialData = options.returnPartialData;
+        var request = {
+            query: query,
+            variables: variables,
+            operationName: getFromAST_1.getOperationName(query),
+        };
+        var fetchRequest = {
+            options: { query: query, variables: variables },
+            queryId: queryId,
+            operationName: request.operationName,
+        };
+        var retPromise = new Promise(function (resolve, reject) {
+            _this.addFetchQueryPromise(requestId, retPromise, resolve, reject);
+            return _this.batcher.enqueueRequest(fetchRequest)
+                .then(function (result) {
+                _this.store.dispatch({
+                    type: 'APOLLO_QUERY_RESULT',
+                    result: result,
+                    queryId: queryId,
+                    requestId: requestId,
+                });
+                _this.removeFetchQueryPromise(requestId);
+                return result;
+            }).then(function () {
+                var resultFromStore;
+                try {
+                    resultFromStore = readFromStore_1.readSelectionSetFromStore({
+                        store: _this.getApolloState().data,
+                        rootId: querySS.id,
+                        selectionSet: querySS.selectionSet,
+                        variables: variables,
+                        returnPartialData: returnPartialData || noFetch,
+                        fragmentMap: fragmentMap,
+                    });
+                }
+                catch (e) { }
+                _this.removeFetchQueryPromise(requestId);
+                resolve({ data: resultFromStore, loading: false });
+            }).catch(function (error) {
+                _this.store.dispatch({
+                    type: 'APOLLO_QUERY_ERROR',
+                    error: error,
+                    queryId: queryId,
+                    requestId: requestId,
+                });
+                _this.removeFetchQueryPromise(requestId);
+            });
+        });
+        return retPromise;
+    };
+    QueryManager.prototype.fetchQueryOverInterface = function (queryId, options) {
+        var variables = options.variables, _a = options.forceFetch, forceFetch = _a === void 0 ? false : _a, _b = options.returnPartialData, returnPartialData = _b === void 0 ? false : _b, _c = options.noFetch, noFetch = _c === void 0 ? false : _c;
+        var _d = this.transformQueryDocument(options), queryDoc = _d.queryDoc, fragmentMap = _d.fragmentMap;
+        var queryDef = getFromAST_1.getQueryDefinition(queryDoc);
+        var queryString = printer_1.print(queryDoc);
+        var querySS = {
+            id: 'ROOT_QUERY',
+            typeName: 'Query',
+            selectionSet: queryDef.selectionSet,
+        };
+        var minimizedQueryString = queryString;
+        var minimizedQuery = querySS;
+        var minimizedQueryDoc = queryDoc;
+        var storeResult;
+        if (!forceFetch) {
+            var _e = this.handleDiffQuery({
+                queryDef: queryDef,
+                rootId: querySS.id,
+                variables: variables,
+                fragmentMap: fragmentMap,
+                noFetch: noFetch,
+            }), diffedQuery = _e.diffedQuery, initialResult = _e.initialResult;
+            storeResult = initialResult;
+            if (diffedQuery) {
+                minimizedQueryDoc = diffedQuery;
+                minimizedQueryString = printer_1.print(minimizedQueryDoc);
+                minimizedQuery = {
+                    id: querySS.id,
+                    typeName: 'Query',
+                    selectionSet: getFromAST_1.getQueryDefinition(diffedQuery).selectionSet,
+                };
+            }
+            else {
+                minimizedQueryDoc = null;
+                minimizedQueryString = null;
+                minimizedQuery = null;
+            }
+        }
+        var requestId = this.generateRequestId();
+        var shouldFetch = minimizedQuery && !noFetch;
+        this.store.dispatch({
+            type: 'APOLLO_QUERY_INIT',
+            queryString: queryString,
+            query: querySS,
+            minimizedQueryString: minimizedQueryString,
+            minimizedQuery: minimizedQuery,
+            variables: variables,
+            forceFetch: forceFetch,
+            returnPartialData: returnPartialData || noFetch,
+            queryId: queryId,
+            requestId: requestId,
+            fragmentMap: fragmentMap,
+            storePreviousVariables: shouldFetch,
+        });
+        if (!shouldFetch || returnPartialData) {
+            this.store.dispatch({
+                type: 'APOLLO_QUERY_RESULT_CLIENT',
+                result: { data: storeResult },
+                variables: variables,
+                query: querySS,
+                complete: !!minimizedQuery,
+                queryId: queryId,
+            });
+        }
+        if (shouldFetch) {
+            return this.fetchRequest({
+                requestId: requestId,
+                queryId: queryId,
+                query: minimizedQueryDoc,
+                querySS: minimizedQuery,
+                options: options,
+                fragmentMap: fragmentMap,
+            });
+        }
+        return Promise.resolve({ data: storeResult });
+    };
+    QueryManager.prototype.refetchQueryByName = function (queryName) {
+        var _this = this;
+        var refetchedQueries = this.queryIdsByName[queryName];
+        if (refetchedQueries === undefined) {
+            console.warn("Warning: unknown query with name " + queryName + " asked to refetch");
+        }
+        else {
+            refetchedQueries.forEach(function (queryId) {
+                _this.observableQueries[queryId].observableQuery.refetch();
+            });
+        }
+    };
+    QueryManager.prototype.isDifferentResult = function (lastResult, newResult) {
+        var comparator = this.resultComparator || isEqual;
+        return !comparator(lastResult, newResult);
+    };
+    QueryManager.prototype.broadcastQueries = function () {
+        var queries = this.getApolloState().queries;
+        forOwn(this.queryListeners, function (listeners, queryId) {
+            listeners.forEach(function (listener) {
+                if (listener) {
+                    var queryStoreValue = queries[queryId];
+                    listener(queryStoreValue);
+                }
+            });
+        });
+    };
+    QueryManager.prototype.generateRequestId = function () {
+        var requestId = this.idCounter;
+        this.idCounter++;
+        return requestId;
+    };
+    return QueryManager;
 }());
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ApolloClient;
+exports.QueryManager = QueryManager;
 
-},{"./core/QueryManager":30,"./data/storeUtils":37,"./fragments":40,"./queries/getFromAST":48,"./store":52,"./transport/networkInterface":55,"lodash.assign":87,"lodash.isstring":101,"lodash.isundefined":102}],28:[function(require,module,exports){
+},{"./ObservableQuery":27,"./batching":31,"./data/diffAgainstStore":33,"./data/readFromStore":35,"./errors":41,"./queries/getFromAST":50,"./queries/queryTransform":51,"./queryPrinting":53,"./scheduler":54,"./store":55,"./util/Observable":56,"./util/errorHandling":57,"graphql-tag/printer":69,"lodash.forown":88,"lodash.isequal":93}],29:[function(require,module,exports){
 "use strict";
 function isQueryResultAction(action) {
     return action.type === 'APOLLO_QUERY_RESULT';
@@ -2804,939 +3462,899 @@ function isStoreResetAction(action) {
     return action.type === 'APOLLO_STORE_RESET';
 }
 exports.isStoreResetAction = isStoreResetAction;
-function isSubscriptionResultAction(action) {
-    return action.type === 'APOLLO_SUBSCRIPTION_RESULT';
-}
-exports.isSubscriptionResultAction = isSubscriptionResultAction;
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Observable_1 = require('../util/Observable');
-var ApolloError_1 = require('../errors/ApolloError');
-var QueryManager_1 = require('./QueryManager');
-var errorHandling_1 = require('../util/errorHandling');
-var store_1 = require('../queries/store');
-var getFromAST_1 = require('../queries/getFromAST');
+var networkInterface_1 = require('./networkInterface');
+require('whatwg-fetch');
 var assign = require('lodash.assign');
-var isEqual = require('lodash.isequal');
-var ObservableQuery = (function (_super) {
-    __extends(ObservableQuery, _super);
-    function ObservableQuery(_a) {
-        var _this = this;
-        var scheduler = _a.scheduler, options = _a.options, _b = _a.shouldSubscribe, shouldSubscribe = _b === void 0 ? true : _b;
-        var queryManager = scheduler.queryManager;
-        var queryId = queryManager.generateQueryId();
-        var subscriberFunction = function (observer) {
-            return _this.onSubscribe(observer);
-        };
-        _super.call(this, subscriberFunction);
-        this.isCurrentlyPolling = false;
-        this.options = options;
-        this.variables = this.options.variables || {};
-        this.scheduler = scheduler;
-        this.queryManager = queryManager;
-        this.queryId = queryId;
-        this.shouldSubscribe = shouldSubscribe;
-        this.observers = [];
-        this.subscriptionHandles = [];
+var HTTPBatchedNetworkInterface = (function (_super) {
+    __extends(HTTPBatchedNetworkInterface, _super);
+    function HTTPBatchedNetworkInterface(uri, opts) {
+        _super.call(this, uri, opts);
     }
-    ObservableQuery.prototype.result = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var subscription = _this.subscribe({
-                next: function (result) {
-                    resolve(result);
-                    setTimeout(function () {
-                        subscription.unsubscribe();
-                    }, 0);
-                },
-                error: function (error) {
-                    reject(error);
-                },
-            });
+    ;
+    HTTPBatchedNetworkInterface.prototype.batchedFetchFromRemoteEndpoint = function (requestsAndOptions) {
+        var options = {};
+        requestsAndOptions.forEach(function (requestAndOptions) {
+            assign(options, requestAndOptions.options);
         });
-    };
-    ObservableQuery.prototype.currentResult = function () {
-        var _a = this.queryManager.getCurrentQueryResult(this, true), data = _a.data, partial = _a.partial;
-        var queryStoreValue = this.queryManager.getApolloState().queries[this.queryId];
-        if (queryStoreValue && (queryStoreValue.graphQLErrors || queryStoreValue.networkError)) {
-            var error = new ApolloError_1.ApolloError({
-                graphQLErrors: queryStoreValue.graphQLErrors,
-                networkError: queryStoreValue.networkError,
-            });
-            return { data: {}, loading: false, networkStatus: queryStoreValue.networkStatus, error: error };
-        }
-        var queryLoading = !queryStoreValue || queryStoreValue.loading;
-        var loading = (this.options.forceFetch && queryLoading)
-            || (partial && !this.options.noFetch);
-        var networkStatus;
-        if (queryStoreValue) {
-            networkStatus = queryStoreValue.networkStatus;
-        }
-        else {
-            networkStatus = loading ? store_1.NetworkStatus.loading : store_1.NetworkStatus.ready;
-        }
-        return { data: data, loading: loading, networkStatus: networkStatus };
-    };
-    ObservableQuery.prototype.refetch = function (variables) {
-        var _this = this;
-        this.variables = assign({}, this.variables, variables);
-        if (this.options.noFetch) {
-            throw new Error('noFetch option should not use query refetch.');
-        }
-        assign(this.options, {
-            variables: this.variables,
+        var printedRequests = requestsAndOptions.map(function (_a) {
+            var request = _a.request;
+            return networkInterface_1.printRequest(request);
         });
-        var combinedOptions = assign({}, this.options, {
-            forceFetch: true,
-        });
-        return this.queryManager.fetchQuery(this.queryId, combinedOptions, QueryManager_1.FetchType.refetch)
-            .then(function (result) { return _this.queryManager.transformResult(result); });
+        return fetch(this._uri, assign({}, this._opts, options, {
+            body: JSON.stringify(printedRequests),
+            headers: assign({}, options.headers, {
+                Accept: '*/*',
+                'Content-Type': 'application/json',
+            }),
+            method: 'POST',
+        }));
     };
-    ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
+    ;
+    HTTPBatchedNetworkInterface.prototype.batchQuery = function (requests) {
         var _this = this;
-        return Promise.resolve()
-            .then(function () {
-            var qid = _this.queryManager.generateQueryId();
-            var combinedOptions = null;
-            if (fetchMoreOptions.query) {
-                combinedOptions = fetchMoreOptions;
-            }
-            else {
-                var variables = assign({}, _this.variables, fetchMoreOptions.variables);
-                combinedOptions = assign({}, _this.options, fetchMoreOptions, {
-                    variables: variables,
-                });
-            }
-            var fullQuery = getFromAST_1.addFragmentsToDocument(combinedOptions.query, combinedOptions.fragments);
-            combinedOptions = assign({}, combinedOptions, {
-                query: fullQuery,
-                forceFetch: true,
-            });
-            return _this.queryManager.fetchQuery(qid, combinedOptions);
-        })
-            .then(function (fetchMoreResult) {
-            var reducer = fetchMoreOptions.updateQuery;
-            var mapFn = function (previousResult, _a) {
-                var variables = _a.variables;
-                var queryVariables = variables;
-                return reducer(previousResult, {
-                    fetchMoreResult: fetchMoreResult,
-                    queryVariables: queryVariables,
-                });
-            };
-            _this.updateQuery(mapFn);
-            return fetchMoreResult;
-        });
-    };
-    ObservableQuery.prototype.subscribeToMore = function (options) {
-        var _this = this;
-        var observable = this.queryManager.startGraphQLSubscription({
-            document: options.document,
-            variables: options.variables,
-        });
-        var reducer = options.updateQuery;
-        var subscription = observable.subscribe({
-            next: function (data) {
-                var mapFn = function (previousResult, _a) {
-                    var variables = _a.variables;
-                    return reducer(previousResult, {
-                        subscriptionData: { data: data },
-                        variables: variables,
-                    });
-                };
-                _this.updateQuery(mapFn);
-            },
-            error: function (err) {
-                if (options.onError) {
-                    options.onError(err);
-                }
-                else {
-                    console.error('Unhandled GraphQL subscription errror', err);
-                }
-            },
-        });
-        this.subscriptionHandles.push(subscription);
-        return function () {
-            var i = _this.subscriptionHandles.indexOf(subscription);
-            if (i >= 0) {
-                _this.subscriptionHandles.splice(i, 1);
-                subscription.unsubscribe();
-            }
-        };
-    };
-    ObservableQuery.prototype.setOptions = function (opts) {
-        var _this = this;
-        var oldOptions = this.options;
-        this.options = assign({}, this.options, opts);
-        if (opts.pollInterval) {
-            this.startPolling(opts.pollInterval);
-        }
-        else if (opts.pollInterval === 0) {
-            this.stopPolling();
-        }
-        if (!oldOptions.forceFetch && opts.forceFetch) {
-            return this.queryManager.fetchQuery(this.queryId, this.options)
-                .then(function (result) { return _this.queryManager.transformResult(result); });
-        }
-        return this.setVariables(this.options.variables);
-    };
-    ObservableQuery.prototype.setVariables = function (variables) {
-        var _this = this;
-        var newVariables = assign({}, this.variables, variables);
-        if (isEqual(newVariables, this.variables)) {
-            return this.result();
-        }
-        else {
-            this.variables = newVariables;
-            return this.queryManager.fetchQuery(this.queryId, assign(this.options, {
-                variables: this.variables,
-            }))
-                .then(function (result) { return _this.queryManager.transformResult(result); });
-        }
-    };
-    ObservableQuery.prototype.updateQuery = function (mapFn) {
-        var _a = this.queryManager.getQueryWithPreviousResult(this.queryId), previousResult = _a.previousResult, variables = _a.variables, document = _a.document;
-        var newResult = errorHandling_1.tryFunctionOrLogError(function () { return mapFn(previousResult, { variables: variables }); });
-        if (newResult) {
-            this.queryManager.store.dispatch({
-                type: 'APOLLO_UPDATE_QUERY_RESULT',
-                newResult: newResult,
-                variables: variables,
-                document: document,
-            });
-        }
-    };
-    ObservableQuery.prototype.stopPolling = function () {
-        if (this.isCurrentlyPolling) {
-            this.scheduler.stopPollingQuery(this.queryId);
-            this.isCurrentlyPolling = false;
-        }
-    };
-    ObservableQuery.prototype.startPolling = function (pollInterval) {
-        if (this.options.noFetch) {
-            throw new Error('noFetch option should not use query polling.');
-        }
-        if (this.isCurrentlyPolling) {
-            this.scheduler.stopPollingQuery(this.queryId);
-            this.isCurrentlyPolling = false;
-        }
-        this.options.pollInterval = pollInterval;
-        this.isCurrentlyPolling = true;
-        this.scheduler.startPollingQuery(this.options, this.queryId);
-    };
-    ObservableQuery.prototype.onSubscribe = function (observer) {
-        var _this = this;
-        this.observers.push(observer);
-        if (observer.next && this.lastResult) {
-            observer.next(this.lastResult);
-        }
-        if (observer.error && this.lastError) {
-            observer.error(this.lastError);
-        }
-        if (this.observers.length === 1) {
-            this.setUpQuery();
-        }
-        var retQuerySubscription = {
-            unsubscribe: function () {
-                _this.observers = _this.observers.filter(function (obs) { return obs !== observer; });
-                if (_this.observers.length === 0) {
-                    _this.tearDownQuery();
-                }
-            },
-        };
-        return retQuerySubscription;
-    };
-    ObservableQuery.prototype.setUpQuery = function () {
-        var _this = this;
-        if (this.shouldSubscribe) {
-            this.queryManager.addObservableQuery(this.queryId, this);
-        }
-        if (!!this.options.pollInterval) {
-            if (this.options.noFetch) {
-                throw new Error('noFetch option should not use query polling.');
-            }
-            this.isCurrentlyPolling = true;
-            this.scheduler.startPollingQuery(this.options, this.queryId);
-        }
-        var observer = {
-            next: function (result) {
-                _this.observers.forEach(function (obs) {
-                    if (obs.next) {
-                        obs.next(result);
-                    }
-                });
-                _this.lastResult = result;
-            },
-            error: function (error) {
-                _this.observers.forEach(function (obs) {
-                    if (obs.error) {
-                        obs.error(error);
-                    }
-                    else {
-                        console.error('Unhandled error', error.message, error.stack);
-                    }
-                });
-                _this.lastError = error;
-            },
-        };
-        this.queryManager.startQuery(this.queryId, this.options, this.queryManager.queryListenerForObserver(this.queryId, this.options, observer));
-    };
-    ObservableQuery.prototype.tearDownQuery = function () {
-        if (this.isCurrentlyPolling) {
-            this.scheduler.stopPollingQuery(this.queryId);
-            this.isCurrentlyPolling = false;
-        }
-        this.subscriptionHandles.forEach(function (sub) { return sub.unsubscribe(); });
-        this.subscriptionHandles = [];
-        this.queryManager.stopQuery(this.queryId);
-        this.observers = [];
-    };
-    return ObservableQuery;
-}(Observable_1.Observable));
-exports.ObservableQuery = ObservableQuery;
-
-},{"../errors/ApolloError":39,"../queries/getFromAST":48,"../queries/store":50,"../util/Observable":56,"../util/errorHandling":57,"./QueryManager":30,"lodash.assign":87,"lodash.isequal":97}],30:[function(require,module,exports){
-"use strict";
-var forOwn = require('lodash.forown');
-var isEqual = require('lodash.isequal');
-var store_1 = require('../store');
-var getFromAST_1 = require('../queries/getFromAST');
-var queryTransform_1 = require('../queries/queryTransform');
-var resultReducers_1 = require('../data/resultReducers');
-var printer_1 = require('graphql-tag/printer');
-var readFromStore_1 = require('../data/readFromStore');
-var readFromStore_2 = require('../data/readFromStore');
-var scheduler_1 = require('../scheduler/scheduler');
-var Observable_1 = require('../util/Observable');
-var store_2 = require('../queries/store');
-var errorHandling_1 = require('../util/errorHandling');
-var ApolloError_1 = require('../errors/ApolloError');
-var ObservableQuery_1 = require('./ObservableQuery');
-;
-(function (FetchType) {
-    FetchType[FetchType["normal"] = 1] = "normal";
-    FetchType[FetchType["refetch"] = 2] = "refetch";
-    FetchType[FetchType["poll"] = 3] = "poll";
-})(exports.FetchType || (exports.FetchType = {}));
-var FetchType = exports.FetchType;
-var QueryManager = (function () {
-    function QueryManager(_a) {
-        var _this = this;
-        var networkInterface = _a.networkInterface, store = _a.store, reduxRootSelector = _a.reduxRootSelector, _b = _a.reducerConfig, reducerConfig = _b === void 0 ? { mutationBehaviorReducers: {} } : _b, resultTransformer = _a.resultTransformer, resultComparator = _a.resultComparator, _c = _a.addTypename, addTypename = _c === void 0 ? true : _c;
-        this.idCounter = 0;
-        this.networkInterface = networkInterface;
-        this.store = store;
-        this.reduxRootSelector = reduxRootSelector;
-        this.reducerConfig = reducerConfig;
-        this.resultTransformer = resultTransformer;
-        this.resultComparator = resultComparator;
-        this.pollingTimers = {};
-        this.queryListeners = {};
-        this.queryDocuments = {};
-        this.addTypename = addTypename;
-        this.scheduler = new scheduler_1.QueryScheduler({
-            queryManager: this,
-        });
-        this.fetchQueryPromises = {};
-        this.observableQueries = {};
-        this.queryIdsByName = {};
-        if (this.store['subscribe']) {
-            var currentStoreData_1;
-            this.store['subscribe'](function () {
-                var previousStoreData = currentStoreData_1 || {};
-                var previousStoreHasData = Object.keys(previousStoreData).length;
-                currentStoreData_1 = _this.getApolloState();
-                if (isEqual(previousStoreData, currentStoreData_1) && previousStoreHasData) {
-                    return;
-                }
-                _this.broadcastQueries();
-            });
-        }
-    }
-    QueryManager.prototype.broadcastNewStore = function (store) {
-        this.broadcastQueries();
-    };
-    QueryManager.prototype.mutate = function (_a) {
-        var _this = this;
-        var mutation = _a.mutation, variables = _a.variables, _b = _a.resultBehaviors, resultBehaviors = _b === void 0 ? [] : _b, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _c = _a.refetchQueries, refetchQueries = _c === void 0 ? [] : _c;
-        var mutationId = this.generateQueryId();
-        if (this.addTypename) {
-            mutation = queryTransform_1.addTypenameToDocument(mutation);
-        }
-        getFromAST_1.checkDocument(mutation);
-        var mutationString = printer_1.print(mutation);
-        var request = {
-            query: mutation,
-            variables: variables,
-            operationName: getFromAST_1.getOperationName(mutation),
-        };
-        var updateQueriesResultBehaviors = !optimisticResponse ? [] :
-            this.collectResultBehaviorsFromUpdateQueries(updateQueries, { data: optimisticResponse }, true);
-        this.queryDocuments[mutationId] = mutation;
-        var extraReducers = Object.keys(this.observableQueries).map(function (queryId) {
-            var queryOptions = _this.observableQueries[queryId].observableQuery.options;
-            if (queryOptions.reducer) {
-                return resultReducers_1.createStoreReducer(queryOptions.reducer, queryOptions.query, queryOptions.variables, _this.reducerConfig);
-            }
-            return null;
-        }).filter(function (reducer) { return reducer !== null; });
-        this.store.dispatch({
-            type: 'APOLLO_MUTATION_INIT',
-            mutationString: mutationString,
-            mutation: mutation,
-            variables: variables,
-            operationName: getFromAST_1.getOperationName(mutation),
-            mutationId: mutationId,
-            optimisticResponse: optimisticResponse,
-            resultBehaviors: resultBehaviors.concat(updateQueriesResultBehaviors),
-            extraReducers: extraReducers,
+        var options = assign({}, this._opts);
+        var middlewarePromises = [];
+        requests.forEach(function (request) {
+            middlewarePromises.push(_this.applyMiddlewares({
+                request: request,
+                options: options,
+            }));
         });
         return new Promise(function (resolve, reject) {
-            _this.networkInterface.query(request)
-                .then(function (result) {
-                if (result.errors) {
-                    reject(new ApolloError_1.ApolloError({
-                        graphQLErrors: result.errors,
-                    }));
-                }
-                _this.store.dispatch({
-                    type: 'APOLLO_MUTATION_RESULT',
-                    result: result,
-                    mutationId: mutationId,
-                    document: mutation,
-                    operationName: getFromAST_1.getOperationName(mutation),
-                    resultBehaviors: resultBehaviors.concat(_this.collectResultBehaviorsFromUpdateQueries(updateQueries, result)),
-                    extraReducers: extraReducers,
-                });
-                refetchQueries.forEach(function (name) { _this.refetchQueryByName(name); });
-                delete _this.queryDocuments[mutationId];
-                resolve(_this.transformResult(result));
-            })
-                .catch(function (err) {
-                _this.store.dispatch({
-                    type: 'APOLLO_MUTATION_ERROR',
-                    error: err,
-                    mutationId: mutationId,
-                });
-                delete _this.queryDocuments[mutationId];
-                reject(new ApolloError_1.ApolloError({
-                    networkError: err,
-                }));
-            });
-        });
-    };
-    QueryManager.prototype.queryListenerForObserver = function (queryId, options, observer) {
-        var _this = this;
-        var lastResult;
-        return function (queryStoreValue) {
-            if (!queryStoreValue) {
-                return;
-            }
-            var shouldNotifyIfLoading = queryStoreValue.returnPartialData
-                || queryStoreValue.previousVariables;
-            var networkStatusChanged = lastResult && queryStoreValue.networkStatus !== lastResult.networkStatus;
-            if (!queryStoreValue.loading ||
-                (networkStatusChanged && options.notifyOnNetworkStatusChange) ||
-                shouldNotifyIfLoading) {
-                if (queryStoreValue.graphQLErrors || queryStoreValue.networkError) {
-                    var apolloError = new ApolloError_1.ApolloError({
-                        graphQLErrors: queryStoreValue.graphQLErrors,
-                        networkError: queryStoreValue.networkError,
+            Promise.all(middlewarePromises).then(function (requestsAndOptions) {
+                return _this.batchedFetchFromRemoteEndpoint(requestsAndOptions)
+                    .then(function (result) {
+                    return result.json();
+                })
+                    .then(function (responses) {
+                    var afterwaresPromises = responses.map(function (response, index) {
+                        return _this.applyAfterwares({
+                            response: response,
+                            options: requestsAndOptions[index].options,
+                        });
                     });
-                    if (observer.error) {
-                        observer.error(apolloError);
-                    }
-                    else {
-                        console.error('Unhandled error', apolloError, apolloError.stack);
-                    }
-                }
-                else {
-                    var resultFromStore = void 0;
-                    try {
-                        resultFromStore = {
-                            data: readFromStore_1.readQueryFromStore({
-                                store: _this.getDataWithOptimisticResults(),
-                                query: _this.queryDocuments[queryId],
-                                variables: queryStoreValue.previousVariables || queryStoreValue.variables,
-                                returnPartialData: options.returnPartialData || options.noFetch,
-                                config: _this.reducerConfig,
-                            }),
-                            loading: queryStoreValue.loading,
-                            networkStatus: queryStoreValue.networkStatus,
-                        };
-                    }
-                    catch (error) {
-                        if (observer.error) {
-                            observer.error(new ApolloError_1.ApolloError({
-                                networkError: error,
-                            }));
-                        }
-                        return;
-                    }
-                    if (observer.next) {
-                        if (_this.isDifferentResult(lastResult, resultFromStore)) {
-                            lastResult = resultFromStore;
-                            observer.next(_this.transformResult(resultFromStore));
-                        }
-                    }
-                }
-            }
-        };
-    };
-    QueryManager.prototype.watchQuery = function (options, shouldSubscribe) {
-        if (shouldSubscribe === void 0) { shouldSubscribe = true; }
-        getFromAST_1.getQueryDefinition(options.query);
-        var transformedOptions = Object.assign({}, options);
-        if (this.addTypename) {
-            transformedOptions.query = queryTransform_1.addTypenameToDocument(transformedOptions.query);
-        }
-        var observableQuery = new ObservableQuery_1.ObservableQuery({
-            scheduler: this.scheduler,
-            options: transformedOptions,
-            shouldSubscribe: shouldSubscribe,
-        });
-        return observableQuery;
-    };
-    QueryManager.prototype.query = function (options) {
-        var _this = this;
-        if (options.returnPartialData) {
-            throw new Error('returnPartialData option only supported on watchQuery.');
-        }
-        if (options.query.kind !== 'Document') {
-            throw new Error('You must wrap the query string in a "gql" tag.');
-        }
-        var requestId = this.idCounter;
-        var resPromise = new Promise(function (resolve, reject) {
-            _this.addFetchQueryPromise(requestId, resPromise, resolve, reject);
-            return _this.watchQuery(options, false).result().then(function (result) {
-                _this.removeFetchQueryPromise(requestId);
-                resolve(result);
+                    Promise.all(afterwaresPromises).then(function (responsesAndOptions) {
+                        var results = [];
+                        responsesAndOptions.forEach(function (_a) {
+                            var response = _a.response;
+                            results.push(response);
+                        });
+                        resolve(results);
+                    }).catch(function (error) {
+                        reject(error);
+                    });
+                });
             }).catch(function (error) {
-                _this.removeFetchQueryPromise(requestId);
                 reject(error);
             });
         });
-        return resPromise;
     };
-    QueryManager.prototype.fetchQuery = function (queryId, options, fetchType) {
-        var variables = options.variables, _a = options.forceFetch, forceFetch = _a === void 0 ? false : _a, _b = options.returnPartialData, returnPartialData = _b === void 0 ? false : _b, _c = options.noFetch, noFetch = _c === void 0 ? false : _c;
-        var queryDoc = this.transformQueryDocument(options).queryDoc;
-        var queryString = printer_1.print(queryDoc);
-        var storeResult;
-        var needToFetch = forceFetch;
-        if (!forceFetch) {
-            var _d = readFromStore_2.diffQueryAgainstStore({
-                query: queryDoc,
-                store: this.reduxRootSelector(this.store.getState()).data,
-                returnPartialData: true,
-                variables: variables,
-                config: this.reducerConfig,
-            }), isMissing = _d.isMissing, result = _d.result;
-            needToFetch = isMissing;
-            storeResult = result;
-        }
-        var requestId = this.generateRequestId();
-        var shouldFetch = needToFetch && !noFetch;
-        this.queryDocuments[queryId] = queryDoc;
-        this.store.dispatch({
-            type: 'APOLLO_QUERY_INIT',
-            queryString: queryString,
-            document: queryDoc,
-            variables: variables,
-            forceFetch: forceFetch,
-            returnPartialData: returnPartialData || noFetch,
-            queryId: queryId,
-            requestId: requestId,
-            storePreviousVariables: shouldFetch,
-            isPoll: fetchType === FetchType.poll,
-            isRefetch: fetchType === FetchType.refetch,
+    return HTTPBatchedNetworkInterface;
+}(networkInterface_1.HTTPFetchNetworkInterface));
+exports.HTTPBatchedNetworkInterface = HTTPBatchedNetworkInterface;
+
+},{"./networkInterface":44,"lodash.assign":82,"whatwg-fetch":289}],31:[function(require,module,exports){
+"use strict";
+var cloneDeep = require('lodash.clonedeep');
+;
+var QueryBatcher = (function () {
+    function QueryBatcher(_a) {
+        var shouldBatch = _a.shouldBatch, networkInterface = _a.networkInterface;
+        this.queuedRequests = [];
+        this.shouldBatch = shouldBatch;
+        this.queuedRequests = [];
+        this.networkInterface = networkInterface;
+    }
+    QueryBatcher.prototype.enqueueRequest = function (request) {
+        this.queuedRequests.push(request);
+        request.promise = new Promise(function (resolve, reject) {
+            request.resolve = resolve;
+            request.reject = reject;
         });
-        if (!shouldFetch || returnPartialData) {
-            this.store.dispatch({
-                type: 'APOLLO_QUERY_RESULT_CLIENT',
-                result: { data: storeResult },
-                variables: variables,
-                document: queryDoc,
-                complete: !shouldFetch,
-                queryId: queryId,
-            });
+        if (!this.shouldBatch) {
+            this.consumeQueue();
         }
-        if (shouldFetch) {
-            return this.fetchRequest({
-                requestId: requestId,
-                queryId: queryId,
-                document: queryDoc,
-                options: options,
-            });
-        }
-        return Promise.resolve({ data: storeResult });
+        return request.promise;
     };
-    QueryManager.prototype.generateQueryId = function () {
-        var queryId = this.idCounter.toString();
-        this.idCounter++;
-        return queryId;
-    };
-    QueryManager.prototype.stopQueryInStore = function (queryId) {
-        this.store.dispatch({
-            type: 'APOLLO_QUERY_STOP',
-            queryId: queryId,
-        });
-    };
-    ;
-    QueryManager.prototype.getApolloState = function () {
-        return this.reduxRootSelector(this.store.getState());
-    };
-    QueryManager.prototype.getInitialState = function () {
-        return { data: this.getApolloState().data };
-    };
-    QueryManager.prototype.getDataWithOptimisticResults = function () {
-        return store_1.getDataWithOptimisticResults(this.getApolloState());
-    };
-    QueryManager.prototype.addQueryListener = function (queryId, listener) {
-        this.queryListeners[queryId] = this.queryListeners[queryId] || [];
-        this.queryListeners[queryId].push(listener);
-    };
-    QueryManager.prototype.addFetchQueryPromise = function (requestId, promise, resolve, reject) {
-        this.fetchQueryPromises[requestId.toString()] = { promise: promise, resolve: resolve, reject: reject };
-    };
-    QueryManager.prototype.removeFetchQueryPromise = function (requestId) {
-        delete this.fetchQueryPromises[requestId.toString()];
-    };
-    QueryManager.prototype.addObservableQuery = function (queryId, observableQuery) {
-        this.observableQueries[queryId] = { observableQuery: observableQuery };
-        var queryDef = getFromAST_1.getQueryDefinition(observableQuery.options.query);
-        if (queryDef.name && queryDef.name.value) {
-            var queryName = getFromAST_1.getQueryDefinition(observableQuery.options.query).name.value;
-            this.queryIdsByName[queryName] = this.queryIdsByName[queryName] || [];
-            this.queryIdsByName[queryName].push(observableQuery.queryId);
-        }
-    };
-    QueryManager.prototype.removeObservableQuery = function (queryId) {
-        var observableQuery = this.observableQueries[queryId].observableQuery;
-        var queryName = getFromAST_1.getQueryDefinition(observableQuery.options.query).name.value;
-        delete this.observableQueries[queryId];
-        this.queryIdsByName[queryName] = this.queryIdsByName[queryName].filter(function (val) {
-            return !(observableQuery.queryId === val);
-        });
-    };
-    QueryManager.prototype.resetStore = function () {
+    QueryBatcher.prototype.consumeQueue = function () {
         var _this = this;
-        Object.keys(this.fetchQueryPromises).forEach(function (key) {
-            var reject = _this.fetchQueryPromises[key].reject;
-            reject(new Error('Store reset while query was in flight.'));
-        });
-        this.store.dispatch({
-            type: 'APOLLO_STORE_RESET',
-            observableQueryIds: Object.keys(this.observableQueries),
-        });
-        Object.keys(this.observableQueries).forEach(function (queryId) {
-            if (!_this.observableQueries[queryId].observableQuery.options.noFetch) {
-                _this.observableQueries[queryId].observableQuery.refetch();
-            }
-        });
-    };
-    QueryManager.prototype.startQuery = function (queryId, options, listener) {
-        this.addQueryListener(queryId, listener);
-        this.fetchQuery(queryId, options);
-        return queryId;
-    };
-    QueryManager.prototype.startGraphQLSubscription = function (options) {
-        var _this = this;
-        var document = options.document, variables = options.variables;
-        var transformedDoc = document;
-        if (this.addTypename) {
-            transformedDoc = queryTransform_1.addTypenameToDocument(transformedDoc);
+        if (this.queuedRequests.length < 1) {
+            return undefined;
         }
-        var request = {
-            query: transformedDoc,
-            variables: variables,
-            operationName: getFromAST_1.getOperationName(transformedDoc),
-        };
-        var subId;
-        var observers = [];
-        return new Observable_1.Observable(function (observer) {
-            observers.push(observer);
-            if (observers.length === 1) {
-                var handler = function (error, result) {
-                    if (error) {
-                        observers.forEach(function (obs) {
-                            obs.error(error);
-                        });
-                    }
-                    else {
-                        _this.store.dispatch({
-                            type: 'APOLLO_SUBSCRIPTION_RESULT',
-                            document: transformedDoc,
-                            operationName: getFromAST_1.getOperationName(transformedDoc),
-                            result: { data: result },
-                            variables: variables,
-                            subscriptionId: subId,
-                            extraReducers: _this.getExtraReducers(),
-                        });
-                        observers.forEach(function (obs) {
-                            obs.next(result);
-                        });
-                    }
-                };
-                subId = _this.networkInterface.subscribe(request, handler);
-            }
+        var requests = this.queuedRequests.map(function (queuedRequest) {
             return {
-                unsubscribe: function () {
-                    observers = observers.filter(function (obs) { return obs !== observer; });
-                    if (observers.length === 0) {
-                        _this.networkInterface.unsubscribe(subId);
-                    }
-                },
-                _networkSubscriptionId: subId,
+                query: queuedRequest.options.query,
+                variables: queuedRequest.options.variables,
+                operationName: queuedRequest.operationName,
             };
         });
-    };
-    ;
-    QueryManager.prototype.stopQuery = function (queryId) {
-        delete this.queryListeners[queryId];
-        delete this.queryDocuments[queryId];
-        this.stopQueryInStore(queryId);
-    };
-    QueryManager.prototype.getCurrentQueryResult = function (observableQuery, isOptimistic) {
-        if (isOptimistic === void 0) { isOptimistic = false; }
-        var _a = this.getQueryParts(observableQuery), variables = _a.variables, document = _a.document;
-        var queryOptions = observableQuery.options;
-        var readOptions = {
-            store: isOptimistic ? this.getDataWithOptimisticResults() : this.getApolloState().data,
-            query: document,
-            variables: variables,
-            returnPartialData: false,
-            config: this.reducerConfig,
-        };
-        try {
-            var data = readFromStore_1.readQueryFromStore(readOptions);
-            return { data: data, partial: false };
-        }
-        catch (e) {
-            if (queryOptions.returnPartialData || queryOptions.noFetch) {
-                try {
-                    readOptions.returnPartialData = true;
-                    var data = readFromStore_1.readQueryFromStore(readOptions);
-                    return { data: data, partial: true };
-                }
-                catch (e) {
-                }
-            }
-            return { data: {}, partial: true };
-        }
-    };
-    QueryManager.prototype.getQueryWithPreviousResult = function (queryIdOrObservable, isOptimistic) {
-        if (isOptimistic === void 0) { isOptimistic = false; }
-        var observableQuery;
-        if (typeof queryIdOrObservable === 'string') {
-            if (!this.observableQueries[queryIdOrObservable]) {
-                throw new Error("ObservableQuery with this id doesn't exist: " + queryIdOrObservable);
-            }
-            observableQuery = this.observableQueries[queryIdOrObservable].observableQuery;
-        }
-        else {
-            observableQuery = queryIdOrObservable;
-        }
-        var _a = this.getQueryParts(observableQuery), variables = _a.variables, document = _a.document;
-        var data = this.getCurrentQueryResult(observableQuery, isOptimistic).data;
-        return {
-            previousResult: data,
-            variables: variables,
-            document: document,
-        };
-    };
-    QueryManager.prototype.transformResult = function (result) {
-        if (!this.resultTransformer) {
-            return result;
-        }
-        else {
-            return this.resultTransformer(result);
-        }
-    };
-    QueryManager.prototype.getQueryParts = function (observableQuery) {
-        var queryOptions = observableQuery.options;
-        var transformedDoc = observableQuery.options.query;
-        if (this.addTypename) {
-            transformedDoc = queryTransform_1.addTypenameToDocument(transformedDoc);
-        }
-        return {
-            variables: queryOptions.variables,
-            document: transformedDoc,
-        };
-    };
-    QueryManager.prototype.collectResultBehaviorsFromUpdateQueries = function (updateQueries, mutationResult, isOptimistic) {
-        var _this = this;
-        if (isOptimistic === void 0) { isOptimistic = false; }
-        if (!updateQueries) {
-            return [];
-        }
-        var resultBehaviors = [];
-        Object.keys(updateQueries).forEach(function (queryName) {
-            var reducer = updateQueries[queryName];
-            var queryIds = _this.queryIdsByName[queryName];
-            if (!queryIds) {
-                return;
-            }
-            queryIds.forEach(function (queryId) {
-                var _a = _this.getQueryWithPreviousResult(queryId, isOptimistic), previousResult = _a.previousResult, variables = _a.variables, document = _a.document;
-                var newResult = errorHandling_1.tryFunctionOrLogError(function () { return reducer(previousResult, {
-                    mutationResult: mutationResult,
-                    queryName: queryName,
-                    queryVariables: variables,
-                }); });
-                if (newResult) {
-                    resultBehaviors.push({
-                        type: 'QUERY_RESULT',
-                        newResult: newResult,
-                        variables: variables,
-                        document: document,
-                    });
-                }
-            });
+        var promises = [];
+        var resolvers = [];
+        var rejecters = [];
+        this.queuedRequests.forEach(function (fetchRequest, index) {
+            promises.push(fetchRequest.promise);
+            resolvers.push(fetchRequest.resolve);
+            rejecters.push(fetchRequest.reject);
         });
-        return resultBehaviors;
-    };
-    QueryManager.prototype.transformQueryDocument = function (options) {
-        var queryDoc = options.query;
-        if (this.addTypename) {
-            queryDoc = queryTransform_1.addTypenameToDocument(queryDoc);
-        }
-        return {
-            queryDoc: queryDoc,
-        };
-    };
-    QueryManager.prototype.getExtraReducers = function () {
-        var _this = this;
-        return Object.keys(this.observableQueries).map(function (obsQueryId) {
-            var queryOptions = _this.observableQueries[obsQueryId].observableQuery.options;
-            if (queryOptions.reducer) {
-                return resultReducers_1.createStoreReducer(queryOptions.reducer, queryOptions.query, queryOptions.variables, _this.reducerConfig);
-            }
-            return null;
-        }).filter(function (reducer) { return reducer !== null; });
-    };
-    QueryManager.prototype.fetchRequest = function (_a) {
-        var _this = this;
-        var requestId = _a.requestId, queryId = _a.queryId, document = _a.document, options = _a.options;
-        var variables = options.variables, noFetch = options.noFetch, returnPartialData = options.returnPartialData;
-        var request = {
-            query: document,
-            variables: variables,
-            operationName: getFromAST_1.getOperationName(document),
-        };
-        var retPromise = new Promise(function (resolve, reject) {
-            _this.addFetchQueryPromise(requestId, retPromise, resolve, reject);
-            _this.networkInterface.query(request)
-                .then(function (result) {
-                var extraReducers = _this.getExtraReducers();
-                _this.store.dispatch({
-                    type: 'APOLLO_QUERY_RESULT',
-                    document: document,
-                    operationName: getFromAST_1.getOperationName(document),
-                    result: result,
-                    queryId: queryId,
-                    requestId: requestId,
-                    extraReducers: extraReducers,
+        if (this.shouldBatch) {
+            this.queuedRequests = [];
+            var batchedPromise = this.networkInterface.batchQuery(requests);
+            batchedPromise.then(function (results) {
+                results.forEach(function (result, index) {
+                    resolvers[index](result);
                 });
-                _this.removeFetchQueryPromise(requestId);
-                if (result.errors) {
-                    throw new ApolloError_1.ApolloError({
-                        graphQLErrors: result.errors,
-                    });
-                }
-                return result;
-            }).then(function () {
-                var resultFromStore;
-                try {
-                    resultFromStore = readFromStore_1.readQueryFromStore({
-                        store: _this.getApolloState().data,
-                        variables: variables,
-                        returnPartialData: returnPartialData || noFetch,
-                        query: document,
-                        config: _this.reducerConfig,
-                    });
-                }
-                catch (e) { }
-                _this.removeFetchQueryPromise(requestId);
-                resolve({ data: resultFromStore, loading: false, networkStatus: store_2.NetworkStatus.ready });
             }).catch(function (error) {
-                if (error instanceof ApolloError_1.ApolloError) {
-                    reject(error);
+                rejecters.forEach(function (rejecter, index) {
+                    rejecters[index](error);
+                });
+            });
+            return promises;
+        }
+        else {
+            var clonedRequests = cloneDeep(this.queuedRequests);
+            this.queuedRequests = [];
+            clonedRequests.forEach(function (fetchRequest, index) {
+                _this.networkInterface.query(requests[index]).then(function (result) {
+                    resolvers[index](result);
+                }).catch(function (reason) {
+                    rejecters[index](reason);
+                });
+            });
+            return promises;
+        }
+    };
+    QueryBatcher.prototype.start = function (pollInterval) {
+        var _this = this;
+        if (this.shouldBatch) {
+            this.pollInterval = pollInterval;
+            this.pollTimer = setInterval(function () {
+                _this.consumeQueue();
+            }, this.pollInterval);
+        }
+    };
+    QueryBatcher.prototype.stop = function () {
+        if (this.pollTimer) {
+            clearInterval(this.pollTimer);
+        }
+    };
+    return QueryBatcher;
+}());
+exports.QueryBatcher = QueryBatcher;
+
+},{"lodash.clonedeep":83}],32:[function(require,module,exports){
+"use strict";
+var getFromAST_1 = require('../queries/getFromAST');
+var storeUtils_1 = require('../data/storeUtils');
+var assign = require('lodash.assign');
+var cloneDeep = require('lodash.clonedeep');
+var isArray = require('lodash.isarray');
+var isNull = require('lodash.isnull');
+var isUndefined = require('lodash.isundefined');
+function mergeRequests(requests) {
+    var rootQueryDoc = createEmptyRootQueryDoc();
+    var rootVariables;
+    requests.forEach(function (request, requestIndex) {
+        request = cloneDeep(request);
+        rootQueryDoc = addQueryToRoot(rootQueryDoc, request.query, requestIndex);
+        if (request.variables) {
+            rootVariables = addVariablesToRoot(rootVariables, request.variables, request.query, requestIndex);
+        }
+    });
+    var rootRequest = {
+        debugName: '___composed',
+        query: rootQueryDoc,
+        variables: rootVariables,
+    };
+    return rootRequest;
+}
+exports.mergeRequests = mergeRequests;
+function unpackMergedResult(result, childRequests) {
+    var resultArray = childRequests.map(function (request, index) {
+        var unpackedData = unpackDataForRequest({
+            request: request,
+            data: result.data,
+            selectionSet: getFromAST_1.getQueryDefinition(request.query).selectionSet,
+            queryIndex: index,
+            startIndex: 0,
+            fragmentMap: getFromAST_1.createFragmentMap(getFromAST_1.getFragmentDefinitions(request.query)),
+            topLevel: true,
+        }).unpackedData;
+        return assign({}, result, { data: unpackedData });
+    });
+    return resultArray;
+}
+exports.unpackMergedResult = unpackMergedResult;
+function unpackDataForRequest(_a) {
+    var request = _a.request, data = _a.data, selectionSet = _a.selectionSet, queryIndex = _a.queryIndex, startIndex = _a.startIndex, fragmentMap = _a.fragmentMap, topLevel = _a.topLevel;
+    if (!selectionSet) {
+        return {
+            newIndex: startIndex,
+            unpackedData: {},
+        };
+    }
+    var unpackedData = {};
+    var currIndex = startIndex;
+    selectionSet.selections.forEach(function (selection) {
+        if (selection.kind === 'Field') {
+            var field = selection;
+            var realName = storeUtils_1.resultKeyNameFromField(field);
+            var aliasName = getOperationDefinitionName(getFromAST_1.getQueryDefinition(request.query), queryIndex);
+            var stringKey = topLevel ? aliasName + "___fieldIndex_" + currIndex : realName;
+            if (topLevel) {
+                currIndex += 1;
+            }
+            var childData = isNull(data) ? null : data[stringKey];
+            var resData = childData;
+            if (field.selectionSet && field.selectionSet.selections.length > 0) {
+                var fieldOpts_1 = {
+                    request: request,
+                    data: childData,
+                    selectionSet: field.selectionSet,
+                    queryIndex: queryIndex,
+                    fragmentMap: fragmentMap,
+                    startIndex: currIndex,
+                    topLevel: false,
+                };
+                if (isNull(childData)) {
+                    var selectionRet = unpackDataForRequest(assign(fieldOpts_1, {
+                        startIndex: currIndex,
+                    }));
+                    currIndex = selectionRet.newIndex;
+                    resData = childData;
+                }
+                else if (isArray(childData)) {
+                    var resUnpacked_1 = [];
+                    var newIndex_1 = 0;
+                    childData.forEach(function (dataObject) {
+                        var selectionRet = unpackDataForRequest(assign(fieldOpts_1, {
+                            data: dataObject,
+                            startIndex: currIndex,
+                        }));
+                        newIndex_1 = selectionRet.newIndex;
+                        resUnpacked_1.push(selectionRet.unpackedData);
+                    });
+                    currIndex = newIndex_1;
+                    resData = resUnpacked_1;
                 }
                 else {
-                    _this.store.dispatch({
-                        type: 'APOLLO_QUERY_ERROR',
-                        error: error,
-                        queryId: queryId,
-                        requestId: requestId,
-                    });
-                    _this.removeFetchQueryPromise(requestId);
-                    reject(new ApolloError_1.ApolloError({
-                        networkError: error,
-                    }));
+                    var selectionRet = unpackDataForRequest(assign(fieldOpts_1, { startIndex: currIndex }));
+                    resData = selectionRet.unpackedData;
+                    currIndex = selectionRet.newIndex;
                 }
-            });
-        });
-        return retPromise;
-    };
-    QueryManager.prototype.refetchQueryByName = function (queryName) {
-        var _this = this;
-        var refetchedQueries = this.queryIdsByName[queryName];
-        if (refetchedQueries === undefined) {
-            console.warn("Warning: unknown query with name " + queryName + " asked to refetch");
+            }
+            if (!isUndefined(childData)) {
+                unpackedData[realName] = resData;
+            }
         }
-        else {
-            refetchedQueries.forEach(function (queryId) {
-                _this.observableQueries[queryId].observableQuery.refetch();
+        else if (selection.kind === 'InlineFragment') {
+            var inlineFragment = selection;
+            var ret = unpackDataForRequest({
+                request: request,
+                data: data,
+                selectionSet: inlineFragment.selectionSet,
+                queryIndex: queryIndex,
+                startIndex: currIndex,
+                fragmentMap: fragmentMap,
+                topLevel: topLevel,
             });
+            assign(unpackedData, ret.unpackedData);
+            currIndex = ret.newIndex;
         }
+        else if (selection.kind === 'FragmentSpread') {
+            var fragmentSpread = selection;
+            var fragment = fragmentMap[fragmentSpread.name.value];
+            var fragmentRet = unpackDataForRequest({
+                request: request,
+                data: data,
+                selectionSet: fragment.selectionSet,
+                queryIndex: queryIndex,
+                startIndex: currIndex,
+                fragmentMap: fragmentMap,
+                topLevel: true,
+            });
+            assign(unpackedData, fragmentRet.unpackedData);
+            currIndex = fragmentRet.newIndex;
+        }
+    });
+    return {
+        newIndex: currIndex,
+        unpackedData: unpackedData,
     };
-    QueryManager.prototype.isDifferentResult = function (lastResult, newResult) {
-        var comparator = this.resultComparator || isEqual;
-        return !comparator(lastResult, newResult);
+}
+exports.unpackDataForRequest = unpackDataForRequest;
+function mergeQueryDocuments(childQueryDocs) {
+    var rootQueryDoc = createEmptyRootQueryDoc();
+    childQueryDocs.forEach(function (childQueryDoc, childQueryDocIndex) {
+        rootQueryDoc = addQueryToRoot(rootQueryDoc, childQueryDoc, childQueryDocIndex);
+    });
+    return rootQueryDoc;
+}
+exports.mergeQueryDocuments = mergeQueryDocuments;
+function addVariablesToRoot(rootVariables, childVariables, childQueryDoc, childQueryDocIndex) {
+    var aliasName = getOperationDefinitionName(getFromAST_1.getQueryDefinition(childQueryDoc), childQueryDocIndex);
+    var aliasedChildVariables = addPrefixToVariables(aliasName + '___', childVariables);
+    return assign({}, rootVariables, aliasedChildVariables);
+}
+exports.addVariablesToRoot = addVariablesToRoot;
+function addQueryToRoot(rootQueryDoc, childQueryDoc, childQueryDocIndex) {
+    var aliasName = getOperationDefinitionName(getFromAST_1.getQueryDefinition(childQueryDoc), childQueryDocIndex);
+    var aliasedChild = applyAliasNameToDocument(childQueryDoc, aliasName);
+    var aliasedChildQueryDef = getFromAST_1.getQueryDefinition(aliasedChild);
+    var aliasedChildFragmentDefs = getFromAST_1.getFragmentDefinitions(aliasedChild);
+    var rootQueryDef = getFromAST_1.getQueryDefinition(rootQueryDoc);
+    rootQueryDoc.definitions = rootQueryDoc.definitions.concat(aliasedChildFragmentDefs);
+    rootQueryDef.selectionSet.selections =
+        rootQueryDef.selectionSet.selections.concat(aliasedChildQueryDef.selectionSet.selections);
+    rootQueryDef.variableDefinitions =
+        rootQueryDef.variableDefinitions.concat(aliasedChildQueryDef.variableDefinitions);
+    return rootQueryDoc;
+}
+exports.addQueryToRoot = addQueryToRoot;
+function createEmptyRootQueryDoc(rootQueryName) {
+    if (!rootQueryName) {
+        rootQueryName = '___composed';
+    }
+    return {
+        kind: 'Document',
+        definitions: [
+            {
+                kind: 'OperationDefinition',
+                operation: 'query',
+                name: {
+                    kind: 'Name',
+                    value: rootQueryName,
+                },
+                variableDefinitions: [],
+                directives: [],
+                selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [],
+                },
+            },
+        ],
     };
-    QueryManager.prototype.broadcastQueries = function () {
-        var queries = this.getApolloState().queries;
-        forOwn(this.queryListeners, function (listeners, queryId) {
-            if (listeners) {
-                listeners.forEach(function (listener) {
-                    if (listener) {
-                        var queryStoreValue = queries[queryId];
-                        listener(queryStoreValue);
-                    }
-                });
+}
+exports.createEmptyRootQueryDoc = createEmptyRootQueryDoc;
+function renameFragmentSpreads(selSet, aliasName) {
+    if (selSet && selSet.selections) {
+        selSet.selections = selSet.selections.map(function (selection) {
+            if (selection.kind === 'FragmentSpread') {
+                var fragmentSpread = selection;
+                fragmentSpread.name.value = getFragmentAliasName(fragmentSpread, aliasName);
+                return fragmentSpread;
+            }
+            else {
+                var withSelSet = selection;
+                withSelSet.selectionSet = renameFragmentSpreads(withSelSet.selectionSet, aliasName);
+                return selection;
             }
         });
+    }
+    return selSet;
+}
+exports.renameFragmentSpreads = renameFragmentSpreads;
+function renameVariablesInArgument(argument, aliasName) {
+    if (argument.kind === 'Argument' &&
+        argument.value.kind === 'Variable') {
+        var varx = argument.value;
+        argument.value.name.value = getVariableAliasName(varx, aliasName);
+    }
+    return argument;
+}
+function renameVariables(selSet, aliasName) {
+    if (selSet && selSet.selections) {
+        selSet.selections = selSet.selections.map(function (selection) {
+            if (selection.kind === 'Field') {
+                var field = selection;
+                if (field.arguments) {
+                    field.arguments = field.arguments.map(function (argument) {
+                        return renameVariablesInArgument(argument, aliasName);
+                    });
+                }
+                if (field.directives) {
+                    field.directives = field.directives.map(function (directive) {
+                        if (directive.arguments) {
+                            directive.arguments = directive.arguments.map(function (argument) {
+                                return renameVariablesInArgument(argument, aliasName);
+                            });
+                        }
+                        return directive;
+                    });
+                }
+                field.selectionSet = renameVariables(field.selectionSet, aliasName);
+                return field;
+            }
+            else if (selection.kind === 'InlineFragment') {
+                var inlineFragment = selection;
+                inlineFragment.selectionSet = renameVariables(inlineFragment.selectionSet, aliasName);
+                return inlineFragment;
+            }
+            return selection;
+        });
+    }
+    return selSet;
+}
+exports.renameVariables = renameVariables;
+function applyAliasNameToVariableDefinition(vDef, aliasName) {
+    if (containsMarker(vDef.variable.name.value)) {
+        throw new Error("Variable definition for " + vDef.variable.name.value + " contains \"___\"");
+    }
+    vDef.variable.name.value = getVariableAliasName(vDef.variable, aliasName);
+    return vDef;
+}
+exports.applyAliasNameToVariableDefinition = applyAliasNameToVariableDefinition;
+function applyAliasNameToDocument(document, aliasName) {
+    document.definitions = document.definitions.map(function (definition) {
+        var operationOrFragmentDef = definition;
+        operationOrFragmentDef.selectionSet =
+            renameFragmentSpreads(operationOrFragmentDef.selectionSet, aliasName);
+        operationOrFragmentDef.selectionSet =
+            renameVariables(operationOrFragmentDef.selectionSet, aliasName);
+        return operationOrFragmentDef;
+    });
+    var currStartIndex = 0;
+    document.definitions = document.definitions.map(function (definition) {
+        if (definition.kind === 'OperationDefinition' &&
+            definition.operation === 'query') {
+            var operationDef = definition;
+            if (operationDef.variableDefinitions) {
+                operationDef.variableDefinitions =
+                    operationDef.variableDefinitions.map(function (vDef) {
+                        return applyAliasNameToVariableDefinition(vDef, aliasName);
+                    });
+            }
+            var retDef = applyAliasNameToTopLevelFields(operationDef, aliasName, currStartIndex);
+            currStartIndex += operationDef.selectionSet.selections.length;
+            return retDef;
+        }
+        else if (definition.kind === 'FragmentDefinition') {
+            var fragmentDef = definition;
+            var retDef = applyAliasNameToFragment(fragmentDef, aliasName, currStartIndex);
+            currStartIndex += fragmentDef.selectionSet.selections.length;
+            return retDef;
+        }
+        else {
+            throw new Error('Cannot apply alias names to documents that contain mutations.');
+        }
+    });
+    return document;
+}
+exports.applyAliasNameToDocument = applyAliasNameToDocument;
+function applyAliasNameToFragment(fragment, aliasName, startIndex) {
+    if (containsMarker(fragment.name.value)) {
+        throw new Error("Fragment " + fragment.name.value + " contains \"___\"");
+    }
+    fragment.name.value = getFragmentAliasName(fragment, aliasName);
+    fragment.selectionSet.selections =
+        applyAliasNameToSelections(fragment.selectionSet.selections, aliasName, startIndex).res;
+    return fragment;
+}
+exports.applyAliasNameToFragment = applyAliasNameToFragment;
+function applyAliasNameToTopLevelFields(childQuery, aliasName, startIndex) {
+    childQuery.selectionSet.selections =
+        applyAliasNameToSelections(childQuery.selectionSet.selections, aliasName, startIndex).res;
+    return childQuery;
+}
+exports.applyAliasNameToTopLevelFields = applyAliasNameToTopLevelFields;
+function getVariableAliasName(varNode, aliasName) {
+    return aliasName + "___" + varNode.name.value;
+}
+exports.getVariableAliasName = getVariableAliasName;
+function getFragmentAliasName(fragment, queryAliasName) {
+    return queryAliasName + "___" + fragment.name.value;
+}
+exports.getFragmentAliasName = getFragmentAliasName;
+function getOperationDefinitionName(operationDef, requestIndex) {
+    var operationDefName = '';
+    if (operationDef.name) {
+        operationDefName = operationDef.name.value;
+    }
+    return "___" + operationDefName + "___requestIndex_" + requestIndex;
+}
+exports.getOperationDefinitionName = getOperationDefinitionName;
+function aliasField(field, alias) {
+    if (containsMarker(field.name.value)) {
+        throw new Error("Field " + field.name.value + " contains \"___\".");
+    }
+    field.alias = {
+        kind: 'Name',
+        value: alias,
     };
-    QueryManager.prototype.generateRequestId = function () {
-        var requestId = this.idCounter;
-        this.idCounter++;
-        return requestId;
+    return field;
+}
+exports.aliasField = aliasField;
+function addPrefixToQuery(prefix, query) {
+    if (query.name) {
+        query.name.value = prefix + query.name.value;
+    }
+    return query;
+}
+exports.addPrefixToQuery = addPrefixToQuery;
+function addPrefixToVariables(prefix, variables) {
+    var newVariables = {};
+    Object.keys(variables).forEach(function (variableName) {
+        newVariables[prefix + variableName] = variables[variableName];
+    });
+    return newVariables;
+}
+exports.addPrefixToVariables = addPrefixToVariables;
+function applyAliasNameToSelections(selections, aliasName, startIndex) {
+    var currIndex = startIndex;
+    var res = selections.map(function (selection) {
+        if (selection.kind === 'Field') {
+            var aliasedField = aliasField(selection, aliasName + "___fieldIndex_" + currIndex);
+            currIndex += 1;
+            return aliasedField;
+        }
+        else if (selection.kind === 'InlineFragment') {
+            var inlineFragment = selection;
+            var ret = applyAliasNameToSelections(inlineFragment.selectionSet.selections, aliasName, currIndex);
+            inlineFragment.selectionSet.selections = ret.res;
+            currIndex = ret.newIndex;
+            return inlineFragment;
+        }
+        else {
+            return selection;
+        }
+    });
+    return {
+        res: res,
+        newIndex: currIndex,
     };
-    return QueryManager;
-}());
-exports.QueryManager = QueryManager;
+}
+function containsMarker(name) {
+    return name.indexOf('___') > -1;
+}
 
-},{"../data/readFromStore":32,"../data/resultReducers":34,"../errors/ApolloError":39,"../queries/getFromAST":48,"../queries/queryTransform":49,"../queries/store":50,"../scheduler/scheduler":51,"../store":52,"../util/Observable":56,"../util/errorHandling":57,"./ObservableQuery":29,"graphql-tag/printer":74,"lodash.forown":93,"lodash.isequal":97}],31:[function(require,module,exports){
+},{"../data/storeUtils":39,"../queries/getFromAST":50,"lodash.assign":82,"lodash.clonedeep":83,"lodash.isarray":92,"lodash.isnull":94,"lodash.isundefined":98}],33:[function(require,module,exports){
+"use strict";
+var isArray = require('lodash.isarray');
+var isNull = require('lodash.isnull');
+var isObject = require('lodash.isobject');
+var has = require('lodash.has');
+var merge = require('lodash.merge');
+var storeUtils_1 = require('./storeUtils');
+var store_1 = require('./store');
+var getFromAST_1 = require('../queries/getFromAST');
+var directives_1 = require('../queries/directives');
+var errors_1 = require('../errors');
+var flatten = require('lodash.flatten');
+function diffQueryAgainstStore(_a) {
+    var store = _a.store, query = _a.query, variables = _a.variables;
+    var queryDef = getFromAST_1.getQueryDefinition(query);
+    return diffSelectionSetAgainstStore({
+        store: store,
+        rootId: 'ROOT_QUERY',
+        selectionSet: queryDef.selectionSet,
+        throwOnMissingField: false,
+        variables: variables,
+    });
+}
+exports.diffQueryAgainstStore = diffQueryAgainstStore;
+function diffFragmentAgainstStore(_a) {
+    var store = _a.store, fragment = _a.fragment, rootId = _a.rootId, variables = _a.variables;
+    var fragmentDef = getFromAST_1.getFragmentDefinition(fragment);
+    return diffSelectionSetAgainstStore({
+        store: store,
+        rootId: rootId,
+        selectionSet: fragmentDef.selectionSet,
+        throwOnMissingField: false,
+        variables: variables,
+    });
+}
+exports.diffFragmentAgainstStore = diffFragmentAgainstStore;
+function handleFragmentErrors(fragmentErrors) {
+    var typenames = Object.keys(fragmentErrors);
+    if (typenames.length === 0) {
+        return;
+    }
+    var errorTypes = typenames.filter(function (typename) {
+        return (fragmentErrors[typename] !== null);
+    });
+    if (errorTypes.length === Object.keys(fragmentErrors).length) {
+        throw fragmentErrors[errorTypes[0]];
+    }
+}
+exports.handleFragmentErrors = handleFragmentErrors;
+function diffSelectionSetAgainstStore(_a) {
+    var selectionSet = _a.selectionSet, store = _a.store, rootId = _a.rootId, _b = _a.throwOnMissingField, throwOnMissingField = _b === void 0 ? false : _b, variables = _a.variables, fragmentMap = _a.fragmentMap;
+    if (selectionSet.kind !== 'SelectionSet') {
+        throw new Error('Must be a selection set.');
+    }
+    if (!fragmentMap) {
+        fragmentMap = {};
+    }
+    var result = {};
+    var missingFields = [];
+    var fragmentErrors = {};
+    selectionSet.selections.forEach(function (selection) {
+        var missingFieldPushed = false;
+        var fieldResult;
+        var fieldIsMissing;
+        function pushMissingField(missingField) {
+            if (!missingFieldPushed) {
+                missingFields.push(missingField);
+                missingFieldPushed = true;
+            }
+        }
+        var included = directives_1.shouldInclude(selection, variables);
+        if (storeUtils_1.isField(selection)) {
+            var diffResult = diffFieldAgainstStore({
+                field: selection,
+                throwOnMissingField: throwOnMissingField,
+                variables: variables,
+                rootId: rootId,
+                store: store,
+                fragmentMap: fragmentMap,
+                included: included,
+            });
+            fieldIsMissing = diffResult.isMissing;
+            fieldResult = diffResult.result;
+            var resultFieldKey = storeUtils_1.resultKeyNameFromField(selection);
+            if (fieldIsMissing) {
+                pushMissingField(selection);
+            }
+            if (included && fieldResult !== undefined) {
+                result[resultFieldKey] = fieldResult;
+            }
+        }
+        else if (storeUtils_1.isInlineFragment(selection)) {
+            var typename = selection.typeCondition.name.value;
+            if (included) {
+                try {
+                    var diffResult = diffSelectionSetAgainstStore({
+                        selectionSet: selection.selectionSet,
+                        throwOnMissingField: throwOnMissingField,
+                        variables: variables,
+                        rootId: rootId,
+                        store: store,
+                        fragmentMap: fragmentMap,
+                    });
+                    fieldIsMissing = diffResult.isMissing;
+                    fieldResult = diffResult.result;
+                    if (fieldIsMissing) {
+                        pushMissingField(selection);
+                    }
+                    if (isObject(fieldResult)) {
+                        merge(result, fieldResult);
+                    }
+                    if (!fragmentErrors[typename]) {
+                        fragmentErrors[typename] = null;
+                    }
+                }
+                catch (e) {
+                    if (e.extraInfo && e.extraInfo.isFieldError) {
+                        fragmentErrors[typename] = e;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
+            }
+        }
+        else {
+            var fragment = fragmentMap[selection.name.value];
+            if (!fragment) {
+                throw new Error("No fragment named " + selection.name.value);
+            }
+            var typename = fragment.typeCondition.name.value;
+            if (included) {
+                try {
+                    var diffResult = diffSelectionSetAgainstStore({
+                        selectionSet: fragment.selectionSet,
+                        throwOnMissingField: throwOnMissingField,
+                        variables: variables,
+                        rootId: rootId,
+                        store: store,
+                        fragmentMap: fragmentMap,
+                    });
+                    fieldIsMissing = diffResult.isMissing;
+                    fieldResult = diffResult.result;
+                    if (fieldIsMissing) {
+                        pushMissingField(selection);
+                    }
+                    if (isObject(fieldResult)) {
+                        merge(result, fieldResult);
+                    }
+                    if (!fragmentErrors[typename]) {
+                        fragmentErrors[typename] = null;
+                    }
+                }
+                catch (e) {
+                    if (e.extraInfo && e.extraInfo.isFieldError) {
+                        fragmentErrors[typename] = e;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
+            }
+        }
+    });
+    if (throwOnMissingField) {
+        handleFragmentErrors(fragmentErrors);
+    }
+    var isMissing;
+    var missingSelectionSets;
+    if (missingFields.length) {
+        if (rootId === 'ROOT_QUERY') {
+            var typeName = 'Query';
+            missingSelectionSets = [
+                {
+                    id: rootId,
+                    typeName: typeName,
+                    selectionSet: {
+                        kind: 'SelectionSet',
+                        selections: missingFields,
+                    },
+                },
+            ];
+        }
+        else {
+            isMissing = 'true';
+        }
+    }
+    return {
+        result: result,
+        isMissing: isMissing,
+        missingSelectionSets: missingSelectionSets,
+    };
+}
+exports.diffSelectionSetAgainstStore = diffSelectionSetAgainstStore;
+function diffFieldAgainstStore(_a) {
+    var field = _a.field, throwOnMissingField = _a.throwOnMissingField, variables = _a.variables, rootId = _a.rootId, store = _a.store, fragmentMap = _a.fragmentMap, _b = _a.included, included = _b === void 0 ? true : _b;
+    var storeObj = store[rootId] || {};
+    var storeFieldKey = storeUtils_1.storeKeyNameFromField(field, variables);
+    if (!has(storeObj, storeFieldKey)) {
+        if (throwOnMissingField && included) {
+            throw new errors_1.ApolloError({
+                errorMessage: "Can't find field " + storeFieldKey + " on object (" + rootId + ") " + JSON.stringify(storeObj, null, 2) + ".\nPerhaps you want to use the `returnPartialData` option?",
+                extraInfo: {
+                    isFieldError: true,
+                },
+            });
+        }
+        return {
+            isMissing: 'true',
+        };
+    }
+    var storeValue = storeObj[storeFieldKey];
+    if (!field.selectionSet) {
+        if (store_1.isJsonValue(storeValue)) {
+            return {
+                result: storeValue.json,
+            };
+        }
+        else {
+            return {
+                result: storeValue,
+            };
+        }
+    }
+    if (isNull(storeValue)) {
+        return {
+            result: null,
+        };
+    }
+    if (isArray(storeValue)) {
+        var isMissing_1;
+        var result = storeValue.map(function (id) {
+            if (isNull(id)) {
+                return null;
+            }
+            var itemDiffResult = diffSelectionSetAgainstStore({
+                store: store,
+                throwOnMissingField: throwOnMissingField,
+                rootId: id,
+                selectionSet: field.selectionSet,
+                variables: variables,
+                fragmentMap: fragmentMap,
+            });
+            if (itemDiffResult.isMissing) {
+                isMissing_1 = 'true';
+            }
+            return itemDiffResult.result;
+        });
+        return {
+            result: result,
+            isMissing: isMissing_1,
+        };
+    }
+    if (store_1.isIdValue(storeValue)) {
+        var unescapedId = storeValue.id;
+        return diffSelectionSetAgainstStore({
+            store: store,
+            throwOnMissingField: throwOnMissingField,
+            rootId: unescapedId,
+            selectionSet: field.selectionSet,
+            variables: variables,
+            fragmentMap: fragmentMap,
+        });
+    }
+    throw new Error('Unexpected value in the store where the query had a subselection.');
+}
+function collectUsedVariablesFromSelectionSet(selectionSet) {
+    return uniq(flatten(selectionSet.selections.map(function (selection) {
+        if (storeUtils_1.isField(selection)) {
+            return collectUsedVariablesFromField(selection);
+        }
+        else if (storeUtils_1.isInlineFragment(selection)) {
+            return collectUsedVariablesFromSelectionSet(selection.selectionSet);
+        }
+        else {
+            return [];
+        }
+    })));
+}
+function collectUsedVariablesFromDirectives(directives) {
+    return flatten(directives.map(function (directive) {
+        if (directive.arguments) {
+            return flatten(directive.arguments.map(function (arg) {
+                if (arg.kind === 'Argument' && arg.value.kind === 'Variable') {
+                    return [arg.value.name.value];
+                }
+                return [];
+            }));
+        }
+        return [];
+    }));
+}
+function collectUsedVariablesFromField(field) {
+    var variables = [];
+    if (field.arguments) {
+        variables = flatten(field.arguments.map(function (arg) {
+            if (arg.value.kind === 'Variable') {
+                return [arg.value.name.value];
+            }
+            return [];
+        }));
+    }
+    if (field.selectionSet) {
+        variables = variables.concat(collectUsedVariablesFromSelectionSet(field.selectionSet));
+    }
+    if (field.directives) {
+        variables = variables.concat(collectUsedVariablesFromDirectives(field.directives));
+    }
+    return uniq(variables);
+}
+function removeUnusedVariablesFromQuery(query) {
+    var queryDef = getFromAST_1.getQueryDefinition(query);
+    var usedVariables = flatten(query.definitions.map(function (def) { return collectUsedVariablesFromSelectionSet(def.selectionSet); }));
+    if (!queryDef.variableDefinitions) {
+        return;
+    }
+    var diffedVariableDefinitions = queryDef.variableDefinitions.filter(function (variableDefinition) {
+        return usedVariables.indexOf(variableDefinition.variable.name.value) !== -1;
+    });
+    queryDef.variableDefinitions = diffedVariableDefinitions;
+}
+exports.removeUnusedVariablesFromQuery = removeUnusedVariablesFromQuery;
+function uniq(array) {
+    return array.filter(function (item, index, arr) {
+        return arr.indexOf(item) === index;
+    });
+}
+
+},{"../errors":41,"../queries/directives":49,"../queries/getFromAST":50,"./store":38,"./storeUtils":39,"lodash.flatten":87,"lodash.has":89,"lodash.isarray":92,"lodash.isnull":94,"lodash.isobject":96,"lodash.merge":103}],34:[function(require,module,exports){
 "use strict";
 var mapValues = require('lodash.mapvalues');
+var isArray = require('lodash.isarray');
 var cloneDeep = require('lodash.clonedeep');
 var assign = require('lodash.assign');
 var replaceQueryResults_1 = require('./replaceQueryResults');
 var writeToStore_1 = require('./writeToStore');
-var getFromAST_1 = require('../queries/getFromAST');
 var scopeQuery_1 = require('./scopeQuery');
 function mutationResultArrayInsertReducer(state, _a) {
-    var behavior = _a.behavior, result = _a.result, variables = _a.variables, document = _a.document, config = _a.config;
+    var behavior = _a.behavior, result = _a.result, variables = _a.variables, fragmentMap = _a.fragmentMap, selectionSet = _a.selectionSet, config = _a.config;
     var _b = behavior, resultPath = _b.resultPath, storePath = _b.storePath, where = _b.where;
-    var selectionSet = getFromAST_1.getOperationDefinition(document).selectionSet;
-    var fragmentMap = getFromAST_1.createFragmentMap(getFromAST_1.getFragmentDefinitions(document));
     var scopedSelectionSet = scopeQuery_1.scopeSelectionSetToResultPath({
         selectionSet: selectionSet,
         fragmentMap: fragmentMap,
@@ -3751,12 +4369,10 @@ function mutationResultArrayInsertReducer(state, _a) {
         result: scopedResult,
         dataId: dataId,
         selectionSet: scopedSelectionSet,
-        context: {
-            store: state,
-            variables: variables,
-            dataIdFromObject: config.dataIdFromObject,
-            fragmentMap: fragmentMap,
-        },
+        store: state,
+        variables: variables,
+        dataIdFromObject: config.dataIdFromObject,
+        fragmentMap: fragmentMap,
     });
     var dataIdOfObj = storePath[0], restStorePath = storePath.slice(1);
     var clonedObj = cloneDeep(state[dataIdOfObj]);
@@ -3764,12 +4380,11 @@ function mutationResultArrayInsertReducer(state, _a) {
         json: clonedObj,
         path: restStorePath,
     });
-    var idValue = { type: 'id', generated: false, id: dataId };
     if (where === 'PREPEND') {
-        array.unshift(idValue);
+        array.unshift(dataId);
     }
     else if (where === 'APPEND') {
-        array.push(idValue);
+        array.push(dataId);
     }
     else {
         throw new Error('Unsupported "where" option to ARRAY_INSERT.');
@@ -3797,11 +4412,11 @@ function mutationResultDeleteReducer(state, _a) {
 function removeRefsFromStoreObj(storeObj, dataId) {
     var affected = false;
     var cleanedObj = mapValues(storeObj, function (value) {
-        if (value && value.id === dataId) {
+        if (value === dataId) {
             affected = true;
             return null;
         }
-        if (Array.isArray(value)) {
+        if (isArray(value)) {
             var filteredArray = cleanArray(value, dataId);
             if (filteredArray !== value) {
                 affected = true;
@@ -3818,7 +4433,7 @@ function removeRefsFromStoreObj(storeObj, dataId) {
     }
 }
 function cleanArray(originalArray, dataId) {
-    if (originalArray.length && Array.isArray(originalArray[0])) {
+    if (originalArray.length && isArray(originalArray[0])) {
         var modified_1 = false;
         var filteredArray = originalArray.map(function (nestedArray) {
             var nestedFilteredArray = cleanArray(nestedArray, dataId);
@@ -3834,7 +4449,7 @@ function cleanArray(originalArray, dataId) {
         return filteredArray;
     }
     else {
-        var filteredArray = originalArray.filter(function (item) { return item.id !== dataId; });
+        var filteredArray = originalArray.filter(function (item) { return item !== dataId; });
         if (filteredArray.length === originalArray.length) {
             return originalArray;
         }
@@ -3851,18 +4466,7 @@ function mutationResultArrayDeleteReducer(state, _a) {
         json: clonedObj,
         path: restStorePath,
     });
-    var index = -1;
-    array.some(function (item, i) {
-        if (item && item.id === dataId) {
-            index = i;
-            return true;
-        }
-        return false;
-    });
-    if (index === -1) {
-        return state;
-    }
-    array.splice(index, 1);
+    array.splice(array.indexOf(dataId), 1);
     return assign(state, (_c = {},
         _c[dataIdOfObj] = clonedObj,
         _c
@@ -3881,153 +4485,70 @@ exports.defaultMutationBehaviorReducers = {
     'QUERY_RESULT': mutationResultQueryResultReducer,
 };
 
-},{"../queries/getFromAST":48,"./replaceQueryResults":33,"./scopeQuery":35,"./writeToStore":38,"lodash.assign":87,"lodash.clonedeep":88,"lodash.mapvalues":106}],32:[function(require,module,exports){
-(function (process){
+},{"./replaceQueryResults":36,"./scopeQuery":37,"./writeToStore":40,"lodash.assign":82,"lodash.clonedeep":83,"lodash.isarray":92,"lodash.mapvalues":102}],35:[function(require,module,exports){
 "use strict";
-var graphql_anywhere_1 = require('graphql-anywhere');
-var storeUtils_1 = require('./storeUtils');
-var storeUtils_2 = require('./storeUtils');
+var diffAgainstStore_1 = require('./diffAgainstStore');
 var getFromAST_1 = require('../queries/getFromAST');
 function readQueryFromStore(_a) {
-    var store = _a.store, query = _a.query, variables = _a.variables, _b = _a.returnPartialData, returnPartialData = _b === void 0 ? false : _b, config = _a.config;
-    var result = diffQueryAgainstStore({
-        query: query,
+    var store = _a.store, query = _a.query, variables = _a.variables, returnPartialData = _a.returnPartialData, fragmentMap = _a.fragmentMap;
+    var queryDef = getFromAST_1.getQueryDefinition(query);
+    return readSelectionSetFromStore({
         store: store,
-        returnPartialData: returnPartialData,
+        rootId: 'ROOT_QUERY',
+        selectionSet: queryDef.selectionSet,
         variables: variables,
-        config: config,
+        returnPartialData: returnPartialData,
+        fragmentMap: fragmentMap,
+    });
+}
+exports.readQueryFromStore = readQueryFromStore;
+function readFragmentFromStore(_a) {
+    var store = _a.store, fragment = _a.fragment, rootId = _a.rootId, variables = _a.variables, returnPartialData = _a.returnPartialData;
+    var fragmentDef = getFromAST_1.getFragmentDefinition(fragment);
+    return readSelectionSetFromStore({
+        store: store,
+        rootId: rootId,
+        selectionSet: fragmentDef.selectionSet,
+        variables: variables,
+        returnPartialData: returnPartialData,
+    });
+}
+exports.readFragmentFromStore = readFragmentFromStore;
+function readSelectionSetFromStore(_a) {
+    var store = _a.store, rootId = _a.rootId, selectionSet = _a.selectionSet, variables = _a.variables, _b = _a.returnPartialData, returnPartialData = _b === void 0 ? false : _b, fragmentMap = _a.fragmentMap;
+    var result = diffAgainstStore_1.diffSelectionSetAgainstStore({
+        selectionSet: selectionSet,
+        rootId: rootId,
+        store: store,
+        throwOnMissingField: !returnPartialData,
+        variables: variables,
+        fragmentMap: fragmentMap,
     }).result;
     return result;
 }
-exports.readQueryFromStore = readQueryFromStore;
-var haveWarned = false;
-var fragmentMatcher = function (idValue, typeCondition, context) {
-    assertIdValue(idValue);
-    var obj = context.store[idValue.id];
-    if (!obj) {
-        return false;
-    }
-    if (!obj.__typename) {
-        if (!haveWarned) {
-            console.warn("You're using fragments in your queries, but don't have the addTypename:\ntrue option set in Apollo Client. Please turn on that option so that we can accurately\nmatch fragments.");
-            if (process.env.NODE_ENV !== 'test') {
-                haveWarned = true;
-            }
-        }
-        context.returnPartialData = true;
-        return true;
-    }
-    if (obj.__typename === typeCondition) {
-        return true;
-    }
-    context.returnPartialData = true;
-    return true;
-};
-var readStoreResolver = function (fieldName, idValue, args, context) {
-    assertIdValue(idValue);
-    var objId = idValue.id;
-    var obj = context.store[objId];
-    var storeKeyName = storeUtils_2.storeKeyNameFromFieldNameAndArgs(fieldName, args);
-    var fieldValue = (obj || {})[storeKeyName];
-    if (typeof fieldValue === 'undefined') {
-        if (context.customResolvers && obj && (obj.__typename || objId === 'ROOT_QUERY')) {
-            var typename = obj.__typename || 'Query';
-            var type = context.customResolvers[typename];
-            if (type) {
-                var resolver = type[fieldName];
-                if (resolver) {
-                    return resolver(obj, args);
-                }
-            }
-        }
-        if (!context.returnPartialData) {
-            throw new Error("Can't find field " + storeKeyName + " on object (" + objId + ") " + JSON.stringify(obj, null, 2) + ".\nPerhaps you want to use the `returnPartialData` option?");
-        }
-        context.hasMissingField = true;
-        return fieldValue;
-    }
-    if (storeUtils_1.isJsonValue(fieldValue)) {
-        return fieldValue.json;
-    }
-    return fieldValue;
-};
-function diffQueryAgainstStore(_a) {
-    var store = _a.store, query = _a.query, variables = _a.variables, _b = _a.returnPartialData, returnPartialData = _b === void 0 ? true : _b, config = _a.config;
-    getFromAST_1.getQueryDefinition(query);
-    var context = {
-        store: store,
-        returnPartialData: returnPartialData,
-        customResolvers: config && config.customResolvers,
-        hasMissingField: false,
-    };
-    var rootIdValue = {
-        type: 'id',
-        id: 'ROOT_QUERY',
-    };
-    var result = graphql_anywhere_1.default(readStoreResolver, query, rootIdValue, context, variables, {
-        fragmentMatcher: fragmentMatcher,
-    });
-    return {
-        result: result,
-        isMissing: context.hasMissingField,
-    };
-}
-exports.diffQueryAgainstStore = diffQueryAgainstStore;
-function assertIdValue(idValue) {
-    if (!storeUtils_1.isIdValue(idValue)) {
-        throw new Error("Encountered a sub-selection on the query, but the store doesn't have an object reference. This should never happen during normal use unless you have custom code that is directly manipulating the store; please file an issue.");
-    }
-}
+exports.readSelectionSetFromStore = readSelectionSetFromStore;
 
-}).call(this,require('_process'))
-},{"../queries/getFromAST":48,"./storeUtils":37,"_process":260,"graphql-anywhere":69}],33:[function(require,module,exports){
+},{"../queries/getFromAST":50,"./diffAgainstStore":33}],36:[function(require,module,exports){
 "use strict";
 var writeToStore_1 = require('./writeToStore');
+var getFromAST_1 = require('../queries/getFromAST');
 var assign = require('lodash.assign');
 function replaceQueryResults(state, _a, config) {
-    var variables = _a.variables, document = _a.document, newResult = _a.newResult;
+    var queryVariables = _a.queryVariables, querySelectionSet = _a.querySelectionSet, queryFragments = _a.queryFragments, newResult = _a.newResult;
     var clonedState = assign({}, state);
-    return writeToStore_1.writeResultToStore({
+    return writeToStore_1.writeSelectionSetToStore({
         result: newResult,
         dataId: 'ROOT_QUERY',
-        variables: variables,
-        document: document,
+        selectionSet: querySelectionSet,
+        variables: queryVariables,
         store: clonedState,
         dataIdFromObject: config.dataIdFromObject,
+        fragmentMap: getFromAST_1.createFragmentMap(queryFragments),
     });
 }
 exports.replaceQueryResults = replaceQueryResults;
 
-},{"./writeToStore":38,"lodash.assign":87}],34:[function(require,module,exports){
-"use strict";
-var readFromStore_1 = require('./readFromStore');
-var writeToStore_1 = require('./writeToStore');
-function createStoreReducer(resultReducer, document, variables, config) {
-    return function (store, action) {
-        var currentResult = readFromStore_1.readQueryFromStore({
-            store: store,
-            query: document,
-            variables: variables,
-            returnPartialData: true,
-            config: config,
-        });
-        var nextResult = resultReducer(currentResult, action);
-        if (currentResult !== nextResult) {
-            return writeToStore_1.writeResultToStore({
-                dataId: 'ROOT_QUERY',
-                result: nextResult,
-                store: store,
-                document: document,
-                variables: variables,
-                dataIdFromObject: config.dataIdFromObject,
-            });
-        }
-        return store;
-    };
-}
-exports.createStoreReducer = createStoreReducer;
-
-},{"./readFromStore":32,"./writeToStore":38}],35:[function(require,module,exports){
+},{"../queries/getFromAST":50,"./writeToStore":40,"lodash.assign":82}],37:[function(require,module,exports){
 "use strict";
 var storeUtils_1 = require('./storeUtils');
 var isNumber = require('lodash.isnumber');
@@ -4080,14 +4601,23 @@ function getMatchingFields(currSelSet, pathSegment, fragmentMap) {
     return matching;
 }
 
-},{"./storeUtils":37,"lodash.isnumber":99}],36:[function(require,module,exports){
+},{"./storeUtils":39,"lodash.isnumber":95}],38:[function(require,module,exports){
 "use strict";
 var actions_1 = require('../actions');
 var writeToStore_1 = require('./writeToStore');
 var assign = require('lodash.assign');
+var isObject = require('lodash.isobject');
 var storeUtils_1 = require('./storeUtils');
 var mutationResults_1 = require('./mutationResults');
 var replaceQueryResults_1 = require('./replaceQueryResults');
+function isIdValue(idObject) {
+    return (isObject(idObject) && idObject.type === 'id');
+}
+exports.isIdValue = isIdValue;
+function isJsonValue(jsonObject) {
+    return (isObject(jsonObject) && jsonObject.type === 'json');
+}
+exports.isJsonValue = isJsonValue;
 function data(previousState, action, queries, mutations, config) {
     if (previousState === void 0) { previousState = {}; }
     var constAction = action;
@@ -4101,52 +4631,30 @@ function data(previousState, action, queries, mutations, config) {
         if (!storeUtils_1.graphQLResultHasError(action.result)) {
             var queryStoreValue = queries[action.queryId];
             var clonedState = assign({}, previousState);
-            var newState_1 = writeToStore_1.writeResultToStore({
+            var newState = writeToStore_1.writeSelectionSetToStore({
                 result: action.result.data,
-                dataId: 'ROOT_QUERY',
-                document: action.document,
+                dataId: queryStoreValue.minimizedQuery.id,
+                selectionSet: queryStoreValue.minimizedQuery.selectionSet,
                 variables: queryStoreValue.variables,
                 store: clonedState,
                 dataIdFromObject: config.dataIdFromObject,
+                fragmentMap: queryStoreValue.fragmentMap,
             });
-            if (action.extraReducers) {
-                action.extraReducers.forEach(function (reducer) {
-                    newState_1 = reducer(newState_1, constAction);
-                });
-            }
-            return newState_1;
-        }
-    }
-    else if (actions_1.isSubscriptionResultAction(action)) {
-        if (!storeUtils_1.graphQLResultHasError(action.result)) {
-            var clonedState = assign({}, previousState);
-            var newState_2 = writeToStore_1.writeResultToStore({
-                result: action.result.data,
-                dataId: 'ROOT_QUERY',
-                document: action.document,
-                variables: action.variables,
-                store: clonedState,
-                dataIdFromObject: config.dataIdFromObject,
-            });
-            if (action.extraReducers) {
-                action.extraReducers.forEach(function (reducer) {
-                    newState_2 = reducer(newState_2, constAction);
-                });
-            }
-            return newState_2;
+            return newState;
         }
     }
     else if (actions_1.isMutationResultAction(constAction)) {
         if (!constAction.result.errors) {
             var queryStoreValue_1 = mutations[constAction.mutationId];
             var clonedState = assign({}, previousState);
-            var newState_3 = writeToStore_1.writeResultToStore({
+            var newState_1 = writeToStore_1.writeSelectionSetToStore({
                 result: constAction.result.data,
-                dataId: 'ROOT_MUTATION',
-                document: constAction.document,
+                dataId: queryStoreValue_1.mutation.id,
+                selectionSet: queryStoreValue_1.mutation.selectionSet,
                 variables: queryStoreValue_1.variables,
                 store: clonedState,
                 dataIdFromObject: config.dataIdFromObject,
+                fragmentMap: queryStoreValue_1.fragmentMap,
             });
             if (constAction.resultBehaviors) {
                 constAction.resultBehaviors.forEach(function (behavior) {
@@ -4154,26 +4662,22 @@ function data(previousState, action, queries, mutations, config) {
                         behavior: behavior,
                         result: constAction.result,
                         variables: queryStoreValue_1.variables,
-                        document: constAction.document,
+                        fragmentMap: queryStoreValue_1.fragmentMap,
+                        selectionSet: queryStoreValue_1.mutation.selectionSet,
                         config: config,
                     };
                     if (mutationResults_1.defaultMutationBehaviorReducers[behavior.type]) {
-                        newState_3 = mutationResults_1.defaultMutationBehaviorReducers[behavior.type](newState_3, args);
+                        newState_1 = mutationResults_1.defaultMutationBehaviorReducers[behavior.type](newState_1, args);
                     }
                     else if (config.mutationBehaviorReducers[behavior.type]) {
-                        newState_3 = config.mutationBehaviorReducers[behavior.type](newState_3, args);
+                        newState_1 = config.mutationBehaviorReducers[behavior.type](newState_1, args);
                     }
                     else {
                         throw new Error("No mutation result reducer defined for type " + behavior.type);
                     }
                 });
             }
-            if (constAction.extraReducers) {
-                constAction.extraReducers.forEach(function (reducer) {
-                    newState_3 = reducer(newState_3, constAction);
-                });
-            }
-            return newState_3;
+            return newState_1;
         }
     }
     else if (actions_1.isUpdateQueryResultAction(constAction)) {
@@ -4186,9 +4690,8 @@ function data(previousState, action, queries, mutations, config) {
 }
 exports.data = data;
 
-},{"../actions":28,"./mutationResults":31,"./replaceQueryResults":33,"./storeUtils":37,"./writeToStore":38,"lodash.assign":87}],37:[function(require,module,exports){
+},{"../actions":29,"./mutationResults":34,"./replaceQueryResults":36,"./storeUtils":39,"./writeToStore":40,"lodash.assign":82,"lodash.isobject":96}],39:[function(require,module,exports){
 "use strict";
-var isObject = require('lodash.isobject');
 function isStringValue(value) {
     return value.kind === 'StringValue';
 }
@@ -4204,14 +4707,11 @@ function isFloatValue(value) {
 function isVariable(value) {
     return value.kind === 'Variable';
 }
-function isObjectValue(value) {
+function isObject(value) {
     return value.kind === 'ObjectValue';
 }
-function isListValue(value) {
+function isList(value) {
     return value.kind === 'ListValue';
-}
-function isEnumValue(value) {
-    return value.kind === 'EnumValue';
 }
 function valueToObjectRepresentation(argObj, name, value, variables) {
     if (isIntValue(value) || isFloatValue(value)) {
@@ -4220,7 +4720,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
     else if (isBooleanValue(value) || isStringValue(value)) {
         argObj[name.value] = value.value;
     }
-    else if (isObjectValue(value)) {
+    else if (isObject(value)) {
         var nestedArgObj_1 = {};
         value.fields.map(function (obj) { return valueToObjectRepresentation(nestedArgObj_1, obj.name, obj.value, variables); });
         argObj[name.value] = nestedArgObj_1;
@@ -4232,15 +4732,12 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         var variableValue = variables[value.name.value];
         argObj[name.value] = variableValue;
     }
-    else if (isListValue(value)) {
+    else if (isList(value)) {
         argObj[name.value] = value.values.map(function (listValue) {
             var nestedArgArrayObj = {};
             valueToObjectRepresentation(nestedArgArrayObj, name, listValue, variables);
             return nestedArgArrayObj[name.value];
         });
-    }
-    else if (isEnumValue(value)) {
-        argObj[name.value] = value.value;
     }
     else {
         throw new Error("The inline argument \"" + name.value + "\" of kind \"" + value.kind + "\" is not supported.\n                    Use variables instead of inline arguments to overcome this limitation.");
@@ -4259,11 +4756,8 @@ function storeKeyNameFromField(field, variables) {
 }
 exports.storeKeyNameFromField = storeKeyNameFromField;
 function storeKeyNameFromFieldNameAndArgs(fieldName, args) {
-    if (args) {
-        var stringifiedArgs = JSON.stringify(args);
-        return fieldName + "(" + stringifiedArgs + ")";
-    }
-    return fieldName;
+    var stringifiedArgs = JSON.stringify(args);
+    return fieldName + "(" + stringifiedArgs + ")";
 }
 exports.storeKeyNameFromFieldNameAndArgs = storeKeyNameFromFieldNameAndArgs;
 function resultKeyNameFromField(field) {
@@ -4284,115 +4778,153 @@ function graphQLResultHasError(result) {
     return result.errors && result.errors.length;
 }
 exports.graphQLResultHasError = graphQLResultHasError;
-function isIdValue(idObject) {
-    return (isObject(idObject) && idObject.type === 'id');
-}
-exports.isIdValue = isIdValue;
-function toIdValue(id, generated) {
-    if (generated === void 0) { generated = false; }
-    return {
-        type: 'id',
-        id: id,
-        generated: generated,
-    };
-}
-exports.toIdValue = toIdValue;
-function isJsonValue(jsonObject) {
-    return (isObject(jsonObject) && jsonObject.type === 'json');
-}
-exports.isJsonValue = isJsonValue;
 
-},{"lodash.isobject":100}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
+var isArray = require('lodash.isarray');
 var isNull = require('lodash.isnull');
 var isUndefined = require('lodash.isundefined');
 var isObject = require('lodash.isobject');
 var assign = require('lodash.assign');
 var getFromAST_1 = require('../queries/getFromAST');
 var storeUtils_1 = require('./storeUtils');
-var storeUtils_2 = require('./storeUtils');
+var store_1 = require('./store');
+var diffAgainstStore_1 = require('./diffAgainstStore');
 var directives_1 = require('../queries/directives');
+var errors_1 = require('../errors');
+function writeFragmentToStore(_a) {
+    var result = _a.result, fragment = _a.fragment, _b = _a.store, store = _b === void 0 ? {} : _b, variables = _a.variables, _c = _a.dataIdFromObject, dataIdFromObject = _c === void 0 ? null : _c;
+    if (!fragment) {
+        throw new Error('Must pass fragment.');
+    }
+    var parsedFragment = getFromAST_1.getFragmentDefinition(fragment);
+    var selectionSet = parsedFragment.selectionSet;
+    if (!result['id']) {
+        throw new Error('Result must have id when writing fragment to store.');
+    }
+    return writeSelectionSetToStore({
+        dataId: result['id'],
+        result: result,
+        selectionSet: selectionSet,
+        store: store,
+        variables: variables,
+        dataIdFromObject: dataIdFromObject,
+    });
+}
+exports.writeFragmentToStore = writeFragmentToStore;
 function writeQueryToStore(_a) {
-    var result = _a.result, query = _a.query, _b = _a.store, store = _b === void 0 ? {} : _b, variables = _a.variables, _c = _a.dataIdFromObject, dataIdFromObject = _c === void 0 ? null : _c, _d = _a.fragmentMap, fragmentMap = _d === void 0 ? {} : _d;
+    var result = _a.result, query = _a.query, _b = _a.store, store = _b === void 0 ? {} : _b, variables = _a.variables, _c = _a.dataIdFromObject, dataIdFromObject = _c === void 0 ? null : _c, fragmentMap = _a.fragmentMap;
     var queryDefinition = getFromAST_1.getQueryDefinition(query);
     return writeSelectionSetToStore({
         dataId: 'ROOT_QUERY',
         result: result,
         selectionSet: queryDefinition.selectionSet,
-        context: {
-            store: store,
-            variables: variables,
-            dataIdFromObject: dataIdFromObject,
-            fragmentMap: fragmentMap,
-        },
+        store: store,
+        variables: variables,
+        dataIdFromObject: dataIdFromObject,
+        fragmentMap: fragmentMap,
     });
 }
 exports.writeQueryToStore = writeQueryToStore;
-function writeResultToStore(_a) {
-    var result = _a.result, dataId = _a.dataId, document = _a.document, _b = _a.store, store = _b === void 0 ? {} : _b, variables = _a.variables, _c = _a.dataIdFromObject, dataIdFromObject = _c === void 0 ? null : _c;
-    var selectionSet = getFromAST_1.getOperationDefinition(document).selectionSet;
-    var fragmentMap = getFromAST_1.createFragmentMap(getFromAST_1.getFragmentDefinitions(document));
-    return writeSelectionSetToStore({
-        result: result,
-        dataId: dataId,
-        selectionSet: selectionSet,
-        context: {
-            store: store,
-            variables: variables,
-            dataIdFromObject: dataIdFromObject,
-            fragmentMap: fragmentMap,
-        },
-    });
-}
-exports.writeResultToStore = writeResultToStore;
 function writeSelectionSetToStore(_a) {
-    var result = _a.result, dataId = _a.dataId, selectionSet = _a.selectionSet, context = _a.context;
-    var variables = context.variables, store = context.store, dataIdFromObject = context.dataIdFromObject, fragmentMap = context.fragmentMap;
+    var result = _a.result, dataId = _a.dataId, selectionSet = _a.selectionSet, _b = _a.store, store = _b === void 0 ? {} : _b, variables = _a.variables, dataIdFromObject = _a.dataIdFromObject, fragmentMap = _a.fragmentMap;
+    if (!fragmentMap) {
+        fragmentMap = {};
+    }
+    var fragmentErrors = {};
     selectionSet.selections.forEach(function (selection) {
         var included = directives_1.shouldInclude(selection, variables);
         if (storeUtils_1.isField(selection)) {
             var resultFieldKey = storeUtils_1.resultKeyNameFromField(selection);
             var value = result[resultFieldKey];
+            if (isUndefined(value) && included) {
+                throw new errors_1.ApolloError({
+                    errorMessage: "Can't find field " + resultFieldKey + " on result object " + dataId + ".",
+                    extraInfo: {
+                        isFieldError: true,
+                    },
+                });
+            }
+            if (!isUndefined(value) && !included) {
+                throw new errors_1.ApolloError({
+                    errorMessage: "Found extra field " + resultFieldKey + " on result object " + dataId + ".",
+                    extraInfo: {
+                        isFieldError: true,
+                    },
+                });
+            }
             if (!isUndefined(value)) {
                 writeFieldToStore({
                     dataId: dataId,
                     value: value,
+                    variables: variables,
+                    store: store,
                     field: selection,
-                    context: context,
+                    dataIdFromObject: dataIdFromObject,
+                    fragmentMap: fragmentMap,
                 });
             }
         }
         else if (storeUtils_1.isInlineFragment(selection)) {
+            var typename = selection.typeCondition.name.value;
             if (included) {
-                writeSelectionSetToStore({
-                    result: result,
-                    selectionSet: selection.selectionSet,
-                    dataId: dataId,
-                    context: context,
-                });
+                try {
+                    writeSelectionSetToStore({
+                        result: result,
+                        selectionSet: selection.selectionSet,
+                        store: store,
+                        variables: variables,
+                        dataId: dataId,
+                        dataIdFromObject: dataIdFromObject,
+                        fragmentMap: fragmentMap,
+                    });
+                    if (!fragmentErrors[typename]) {
+                        fragmentErrors[typename] = null;
+                    }
+                }
+                catch (e) {
+                    if (e.extraInfo && e.extraInfo.isFieldError) {
+                        fragmentErrors[typename] = e;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
             }
         }
         else {
-            var fragment = void 0;
-            if (storeUtils_1.isInlineFragment(selection)) {
-                fragment = selection;
+            var fragment = fragmentMap[selection.name.value];
+            if (!fragment) {
+                throw new Error("No fragment named " + selection.name.value + ".");
             }
-            else {
-                fragment = fragmentMap[selection.name.value];
-                if (!fragment) {
-                    throw new Error("No fragment named " + selection.name.value + ".");
-                }
-            }
+            var typename = fragment.typeCondition.name.value;
             if (included) {
-                writeSelectionSetToStore({
-                    result: result,
-                    selectionSet: fragment.selectionSet,
-                    dataId: dataId,
-                    context: context,
-                });
+                try {
+                    writeSelectionSetToStore({
+                        result: result,
+                        selectionSet: fragment.selectionSet,
+                        store: store,
+                        variables: variables,
+                        dataId: dataId,
+                        dataIdFromObject: dataIdFromObject,
+                        fragmentMap: fragmentMap,
+                    });
+                    if (!fragmentErrors[typename]) {
+                        fragmentErrors[typename] = null;
+                    }
+                }
+                catch (e) {
+                    if (e.extraInfo && e.extraInfo.isFieldError) {
+                        fragmentErrors[typename] = e;
+                    }
+                    else {
+                        throw e;
+                    }
+                }
             }
         }
     });
+    diffAgainstStore_1.handleFragmentErrors(fragmentErrors);
     return store;
 }
 exports.writeSelectionSetToStore = writeSelectionSetToStore;
@@ -4405,9 +4937,9 @@ function mergeWithGenerated(generatedKey, realKey, cache) {
     Object.keys(generated).forEach(function (key) {
         var value = generated[key];
         var realValue = real[key];
-        if (storeUtils_2.isIdValue(value)
+        if (store_1.isIdValue(value)
             && isGeneratedId(value.id)
-            && storeUtils_2.isIdValue(realValue)) {
+            && store_1.isIdValue(realValue)) {
             mergeWithGenerated(value.id, realValue.id, cache);
         }
         delete cache[generatedKey];
@@ -4415,8 +4947,7 @@ function mergeWithGenerated(generatedKey, realKey, cache) {
     });
 }
 function writeFieldToStore(_a) {
-    var field = _a.field, value = _a.value, dataId = _a.dataId, context = _a.context;
-    var variables = context.variables, dataIdFromObject = context.dataIdFromObject, store = context.store, fragmentMap = context.fragmentMap;
+    var field = _a.field, value = _a.value, variables = _a.variables, store = _a.store, dataId = _a.dataId, dataIdFromObject = _a.dataIdFromObject, fragmentMap = _a.fragmentMap;
     var storeValue;
     var storeFieldName = storeUtils_1.storeKeyNameFromField(field, variables);
     var shouldMerge = false;
@@ -4430,9 +4961,33 @@ function writeFieldToStore(_a) {
             json: value,
         };
     }
-    else if (Array.isArray(value)) {
-        var generatedId = dataId + "." + storeFieldName;
-        storeValue = processArrayValue(value, generatedId, field.selectionSet, context);
+    else if (isArray(value)) {
+        var thisIdList_1 = [];
+        value.forEach(function (item, index) {
+            if (isNull(item)) {
+                thisIdList_1.push(null);
+            }
+            else {
+                var itemDataId = dataId + "." + storeFieldName + "." + index;
+                if (dataIdFromObject) {
+                    var semanticId = dataIdFromObject(item);
+                    if (semanticId) {
+                        itemDataId = semanticId;
+                    }
+                }
+                thisIdList_1.push(itemDataId);
+                writeSelectionSetToStore({
+                    dataId: itemDataId,
+                    result: item,
+                    store: store,
+                    selectionSet: field.selectionSet,
+                    variables: variables,
+                    dataIdFromObject: dataIdFromObject,
+                    fragmentMap: fragmentMap,
+                });
+            }
+        });
+        storeValue = thisIdList_1;
     }
     else {
         var valueDataId = dataId + "." + storeFieldName;
@@ -4453,8 +5008,11 @@ function writeFieldToStore(_a) {
         writeSelectionSetToStore({
             dataId: valueDataId,
             result: value,
+            store: store,
             selectionSet: field.selectionSet,
-            context: context,
+            variables: variables,
+            dataIdFromObject: dataIdFromObject,
+            fragmentMap: fragmentMap,
         });
         storeValue = {
             type: 'id',
@@ -4463,12 +5021,14 @@ function writeFieldToStore(_a) {
         };
         if (store[dataId] && store[dataId][storeFieldName] !== storeValue) {
             var escapedId = store[dataId][storeFieldName];
-            if (storeUtils_2.isIdValue(storeValue) && storeValue.generated
-                && storeUtils_2.isIdValue(escapedId) && !escapedId.generated) {
-                throw new Error("Store error: the application attempted to write an object with no provided id" +
-                    (" but the store already contains an id of " + escapedId.id + " for this object."));
+            if (store_1.isIdValue(storeValue) && storeValue.generated
+                && store_1.isIdValue(escapedId) && !escapedId.generated) {
+                throw new errors_1.ApolloError({
+                    errorMessage: "Store error: the application attempted to write an object with no provided id" +
+                        (" but the store already contains an id of " + escapedId.id + " for this object."),
+                });
             }
-            if (storeUtils_2.isIdValue(escapedId) && escapedId.generated) {
+            if (store_1.isIdValue(escapedId) && escapedId.generated) {
                 generatedKey = escapedId.id;
                 shouldMerge = true;
             }
@@ -4486,39 +5046,8 @@ function writeFieldToStore(_a) {
     }
     var _b;
 }
-function processArrayValue(value, generatedId, selectionSet, context) {
-    return value.map(function (item, index) {
-        if (isNull(item)) {
-            return null;
-        }
-        var itemDataId = generatedId + "." + index;
-        if (Array.isArray(item)) {
-            return processArrayValue(item, itemDataId, selectionSet, context);
-        }
-        var generated = true;
-        if (context.dataIdFromObject) {
-            var semanticId = context.dataIdFromObject(item);
-            if (semanticId) {
-                itemDataId = semanticId;
-                generated = false;
-            }
-        }
-        writeSelectionSetToStore({
-            dataId: itemDataId,
-            result: item,
-            selectionSet: selectionSet,
-            context: context,
-        });
-        var idStoreValue = {
-            type: 'id',
-            id: itemDataId,
-            generated: generated,
-        };
-        return idStoreValue;
-    });
-}
 
-},{"../queries/directives":47,"../queries/getFromAST":48,"./storeUtils":37,"lodash.assign":87,"lodash.isnull":98,"lodash.isobject":100,"lodash.isundefined":102}],39:[function(require,module,exports){
+},{"../errors":41,"../queries/directives":49,"../queries/getFromAST":50,"./diffAgainstStore":33,"./store":38,"./storeUtils":39,"lodash.assign":82,"lodash.isarray":92,"lodash.isnull":94,"lodash.isobject":96,"lodash.isundefined":98}],41:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -4562,10 +5091,37 @@ var ApolloError = (function (_super) {
 }(Error));
 exports.ApolloError = ApolloError;
 
-},{}],40:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
-var flatten = require('lodash.flatten');
+var networkInterface_1 = require('./networkInterface');
+exports.createNetworkInterface = networkInterface_1.createNetworkInterface;
+exports.addQueryMerging = networkInterface_1.addQueryMerging;
+var printer_1 = require('graphql-tag/printer');
+exports.printAST = printer_1.print;
+var store_1 = require('./store');
+exports.createApolloStore = store_1.createApolloStore;
+exports.createApolloReducer = store_1.createApolloReducer;
+var QueryManager_1 = require('./QueryManager');
+var ObservableQuery_1 = require('./ObservableQuery');
+exports.ObservableQuery = ObservableQuery_1.ObservableQuery;
+var readFromStore_1 = require('./data/readFromStore');
+exports.readQueryFromStore = readFromStore_1.readQueryFromStore;
+exports.readFragmentFromStore = readFromStore_1.readFragmentFromStore;
+var writeToStore_1 = require('./data/writeToStore');
+exports.writeQueryToStore = writeToStore_1.writeQueryToStore;
+exports.writeFragmentToStore = writeToStore_1.writeFragmentToStore;
+var queryTransform_1 = require('./queries/queryTransform');
+exports.addTypename = queryTransform_1.addTypenameToSelectionSet;
+var storeUtils_1 = require('./data/storeUtils');
 var getFromAST_1 = require('./queries/getFromAST');
+exports.createFragmentMap = getFromAST_1.createFragmentMap;
+var errors_1 = require('./errors');
+exports.ApolloError = errors_1.ApolloError;
+var isUndefined = require('lodash.isundefined');
+var assign = require('lodash.assign');
+var flatten = require('lodash.flatten');
+var isString = require('lodash.isstring');
+var DEFAULT_REDUX_ROOT_KEY = 'apollo';
 exports.fragmentDefinitionsMap = {};
 var printFragmentWarnings = true;
 function createFragment(doc, fragments) {
@@ -4600,43 +5156,155 @@ function clearFragmentDefinitions() {
     exports.fragmentDefinitionsMap = {};
 }
 exports.clearFragmentDefinitions = clearFragmentDefinitions;
-
-},{"./queries/getFromAST":48,"lodash.flatten":92}],41:[function(require,module,exports){
-"use strict";
-var networkInterface_1 = require('./transport/networkInterface');
-exports.createNetworkInterface = networkInterface_1.createNetworkInterface;
-var batchedNetworkInterface_1 = require('./transport/batchedNetworkInterface');
-exports.createBatchingNetworkInterface = batchedNetworkInterface_1.createBatchingNetworkInterface;
-var printer_1 = require('graphql-tag/printer');
-exports.printAST = printer_1.print;
-var store_1 = require('./store');
-exports.createApolloStore = store_1.createApolloStore;
-exports.createApolloReducer = store_1.createApolloReducer;
-var ObservableQuery_1 = require('./core/ObservableQuery');
-exports.ObservableQuery = ObservableQuery_1.ObservableQuery;
-var readFromStore_1 = require('./data/readFromStore');
-exports.readQueryFromStore = readFromStore_1.readQueryFromStore;
-var writeToStore_1 = require('./data/writeToStore');
-exports.writeQueryToStore = writeToStore_1.writeQueryToStore;
-var getFromAST_1 = require('./queries/getFromAST');
-exports.getQueryDefinition = getFromAST_1.getQueryDefinition;
-exports.getFragmentDefinitions = getFromAST_1.getFragmentDefinitions;
-exports.createFragmentMap = getFromAST_1.createFragmentMap;
-var ApolloError_1 = require('./errors/ApolloError');
-exports.ApolloError = ApolloError_1.ApolloError;
-var ApolloClient_1 = require('./ApolloClient');
-exports.ApolloClient = ApolloClient_1.default;
-var fragments_1 = require('./fragments');
-exports.createFragment = fragments_1.createFragment;
-exports.clearFragmentDefinitions = fragments_1.clearFragmentDefinitions;
-exports.disableFragmentWarnings = fragments_1.disableFragmentWarnings;
-exports.enableFragmentWarnings = fragments_1.enableFragmentWarnings;
-var storeUtils_1 = require('./data/storeUtils');
-exports.toIdValue = storeUtils_1.toIdValue;
+function defaultReduxRootSelector(state) {
+    return state[DEFAULT_REDUX_ROOT_KEY];
+}
+var ApolloClient = (function () {
+    function ApolloClient(_a) {
+        var _this = this;
+        var _b = _a === void 0 ? {} : _a, networkInterface = _b.networkInterface, reduxRootKey = _b.reduxRootKey, reduxRootSelector = _b.reduxRootSelector, initialState = _b.initialState, dataIdFromObject = _b.dataIdFromObject, queryTransformer = _b.queryTransformer, resultTransformer = _b.resultTransformer, resultComparator = _b.resultComparator, _c = _b.shouldBatch, shouldBatch = _c === void 0 ? false : _c, _d = _b.ssrMode, ssrMode = _d === void 0 ? false : _d, _e = _b.ssrForceFetchDelay, ssrForceFetchDelay = _e === void 0 ? 0 : _e, _f = _b.mutationBehaviorReducers, mutationBehaviorReducers = _f === void 0 ? {} : _f, batchInterval = _b.batchInterval;
+        this.middleware = function () {
+            return function (store) {
+                _this.setStore(store);
+                return function (next) { return function (action) {
+                    var returnValue = next(action);
+                    _this.queryManager.broadcastNewStore(store.getState());
+                    return returnValue;
+                }; };
+            };
+        };
+        if (reduxRootKey && reduxRootSelector) {
+            throw new Error('Both "reduxRootKey" and "reduxRootSelector" are configured, but only one of two is allowed.');
+        }
+        if (reduxRootKey) {
+            console.warn('"reduxRootKey" option is deprecated and might be removed in the upcoming versions, ' +
+                'please use the "reduxRootSelector" instead.');
+            this.reduxRootKey = reduxRootKey;
+        }
+        if (!reduxRootSelector && reduxRootKey) {
+            this.reduxRootSelector = function (state) { return state[reduxRootKey]; };
+        }
+        else if (isString(reduxRootSelector)) {
+            this.reduxRootKey = reduxRootSelector;
+            this.reduxRootSelector = function (state) { return state[reduxRootSelector]; };
+        }
+        else if (typeof reduxRootSelector === 'function') {
+            this.reduxRootSelector = reduxRootSelector;
+        }
+        else {
+            this.reduxRootSelector = null;
+        }
+        this.initialState = initialState ? initialState : {};
+        this.networkInterface = networkInterface ? networkInterface :
+            networkInterface_1.createNetworkInterface('/graphql');
+        this.queryTransformer = queryTransformer;
+        this.resultTransformer = resultTransformer;
+        this.resultComparator = resultComparator;
+        this.shouldBatch = shouldBatch;
+        this.shouldForceFetch = !(ssrMode || ssrForceFetchDelay > 0);
+        this.dataId = dataIdFromObject;
+        this.fieldWithArgs = storeUtils_1.storeKeyNameFromFieldNameAndArgs;
+        this.batchInterval = batchInterval;
+        if (ssrForceFetchDelay) {
+            setTimeout(function () { return _this.shouldForceFetch = true; }, ssrForceFetchDelay);
+        }
+        this.reducerConfig = {
+            dataIdFromObject: dataIdFromObject,
+            mutationBehaviorReducers: mutationBehaviorReducers,
+        };
+        this.watchQuery = this.watchQuery.bind(this);
+        this.query = this.query.bind(this);
+        this.mutate = this.mutate.bind(this);
+        this.setStore = this.setStore.bind(this);
+    }
+    ApolloClient.prototype.watchQuery = function (options) {
+        this.initStore();
+        if (!this.shouldForceFetch && options.forceFetch) {
+            options = assign({}, options, {
+                forceFetch: false,
+            });
+        }
+        createFragment(options.query);
+        return this.queryManager.watchQuery(options);
+    };
+    ;
+    ApolloClient.prototype.query = function (options) {
+        this.initStore();
+        if (!this.shouldForceFetch && options.forceFetch) {
+            options = assign({}, options, {
+                forceFetch: false,
+            });
+        }
+        createFragment(options.query);
+        return this.queryManager.query(options);
+    };
+    ;
+    ApolloClient.prototype.mutate = function (options) {
+        this.initStore();
+        return this.queryManager.mutate(options);
+    };
+    ;
+    ApolloClient.prototype.subscribe = function (options) {
+        this.initStore();
+        return this.queryManager.startGraphQLSubscription(options);
+    };
+    ApolloClient.prototype.reducer = function () {
+        return store_1.createApolloReducer(this.reducerConfig);
+    };
+    ApolloClient.prototype.initStore = function () {
+        if (this.store) {
+            return;
+        }
+        if (this.reduxRootSelector) {
+            throw new Error('Cannot initialize the store because "reduxRootSelector" or "reduxRootKey" is provided. ' +
+                'They should only be used when the store is created outside of the client. ' +
+                'This may lead to unexpected results when querying the store internally. ' +
+                "Please remove that option from ApolloClient constructor.");
+        }
+        this.setStore(store_1.createApolloStore({
+            reduxRootKey: DEFAULT_REDUX_ROOT_KEY,
+            initialState: this.initialState,
+            config: this.reducerConfig,
+        }));
+        this.reduxRootKey = DEFAULT_REDUX_ROOT_KEY;
+    };
+    ;
+    ApolloClient.prototype.resetStore = function () {
+        this.queryManager.resetStore();
+    };
+    ;
+    ApolloClient.prototype.setStore = function (store) {
+        var reduxRootSelector;
+        if (this.reduxRootSelector) {
+            reduxRootSelector = this.reduxRootSelector;
+        }
+        else {
+            reduxRootSelector = defaultReduxRootSelector;
+            this.reduxRootKey = DEFAULT_REDUX_ROOT_KEY;
+        }
+        if (isUndefined(reduxRootSelector(store.getState()))) {
+            throw new Error('Existing store does not use apolloReducer. Please make sure the store ' +
+                'is properly configured and "reduxRootSelector" is correctly specified.');
+        }
+        this.store = store;
+        this.queryManager = new QueryManager_1.QueryManager({
+            networkInterface: this.networkInterface,
+            reduxRootSelector: reduxRootSelector,
+            store: store,
+            queryTransformer: this.queryTransformer,
+            resultTransformer: this.resultTransformer,
+            resultComparator: this.resultComparator,
+            shouldBatch: this.shouldBatch,
+            batchInterval: this.batchInterval,
+        });
+    };
+    ;
+    return ApolloClient;
+}());
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = ApolloClient_1.default;
+exports.default = ApolloClient;
 
-},{"./ApolloClient":27,"./core/ObservableQuery":29,"./data/readFromStore":32,"./data/storeUtils":37,"./data/writeToStore":38,"./errors/ApolloError":39,"./fragments":40,"./queries/getFromAST":48,"./store":52,"./transport/batchedNetworkInterface":53,"./transport/networkInterface":55,"graphql-tag/printer":74}],42:[function(require,module,exports){
+},{"./ObservableQuery":27,"./QueryManager":28,"./data/readFromStore":35,"./data/storeUtils":39,"./data/writeToStore":40,"./errors":41,"./networkInterface":44,"./queries/getFromAST":50,"./queries/queryTransform":51,"./store":55,"graphql-tag/printer":69,"lodash.assign":82,"lodash.flatten":87,"lodash.isstring":97,"lodash.isundefined":98}],43:[function(require,module,exports){
 "use strict";
 var actions_1 = require('../actions');
 var assign = require('lodash.assign');
@@ -4646,9 +5314,11 @@ function mutations(previousState, action) {
         var newState = assign({}, previousState);
         newState[action.mutationId] = {
             mutationString: action.mutationString,
+            mutation: action.mutation,
             variables: action.variables,
             loading: true,
             error: null,
+            fragmentMap: action.fragmentMap,
         };
         return newState;
     }
@@ -4674,790 +5344,30 @@ function mutations(previousState, action) {
 }
 exports.mutations = mutations;
 
-},{"../actions":28,"lodash.assign":87}],43:[function(require,module,exports){
-module.exports = require('./lib/index');
-
-},{"./lib/index":44}],44:[function(require,module,exports){
-(function (global){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _ponyfill = require('./ponyfill');
-
-var _ponyfill2 = _interopRequireDefault(_ponyfill);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var root; /* global window */
-
-
-if (typeof self !== 'undefined') {
-  root = self;
-} else if (typeof window !== 'undefined') {
-  root = window;
-} else if (typeof global !== 'undefined') {
-  root = global;
-} else if (typeof module !== 'undefined') {
-  root = module;
-} else {
-  root = Function('return this')();
-}
-
-var result = (0, _ponyfill2['default'])(root);
-exports['default'] = result;
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":45}],45:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-exports['default'] = symbolObservablePonyfill;
-function symbolObservablePonyfill(root) {
-	var result;
-	var _Symbol = root.Symbol;
-
-	if (typeof _Symbol === 'function') {
-		if (_Symbol.observable) {
-			result = _Symbol.observable;
-		} else {
-			result = _Symbol('observable');
-			_Symbol.observable = result;
-		}
-	} else {
-		result = '@@observable';
-	}
-
-	return result;
-};
-},{}],46:[function(require,module,exports){
-"use strict";
-var actions_1 = require('../actions');
-var store_1 = require('../data/store');
-var store_2 = require('../store');
-var assign = require('lodash.assign');
-var pick = require('lodash.pick');
-var optimisticDefaultState = [];
-function optimistic(previousState, action, store, config) {
-    if (previousState === void 0) { previousState = optimisticDefaultState; }
-    if (actions_1.isMutationInitAction(action) && action.optimisticResponse) {
-        var fakeMutationResultAction = {
-            type: 'APOLLO_MUTATION_RESULT',
-            result: { data: action.optimisticResponse },
-            document: action.mutation,
-            operationName: action.operationName,
-            mutationId: action.mutationId,
-            resultBehaviors: action.resultBehaviors,
-            extraReducers: action.extraReducers,
-        };
-        var fakeStore = assign({}, store, { optimistic: previousState });
-        var optimisticData_1 = store_2.getDataWithOptimisticResults(fakeStore);
-        var fakeDataResultState_1 = store_1.data(optimisticData_1, fakeMutationResultAction, store.queries, store.mutations, config);
-        var changedKeys = Object.keys(fakeDataResultState_1).filter(function (key) { return optimisticData_1[key] !== fakeDataResultState_1[key]; });
-        var patch = pick(fakeDataResultState_1, changedKeys);
-        var optimisticState = {
-            data: patch,
-            mutationId: action.mutationId,
-        };
-        var newState = previousState.concat([optimisticState]);
-        return newState;
-    }
-    else if ((actions_1.isMutationErrorAction(action) || actions_1.isMutationResultAction(action))
-        && previousState.some(function (change) { return change.mutationId === action.mutationId; })) {
-        var newState = previousState.filter(function (change) { return change.mutationId !== action.mutationId; });
-        return newState;
-    }
-    return previousState;
-}
-exports.optimistic = optimistic;
-
-},{"../actions":28,"../data/store":36,"../store":52,"lodash.assign":87,"lodash.pick":108}],47:[function(require,module,exports){
-"use strict";
-function shouldInclude(selection, variables) {
-    if (!variables) {
-        variables = {};
-    }
-    if (!selection.directives) {
-        return true;
-    }
-    var res = true;
-    selection.directives.forEach(function (directive) {
-        if (directive.name.value !== 'skip' && directive.name.value !== 'include') {
-            return;
-        }
-        var directiveArguments = directive.arguments;
-        var directiveName = directive.name.value;
-        if (directiveArguments.length !== 1) {
-            throw new Error("Incorrect number of arguments for the @" + directiveName + " directive.");
-        }
-        var ifArgument = directive.arguments[0];
-        if (!ifArgument.name || ifArgument.name.value !== 'if') {
-            throw new Error("Invalid argument for the @" + directiveName + " directive.");
-        }
-        var ifValue = directive.arguments[0].value;
-        var evaledValue = false;
-        if (!ifValue || ifValue.kind !== 'BooleanValue') {
-            if (ifValue.kind !== 'Variable') {
-                throw new Error("Argument for the @" + directiveName + " directive must be a variable or a bool ean value.");
-            }
-            else {
-                evaledValue = variables[ifValue.name.value];
-                if (evaledValue === undefined) {
-                    throw new Error("Invalid variable referenced in @" + directiveName + " directive.");
-                }
-            }
-        }
-        else {
-            evaledValue = ifValue.value;
-        }
-        if (directiveName === 'skip') {
-            evaledValue = !evaledValue;
-        }
-        if (!evaledValue) {
-            res = false;
-        }
-    });
-    return res;
-}
-exports.shouldInclude = shouldInclude;
-
-},{}],48:[function(require,module,exports){
-"use strict";
-var assign = require('lodash.assign');
-var countBy = require('lodash.countby');
-var identity = require('lodash.identity');
-var uniq = require('lodash.uniq');
-function getMutationDefinition(doc) {
-    checkDocument(doc);
-    var mutationDef = null;
-    doc.definitions.forEach(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.operation === 'mutation') {
-            mutationDef = definition;
-        }
-    });
-    if (!mutationDef) {
-        throw new Error('Must contain a mutation definition.');
-    }
-    return mutationDef;
-}
-exports.getMutationDefinition = getMutationDefinition;
-function checkDocument(doc) {
-    if (doc.kind !== 'Document') {
-        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
-    }
-    var definitionTypes = doc.definitions.map(function (definition) {
-        if (definition.kind !== 'OperationDefinition' && definition.kind !== 'FragmentDefinition') {
-            throw new Error("Schema type definitions not allowed in queries. Found: \"" + definition.kind + "\"");
-        }
-        return definition.kind;
-    });
-    var typeCounts = countBy(definitionTypes, identity);
-    if (typeCounts['OperationDefinition'] > 1) {
-        throw new Error('Queries must have exactly one operation definition.');
-    }
-}
-exports.checkDocument = checkDocument;
-function getOperationName(doc) {
-    var res = '';
-    doc.definitions.forEach(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.name) {
-            res = definition.name.value;
-        }
-    });
-    return res;
-}
-exports.getOperationName = getOperationName;
-function getFragmentDefinitions(doc) {
-    var fragmentDefinitions = doc.definitions.filter(function (definition) {
-        if (definition.kind === 'FragmentDefinition') {
-            return true;
-        }
-        else {
-            return false;
-        }
-    });
-    return fragmentDefinitions;
-}
-exports.getFragmentDefinitions = getFragmentDefinitions;
-function getQueryDefinition(doc) {
-    checkDocument(doc);
-    var queryDef = null;
-    doc.definitions.map(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.operation === 'query') {
-            queryDef = definition;
-        }
-    });
-    if (!queryDef) {
-        throw new Error('Must contain a query definition.');
-    }
-    return queryDef;
-}
-exports.getQueryDefinition = getQueryDefinition;
-function getOperationDefinition(doc) {
-    checkDocument(doc);
-    var opDef = null;
-    doc.definitions.map(function (definition) {
-        if (definition.kind === 'OperationDefinition') {
-            opDef = definition;
-        }
-    });
-    if (!opDef) {
-        throw new Error('Must contain a query definition.');
-    }
-    return opDef;
-}
-exports.getOperationDefinition = getOperationDefinition;
-function getFragmentDefinition(doc) {
-    if (doc.kind !== 'Document') {
-        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
-    }
-    if (doc.definitions.length > 1) {
-        throw new Error('Fragment must have exactly one definition.');
-    }
-    var fragmentDef = doc.definitions[0];
-    if (fragmentDef.kind !== 'FragmentDefinition') {
-        throw new Error('Must be a fragment definition.');
-    }
-    return fragmentDef;
-}
-exports.getFragmentDefinition = getFragmentDefinition;
-function createFragmentMap(fragments) {
-    if (fragments === void 0) { fragments = []; }
-    var symTable = {};
-    fragments.forEach(function (fragment) {
-        symTable[fragment.name.value] = fragment;
-    });
-    return symTable;
-}
-exports.createFragmentMap = createFragmentMap;
-function addFragmentsToDocument(queryDoc, fragments) {
-    if (!fragments) {
-        return queryDoc;
-    }
-    checkDocument(queryDoc);
-    return assign({}, queryDoc, {
-        definitions: uniq(queryDoc.definitions.concat(fragments)),
-    });
-}
-exports.addFragmentsToDocument = addFragmentsToDocument;
-
-},{"lodash.assign":87,"lodash.countby":89,"lodash.identity":94,"lodash.uniq":111}],49:[function(require,module,exports){
-"use strict";
-var getFromAST_1 = require('./getFromAST');
-var cloneDeep = require('lodash.clonedeep');
-var TYPENAME_FIELD = {
-    kind: 'Field',
-    alias: null,
-    name: {
-        kind: 'Name',
-        value: '__typename',
-    },
-};
-function addTypenameToSelectionSet(selectionSet, isRoot) {
-    if (isRoot === void 0) { isRoot = false; }
-    if (selectionSet && selectionSet.selections) {
-        if (!isRoot) {
-            var alreadyHasThisField = selectionSet.selections.some(function (selection) {
-                return selection.kind === 'Field' && selection.name.value === '__typename';
-            });
-            if (!alreadyHasThisField) {
-                selectionSet.selections.push(TYPENAME_FIELD);
-            }
-        }
-        selectionSet.selections.forEach(function (selection) {
-            if (selection.kind === 'Field' || selection.kind === 'InlineFragment') {
-                addTypenameToSelectionSet(selection.selectionSet);
-            }
-        });
-    }
-}
-function addTypenameToDocument(doc) {
-    getFromAST_1.checkDocument(doc);
-    var docClone = cloneDeep(doc);
-    docClone.definitions.forEach(function (definition) {
-        var isRoot = definition.kind === 'OperationDefinition';
-        addTypenameToSelectionSet(definition.selectionSet, isRoot);
-    });
-    return docClone;
-}
-exports.addTypenameToDocument = addTypenameToDocument;
-
-},{"./getFromAST":48,"lodash.clonedeep":88}],50:[function(require,module,exports){
-"use strict";
-var actions_1 = require('../actions');
-var storeUtils_1 = require('../data/storeUtils');
-var assign = require('lodash.assign');
-var isEqual = require('lodash.isequal');
-(function (NetworkStatus) {
-    NetworkStatus[NetworkStatus["loading"] = 1] = "loading";
-    NetworkStatus[NetworkStatus["setVariables"] = 2] = "setVariables";
-    NetworkStatus[NetworkStatus["fetchMore"] = 3] = "fetchMore";
-    NetworkStatus[NetworkStatus["refetch"] = 4] = "refetch";
-    NetworkStatus[NetworkStatus["poll"] = 6] = "poll";
-    NetworkStatus[NetworkStatus["ready"] = 7] = "ready";
-    NetworkStatus[NetworkStatus["error"] = 8] = "error";
-})(exports.NetworkStatus || (exports.NetworkStatus = {}));
-var NetworkStatus = exports.NetworkStatus;
-function queries(previousState, action) {
-    if (previousState === void 0) { previousState = {}; }
-    if (actions_1.isQueryInitAction(action)) {
-        var newState = assign({}, previousState);
-        var previousQuery = previousState[action.queryId];
-        if (previousQuery && previousQuery.queryString !== action.queryString) {
-            throw new Error('Internal Error: may not update existing query string in store');
-        }
-        var isSetVariables = false;
-        var previousVariables = void 0;
-        if (action.storePreviousVariables &&
-            previousQuery &&
-            previousQuery.networkStatus !== NetworkStatus.loading) {
-            if (!isEqual(previousQuery.variables, action.variables)) {
-                isSetVariables = true;
-                previousVariables = previousQuery.variables;
-            }
-        }
-        var newNetworkStatus = NetworkStatus.loading;
-        if (isSetVariables) {
-            newNetworkStatus = NetworkStatus.setVariables;
-        }
-        else if (action.isPoll) {
-            newNetworkStatus = NetworkStatus.poll;
-        }
-        else if (action.isRefetch) {
-            newNetworkStatus = NetworkStatus.refetch;
-        }
-        else if (action.isPoll) {
-            newNetworkStatus = NetworkStatus.poll;
-        }
-        newState[action.queryId] = {
-            queryString: action.queryString,
-            variables: action.variables,
-            previousVariables: previousVariables,
-            stopped: false,
-            loading: true,
-            networkError: null,
-            graphQLErrors: null,
-            networkStatus: newNetworkStatus,
-            forceFetch: action.forceFetch,
-            returnPartialData: action.returnPartialData,
-            lastRequestId: action.requestId,
-        };
-        return newState;
-    }
-    else if (actions_1.isQueryResultAction(action)) {
-        if (!previousState[action.queryId]) {
-            return previousState;
-        }
-        if (action.requestId < previousState[action.queryId].lastRequestId) {
-            return previousState;
-        }
-        var newState = assign({}, previousState);
-        var resultHasGraphQLErrors = storeUtils_1.graphQLResultHasError(action.result);
-        newState[action.queryId] = assign({}, previousState[action.queryId], {
-            loading: false,
-            networkError: null,
-            graphQLErrors: resultHasGraphQLErrors ? action.result.errors : null,
-            previousVariables: null,
-            networkStatus: NetworkStatus.ready,
-        });
-        return newState;
-    }
-    else if (actions_1.isQueryErrorAction(action)) {
-        if (!previousState[action.queryId]) {
-            return previousState;
-        }
-        if (action.requestId < previousState[action.queryId].lastRequestId) {
-            return previousState;
-        }
-        var newState = assign({}, previousState);
-        newState[action.queryId] = assign({}, previousState[action.queryId], {
-            loading: false,
-            networkError: action.error,
-            networkStatus: NetworkStatus.error,
-        });
-        return newState;
-    }
-    else if (actions_1.isQueryResultClientAction(action)) {
-        if (!previousState[action.queryId]) {
-            return previousState;
-        }
-        var newState = assign({}, previousState);
-        newState[action.queryId] = assign({}, previousState[action.queryId], {
-            loading: !action.complete,
-            networkError: null,
-            previousVariables: null,
-            networkStatus: action.complete ? NetworkStatus.ready : NetworkStatus.loading,
-        });
-        return newState;
-    }
-    else if (actions_1.isQueryStopAction(action)) {
-        var newState = assign({}, previousState);
-        newState[action.queryId] = assign({}, previousState[action.queryId], {
-            loading: false,
-            stopped: true,
-            networkStatus: NetworkStatus.ready,
-        });
-        return newState;
-    }
-    else if (actions_1.isStoreResetAction(action)) {
-        return resetQueryState(previousState, action);
-    }
-    return previousState;
-}
-exports.queries = queries;
-function resetQueryState(state, action) {
-    var observableQueryIds = action.observableQueryIds;
-    var newQueries = Object.keys(state).filter(function (queryId) {
-        return (observableQueryIds.indexOf(queryId) > -1);
-    }).reduce(function (res, key) {
-        res[key] = assign({}, state[key], { loading: true, networkStatus: NetworkStatus.loading });
-        return res;
-    }, {});
-    return newQueries;
-}
-
-},{"../actions":28,"../data/storeUtils":37,"lodash.assign":87,"lodash.isequal":97}],51:[function(require,module,exports){
-"use strict";
-var QueryManager_1 = require('../core/QueryManager');
-var ObservableQuery_1 = require('../core/ObservableQuery');
-var assign = require('lodash.assign');
-var store_1 = require('../queries/store');
-var QueryScheduler = (function () {
-    function QueryScheduler(_a) {
-        var queryManager = _a.queryManager;
-        this.queryManager = queryManager;
-        this.pollingTimers = {};
-        this.inFlightQueries = {};
-        this.registeredQueries = {};
-        this.intervalQueries = {};
-    }
-    QueryScheduler.prototype.checkInFlight = function (queryId) {
-        var queries = this.queryManager.getApolloState().queries;
-        return queries[queryId] && queries[queryId].networkStatus !== store_1.NetworkStatus.ready;
-    };
-    QueryScheduler.prototype.fetchQuery = function (queryId, options, fetchType) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.queryManager.fetchQuery(queryId, options, fetchType).then(function (result) {
-                resolve(result);
-            }).catch(function (error) {
-                reject(error);
-            });
-        });
-    };
-    QueryScheduler.prototype.startPollingQuery = function (options, queryId, listener) {
-        if (!options.pollInterval) {
-            throw new Error('Attempted to start a polling query without a polling interval.');
-        }
-        this.registeredQueries[queryId] = options;
-        if (listener) {
-            this.queryManager.addQueryListener(queryId, listener);
-        }
-        this.addQueryOnInterval(queryId, options);
-        return queryId;
-    };
-    QueryScheduler.prototype.stopPollingQuery = function (queryId) {
-        delete this.registeredQueries[queryId];
-    };
-    QueryScheduler.prototype.fetchQueriesOnInterval = function (interval) {
-        var _this = this;
-        this.intervalQueries[interval] = this.intervalQueries[interval].filter(function (queryId) {
-            if (!_this.registeredQueries.hasOwnProperty(queryId)) {
-                return false;
-            }
-            if (_this.checkInFlight(queryId)) {
-                return true;
-            }
-            var queryOptions = _this.registeredQueries[queryId];
-            var pollingOptions = assign({}, queryOptions);
-            pollingOptions.forceFetch = true;
-            _this.fetchQuery(queryId, pollingOptions, QueryManager_1.FetchType.poll);
-            return true;
-        });
-        if (this.intervalQueries[interval].length === 0) {
-            clearInterval(this.pollingTimers[interval]);
-            delete this.intervalQueries[interval];
-        }
-    };
-    QueryScheduler.prototype.addQueryOnInterval = function (queryId, queryOptions) {
-        var _this = this;
-        var interval = queryOptions.pollInterval;
-        if (this.intervalQueries.hasOwnProperty(interval.toString()) && this.intervalQueries[interval].length > 0) {
-            this.intervalQueries[interval].push(queryId);
-        }
-        else {
-            this.intervalQueries[interval] = [queryId];
-            this.pollingTimers[interval] = setInterval(function () {
-                _this.fetchQueriesOnInterval(interval);
-            }, interval);
-        }
-    };
-    QueryScheduler.prototype.registerPollingQuery = function (queryOptions) {
-        if (!queryOptions.pollInterval) {
-            throw new Error('Attempted to register a non-polling query with the scheduler.');
-        }
-        return new ObservableQuery_1.ObservableQuery({
-            scheduler: this,
-            options: queryOptions,
-        });
-    };
-    return QueryScheduler;
-}());
-exports.QueryScheduler = QueryScheduler;
-
-},{"../core/ObservableQuery":29,"../core/QueryManager":30,"../queries/store":50,"lodash.assign":87}],52:[function(require,module,exports){
-"use strict";
-var redux_1 = require('redux');
-var store_1 = require('./data/store');
-var store_2 = require('./queries/store');
-var store_3 = require('./mutations/store');
-var store_4 = require('./optimistic-data/store');
-var assign = require('lodash.assign');
-var crashReporter = function (store) { return function (next) { return function (action) {
-    try {
-        return next(action);
-    }
-    catch (err) {
-        console.error('Caught an exception!', err);
-        console.error(err.stack);
-        throw err;
-    }
-}; }; };
-function createApolloReducer(config) {
-    return function apolloReducer(state, action) {
-        if (state === void 0) { state = {}; }
-        var newState = {
-            queries: store_2.queries(state.queries, action),
-            mutations: store_3.mutations(state.mutations, action),
-            data: store_1.data(state.data, action, state.queries, state.mutations, config),
-            optimistic: [],
-        };
-        newState.optimistic = store_4.optimistic(state.optimistic, action, newState, config);
-        return newState;
-    };
-}
-exports.createApolloReducer = createApolloReducer;
-function createApolloStore(_a) {
-    var _b = _a === void 0 ? {} : _a, _c = _b.reduxRootKey, reduxRootKey = _c === void 0 ? 'apollo' : _c, initialState = _b.initialState, _d = _b.config, config = _d === void 0 ? {} : _d, reportCrashes = _b.reportCrashes;
-    var enhancers = [];
-    if (reportCrashes === undefined) {
-        reportCrashes = true;
-    }
-    if (typeof window !== 'undefined') {
-        var anyWindow = window;
-        if (anyWindow.devToolsExtension) {
-            enhancers.push(anyWindow.devToolsExtension());
-        }
-    }
-    if (reportCrashes) {
-        enhancers.push(redux_1.applyMiddleware(crashReporter));
-    }
-    var compose = redux_1.compose;
-    if (initialState && initialState[reduxRootKey] && initialState[reduxRootKey]['queries']) {
-        throw new Error('Apollo initial state may not contain queries, only data');
-    }
-    if (initialState && initialState[reduxRootKey] && initialState[reduxRootKey]['mutations']) {
-        throw new Error('Apollo initial state may not contain mutations, only data');
-    }
-    return redux_1.createStore(redux_1.combineReducers((_e = {}, _e[reduxRootKey] = createApolloReducer(config), _e)), initialState, compose.apply(void 0, enhancers));
-    var _e;
-}
-exports.createApolloStore = createApolloStore;
-function getDataWithOptimisticResults(store) {
-    if (store.optimistic.length === 0) {
-        return store.data;
-    }
-    var patches = store.optimistic.map(function (opt) { return opt.data; });
-    return assign.apply(void 0, [{}, store.data].concat(patches));
-}
-exports.getDataWithOptimisticResults = getDataWithOptimisticResults;
-
-},{"./data/store":36,"./mutations/store":42,"./optimistic-data/store":46,"./queries/store":50,"lodash.assign":87,"redux":267}],53:[function(require,module,exports){
-"use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-require('whatwg-fetch');
-var assign = require('lodash.assign');
-var isNumber = require('lodash.isnumber');
-var networkInterface_1 = require('./networkInterface');
-var batching_1 = require('./batching');
-var HTTPBatchedNetworkInterface = (function (_super) {
-    __extends(HTTPBatchedNetworkInterface, _super);
-    function HTTPBatchedNetworkInterface(uri, pollInterval, fetchOpts) {
-        _super.call(this, uri, fetchOpts);
-        if (!isNumber(pollInterval)) {
-            throw new Error("pollInterval must be a number, got " + pollInterval);
-        }
-        this.pollInterval = pollInterval;
-        this.batcher = new batching_1.QueryBatcher({
-            batchFetchFunction: this.batchQuery.bind(this),
-        });
-        this.batcher.start(this.pollInterval);
-    }
-    ;
-    HTTPBatchedNetworkInterface.prototype.query = function (request) {
-        return this.batcher.enqueueRequest(request);
-    };
-    HTTPBatchedNetworkInterface.prototype.batchQuery = function (requests) {
-        var _this = this;
-        var options = assign({}, this._opts);
-        var middlewarePromises = [];
-        requests.forEach(function (request) {
-            middlewarePromises.push(_this.applyMiddlewares({
-                request: request,
-                options: options,
-            }));
-        });
-        return new Promise(function (resolve, reject) {
-            Promise.all(middlewarePromises).then(function (requestsAndOptions) {
-                return _this.batchedFetchFromRemoteEndpoint(requestsAndOptions)
-                    .then(function (result) {
-                    return result.json();
-                })
-                    .then(function (responses) {
-                    if (typeof responses.map !== 'function') {
-                        throw new Error('BatchingNetworkInterface: server response is not an array');
-                    }
-                    var afterwaresPromises = responses.map(function (response, index) {
-                        return _this.applyAfterwares({
-                            response: response,
-                            options: requestsAndOptions[index].options,
-                        });
-                    });
-                    Promise.all(afterwaresPromises).then(function (responsesAndOptions) {
-                        var results = [];
-                        responsesAndOptions.forEach(function (result) {
-                            results.push(result.response);
-                        });
-                        resolve(results);
-                    }).catch(function (error) {
-                        reject(error);
-                    });
-                });
-            }).catch(function (error) {
-                reject(error);
-            });
-        });
-    };
-    HTTPBatchedNetworkInterface.prototype.batchedFetchFromRemoteEndpoint = function (requestsAndOptions) {
-        var options = {};
-        requestsAndOptions.forEach(function (requestAndOptions) {
-            assign(options, requestAndOptions.options);
-        });
-        var printedRequests = requestsAndOptions.map(function (_a) {
-            var request = _a.request;
-            return networkInterface_1.printRequest(request);
-        });
-        return fetch(this._uri, assign({}, this._opts, {
-            body: JSON.stringify(printedRequests),
-            method: 'POST',
-        }, options, {
-            headers: assign({}, {
-                Accept: '*/*',
-                'Content-Type': 'application/json',
-            }, options.headers),
-        }));
-    };
-    ;
-    return HTTPBatchedNetworkInterface;
-}(networkInterface_1.HTTPFetchNetworkInterface));
-exports.HTTPBatchedNetworkInterface = HTTPBatchedNetworkInterface;
-function createBatchingNetworkInterface(options) {
-    if (!options) {
-        throw new Error('You must pass an options argument to createNetworkInterface.');
-    }
-    return new HTTPBatchedNetworkInterface(options.uri, options.batchInterval, options.opts);
-}
-exports.createBatchingNetworkInterface = createBatchingNetworkInterface;
-
-},{"./batching":54,"./networkInterface":55,"lodash.assign":87,"lodash.isnumber":99,"whatwg-fetch":294}],54:[function(require,module,exports){
-"use strict";
-;
-var QueryBatcher = (function () {
-    function QueryBatcher(_a) {
-        var batchFetchFunction = _a.batchFetchFunction;
-        this.queuedRequests = [];
-        this.queuedRequests = [];
-        this.batchFetchFunction = batchFetchFunction;
-    }
-    QueryBatcher.prototype.enqueueRequest = function (request) {
-        var fetchRequest = {
-            request: request,
-        };
-        this.queuedRequests.push(fetchRequest);
-        fetchRequest.promise = new Promise(function (resolve, reject) {
-            fetchRequest.resolve = resolve;
-            fetchRequest.reject = reject;
-        });
-        return fetchRequest.promise;
-    };
-    QueryBatcher.prototype.consumeQueue = function () {
-        if (this.queuedRequests.length < 1) {
-            return undefined;
-        }
-        var requests = this.queuedRequests.map(function (queuedRequest) {
-            return {
-                query: queuedRequest.request.query,
-                variables: queuedRequest.request.variables,
-                operationName: queuedRequest.request.operationName,
-            };
-        });
-        var promises = [];
-        var resolvers = [];
-        var rejecters = [];
-        this.queuedRequests.forEach(function (fetchRequest, index) {
-            promises.push(fetchRequest.promise);
-            resolvers.push(fetchRequest.resolve);
-            rejecters.push(fetchRequest.reject);
-        });
-        this.queuedRequests = [];
-        var batchedPromise = this.batchFetchFunction(requests);
-        batchedPromise.then(function (results) {
-            results.forEach(function (result, index) {
-                resolvers[index](result);
-            });
-        }).catch(function (error) {
-            rejecters.forEach(function (rejecter, index) {
-                rejecters[index](error);
-            });
-        });
-        return promises;
-    };
-    QueryBatcher.prototype.start = function (pollInterval) {
-        var _this = this;
-        if (this.pollTimer) {
-            clearInterval(this.pollTimer);
-        }
-        this.pollInterval = pollInterval;
-        this.pollTimer = setInterval(function () {
-            _this.consumeQueue();
-        }, this.pollInterval);
-    };
-    QueryBatcher.prototype.stop = function () {
-        if (this.pollTimer) {
-            clearInterval(this.pollTimer);
-        }
-    };
-    return QueryBatcher;
-}());
-exports.QueryBatcher = QueryBatcher;
-
-},{}],55:[function(require,module,exports){
+},{"../actions":29,"lodash.assign":82}],44:[function(require,module,exports){
 "use strict";
 var isString = require('lodash.isstring');
 var assign = require('lodash.assign');
 var mapValues = require('lodash.mapvalues');
 require('whatwg-fetch');
 var printer_1 = require('graphql-tag/printer');
+var queryMerging_1 = require('./batching/queryMerging');
+function addQueryMerging(networkInterface) {
+    return assign(networkInterface, {
+        batchQuery: function (requests) {
+            if (requests.length === 1) {
+                return this.query(requests[0]).then(function (result) {
+                    return Promise.resolve([result]);
+                });
+            }
+            var composedRequest = queryMerging_1.mergeRequests(requests);
+            return this.query(composedRequest).then(function (composedResult) {
+                return queryMerging_1.unpackMergedResult(composedResult, requests);
+            });
+        },
+    });
+}
+exports.addQueryMerging = addQueryMerging;
 function printRequest(request) {
     return mapValues(request, function (val, key) {
         return key === 'query' ? printer_1.print(val) : val;
@@ -5570,7 +5480,6 @@ var HTTPFetchNetworkInterface = (function () {
                 throw new Error('Middleware must implement the applyMiddleware function');
             }
         });
-        return this;
     };
     HTTPFetchNetworkInterface.prototype.useAfter = function (afterwares) {
         var _this = this;
@@ -5582,32 +5491,667 @@ var HTTPFetchNetworkInterface = (function () {
                 throw new Error('Afterware must implement the applyAfterware function');
             }
         });
-        return this;
     };
     return HTTPFetchNetworkInterface;
 }());
 exports.HTTPFetchNetworkInterface = HTTPFetchNetworkInterface;
-function createNetworkInterface(uriOrInterfaceOpts, secondArgOpts) {
-    if (secondArgOpts === void 0) { secondArgOpts = {}; }
-    if (!uriOrInterfaceOpts) {
-        throw new Error('You must pass an options argument to createNetworkInterface.');
-    }
-    var uri;
-    var opts;
-    if (isString(uriOrInterfaceOpts)) {
-        console.warn("Passing the URI as the first argument to createNetworkInterface is deprecated as of Apollo Client 0.5. Please pass it as the \"uri\" property of the network interface options.");
-        opts = secondArgOpts;
-        uri = uriOrInterfaceOpts;
+var batchedNetworkInterface_1 = require('./batchedNetworkInterface');
+function createNetworkInterface(interfaceOpts, backOpts) {
+    if (backOpts === void 0) { backOpts = {}; }
+    if (isString(interfaceOpts) || !interfaceOpts) {
+        var uri = interfaceOpts;
+        return addQueryMerging(new HTTPFetchNetworkInterface(uri, backOpts));
     }
     else {
-        opts = uriOrInterfaceOpts.opts;
-        uri = uriOrInterfaceOpts.uri;
+        var _a = interfaceOpts, _b = _a.transportBatching, transportBatching = _b === void 0 ? false : _b, _c = _a.opts, opts = _c === void 0 ? {} : _c, uri = _a.uri;
+        if (transportBatching) {
+            return new batchedNetworkInterface_1.HTTPBatchedNetworkInterface(uri, opts);
+        }
+        else {
+            return addQueryMerging(new HTTPFetchNetworkInterface(uri, opts));
+        }
     }
-    return new HTTPFetchNetworkInterface(uri, opts);
 }
 exports.createNetworkInterface = createNetworkInterface;
 
-},{"graphql-tag/printer":74,"lodash.assign":87,"lodash.isstring":101,"lodash.mapvalues":106,"whatwg-fetch":294}],56:[function(require,module,exports){
+},{"./batchedNetworkInterface":30,"./batching/queryMerging":32,"graphql-tag/printer":69,"lodash.assign":82,"lodash.isstring":97,"lodash.mapvalues":102,"whatwg-fetch":289}],45:[function(require,module,exports){
+module.exports = require('./lib/index');
+
+},{"./lib/index":46}],46:[function(require,module,exports){
+(function (global){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _ponyfill = require('./ponyfill');
+
+var _ponyfill2 = _interopRequireDefault(_ponyfill);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var root; /* global window */
+
+
+if (typeof self !== 'undefined') {
+  root = self;
+} else if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof global !== 'undefined') {
+  root = global;
+} else if (typeof module !== 'undefined') {
+  root = module;
+} else {
+  root = Function('return this')();
+}
+
+var result = (0, _ponyfill2['default'])(root);
+exports['default'] = result;
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./ponyfill":47}],47:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports['default'] = symbolObservablePonyfill;
+function symbolObservablePonyfill(root) {
+	var result;
+	var _Symbol = root.Symbol;
+
+	if (typeof _Symbol === 'function') {
+		if (_Symbol.observable) {
+			result = _Symbol.observable;
+		} else {
+			result = _Symbol('observable');
+			_Symbol.observable = result;
+		}
+	} else {
+		result = '@@observable';
+	}
+
+	return result;
+};
+},{}],48:[function(require,module,exports){
+"use strict";
+var actions_1 = require('../actions');
+var store_1 = require('../data/store');
+var store_2 = require('../store');
+var assign = require('lodash.assign');
+var pick = require('lodash.pick');
+var optimisticDefaultState = [];
+function optimistic(previousState, action, store, config) {
+    if (previousState === void 0) { previousState = optimisticDefaultState; }
+    if (actions_1.isMutationInitAction(action) && action.optimisticResponse) {
+        var fakeMutationResultAction = {
+            type: 'APOLLO_MUTATION_RESULT',
+            result: { data: action.optimisticResponse },
+            mutationId: action.mutationId,
+            resultBehaviors: action.resultBehaviors,
+        };
+        var fakeStore = assign({}, store, { optimistic: previousState });
+        var optimisticData_1 = store_2.getDataWithOptimisticResults(fakeStore);
+        var fakeDataResultState_1 = store_1.data(optimisticData_1, fakeMutationResultAction, store.queries, store.mutations, config);
+        var changedKeys = Object.keys(fakeDataResultState_1).filter(function (key) { return optimisticData_1[key] !== fakeDataResultState_1[key]; });
+        var patch = pick(fakeDataResultState_1, changedKeys);
+        var optimisticState = {
+            data: patch,
+            mutationId: action.mutationId,
+        };
+        var newState = previousState.concat([optimisticState]);
+        return newState;
+    }
+    else if ((actions_1.isMutationErrorAction(action) || actions_1.isMutationResultAction(action))
+        && previousState.some(function (change) { return change.mutationId === action.mutationId; })) {
+        var newState = previousState.filter(function (change) { return change.mutationId !== action.mutationId; });
+        return newState;
+    }
+    return previousState;
+}
+exports.optimistic = optimistic;
+
+},{"../actions":29,"../data/store":38,"../store":55,"lodash.assign":82,"lodash.pick":104}],49:[function(require,module,exports){
+"use strict";
+function shouldInclude(selection, variables) {
+    if (!variables) {
+        variables = {};
+    }
+    if (!selection.directives) {
+        return true;
+    }
+    var res = true;
+    selection.directives.forEach(function (directive) {
+        if (directive.name.value !== 'skip' && directive.name.value !== 'include') {
+            return;
+        }
+        var directiveArguments = directive.arguments;
+        var directiveName = directive.name.value;
+        if (directiveArguments.length !== 1) {
+            throw new Error("Incorrect number of arguments for the @" + directiveName + " directive.");
+        }
+        var ifArgument = directive.arguments[0];
+        if (!ifArgument.name || ifArgument.name.value !== 'if') {
+            throw new Error("Invalid argument for the @" + directiveName + " directive.");
+        }
+        var ifValue = directive.arguments[0].value;
+        var evaledValue = false;
+        if (!ifValue || ifValue.kind !== 'BooleanValue') {
+            if (ifValue.kind !== 'Variable') {
+                throw new Error("Argument for the @" + directiveName + " directive must be a variable or a bool ean value.");
+            }
+            else {
+                evaledValue = variables[ifValue.name.value];
+                if (evaledValue === undefined) {
+                    throw new Error("Invalid variable referenced in @" + directiveName + " directive.");
+                }
+            }
+        }
+        else {
+            evaledValue = ifValue.value;
+        }
+        if (directiveName === 'skip') {
+            evaledValue = !evaledValue;
+        }
+        if (!evaledValue) {
+            res = false;
+        }
+    });
+    return res;
+}
+exports.shouldInclude = shouldInclude;
+
+},{}],50:[function(require,module,exports){
+"use strict";
+var assign = require('lodash.assign');
+var countBy = require('lodash.countby');
+var identity = require('lodash.identity');
+function getMutationDefinition(doc) {
+    checkDocument(doc);
+    var mutationDef = null;
+    doc.definitions.forEach(function (definition) {
+        if (definition.kind === 'OperationDefinition'
+            && definition.operation === 'mutation') {
+            mutationDef = definition;
+        }
+    });
+    if (!mutationDef) {
+        throw new Error('Must contain a mutation definition.');
+    }
+    return mutationDef;
+}
+exports.getMutationDefinition = getMutationDefinition;
+function checkDocument(doc) {
+    if (doc.kind !== 'Document') {
+        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
+    }
+    var definitionTypes = doc.definitions.map(function (definition) {
+        if (definition.kind !== 'OperationDefinition' && definition.kind !== 'FragmentDefinition') {
+            throw new Error("Schema type definitions not allowed in queries. Found: \"" + definition.kind + "\"");
+        }
+        return definition.kind;
+    });
+    var typeCounts = countBy(definitionTypes, identity);
+    if (typeCounts['OperationDefinition'] > 1) {
+        throw new Error('Queries must have exactly one operation definition.');
+    }
+}
+exports.checkDocument = checkDocument;
+function getOperationName(doc) {
+    var res = '';
+    doc.definitions.forEach(function (definition) {
+        if (definition.kind === 'OperationDefinition'
+            && definition.name) {
+            res = definition.name.value;
+        }
+    });
+    return res;
+}
+exports.getOperationName = getOperationName;
+function getFragmentDefinitions(doc) {
+    var fragmentDefinitions = doc.definitions.filter(function (definition) {
+        if (definition.kind === 'FragmentDefinition') {
+            return true;
+        }
+        else {
+            return false;
+        }
+    });
+    return fragmentDefinitions;
+}
+exports.getFragmentDefinitions = getFragmentDefinitions;
+function getQueryDefinition(doc) {
+    checkDocument(doc);
+    var queryDef = null;
+    doc.definitions.map(function (definition) {
+        if (definition.kind === 'OperationDefinition'
+            && definition.operation === 'query') {
+            queryDef = definition;
+        }
+    });
+    if (!queryDef) {
+        throw new Error('Must contain a query definition.');
+    }
+    return queryDef;
+}
+exports.getQueryDefinition = getQueryDefinition;
+function getFragmentDefinition(doc) {
+    if (doc.kind !== 'Document') {
+        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
+    }
+    if (doc.definitions.length > 1) {
+        throw new Error('Fragment must have exactly one definition.');
+    }
+    var fragmentDef = doc.definitions[0];
+    if (fragmentDef.kind !== 'FragmentDefinition') {
+        throw new Error('Must be a fragment definition.');
+    }
+    return fragmentDef;
+}
+exports.getFragmentDefinition = getFragmentDefinition;
+function createFragmentMap(fragments) {
+    if (fragments === void 0) { fragments = []; }
+    var symTable = {};
+    fragments.forEach(function (fragment) {
+        symTable[fragment.name.value] = fragment;
+    });
+    return symTable;
+}
+exports.createFragmentMap = createFragmentMap;
+function addFragmentsToDocument(queryDoc, fragments) {
+    checkDocument(queryDoc);
+    return assign({}, queryDoc, {
+        definitions: queryDoc.definitions.concat(fragments),
+    });
+}
+exports.addFragmentsToDocument = addFragmentsToDocument;
+
+},{"lodash.assign":82,"lodash.countby":84,"lodash.identity":90}],51:[function(require,module,exports){
+"use strict";
+var getFromAST_1 = require('./getFromAST');
+var cloneDeep = require('lodash.clonedeep');
+function addFieldToSelectionSet(fieldName, selectionSet) {
+    var fieldAst = {
+        kind: 'Field',
+        alias: null,
+        name: {
+            kind: 'Name',
+            value: fieldName,
+        },
+    };
+    if (selectionSet && selectionSet.selections) {
+        var alreadyHasThisField_1 = false;
+        selectionSet.selections.forEach(function (selection) {
+            if (selection.kind === 'Field' && selection.name.value === fieldName) {
+                alreadyHasThisField_1 = true;
+            }
+        });
+        if (!alreadyHasThisField_1) {
+            selectionSet.selections.push(fieldAst);
+        }
+    }
+}
+exports.addFieldToSelectionSet = addFieldToSelectionSet;
+function addTypenameToSelectionSet(selectionSet) {
+    return addFieldToSelectionSet('__typename', selectionSet);
+}
+exports.addTypenameToSelectionSet = addTypenameToSelectionSet;
+function traverseSelectionSet(selectionSet, queryTransformers, isRoot) {
+    if (isRoot === void 0) { isRoot = false; }
+    if (selectionSet && selectionSet.selections) {
+        queryTransformers.forEach(function (transformer) {
+            if (!isRoot) {
+                transformer(selectionSet);
+            }
+            selectionSet.selections.forEach(function (selection) {
+                if (selection.kind === 'Field' || selection.kind === 'InlineFragment') {
+                    traverseSelectionSet(selection.selectionSet, queryTransformers);
+                }
+            });
+        });
+    }
+}
+function applyTransformers(doc, queryTransformers) {
+    getFromAST_1.checkDocument(doc);
+    var docClone = cloneDeep(doc);
+    docClone.definitions.forEach(function (definition) {
+        if (definition.kind === 'OperationDefinition') {
+            traverseSelectionSet(definition.selectionSet, queryTransformers, true);
+        }
+        else {
+            traverseSelectionSet(definition.selectionSet, queryTransformers);
+        }
+    });
+    return docClone;
+}
+exports.applyTransformers = applyTransformers;
+
+},{"./getFromAST":50,"lodash.clonedeep":83}],52:[function(require,module,exports){
+"use strict";
+var actions_1 = require('../actions');
+var storeUtils_1 = require('../data/storeUtils');
+var assign = require('lodash.assign');
+var isEqual = require('lodash.isequal');
+function queries(previousState, action) {
+    if (previousState === void 0) { previousState = {}; }
+    if (actions_1.isQueryInitAction(action)) {
+        var newState = assign({}, previousState);
+        var previousQuery = previousState[action.queryId];
+        var previousVariables = void 0;
+        if (action.storePreviousVariables && previousQuery) {
+            if (!isEqual(previousQuery.variables, action.variables)) {
+                previousVariables = previousQuery.variables;
+            }
+        }
+        newState[action.queryId] = {
+            queryString: action.queryString,
+            query: action.query,
+            minimizedQueryString: action.minimizedQueryString,
+            minimizedQuery: action.minimizedQuery,
+            variables: action.variables,
+            previousVariables: previousVariables,
+            loading: true,
+            stopped: false,
+            networkError: null,
+            graphQLErrors: null,
+            forceFetch: action.forceFetch,
+            returnPartialData: action.returnPartialData,
+            lastRequestId: action.requestId,
+            fragmentMap: action.fragmentMap,
+        };
+        return newState;
+    }
+    else if (actions_1.isQueryResultAction(action)) {
+        if (!previousState[action.queryId]) {
+            return previousState;
+        }
+        if (action.requestId < previousState[action.queryId].lastRequestId) {
+            return previousState;
+        }
+        var newState = assign({}, previousState);
+        var resultHasGraphQLErrors = storeUtils_1.graphQLResultHasError(action.result);
+        newState[action.queryId] = assign({}, previousState[action.queryId], {
+            loading: false,
+            networkError: null,
+            graphQLErrors: resultHasGraphQLErrors ? action.result.errors : null,
+            previousVariables: null,
+        });
+        return newState;
+    }
+    else if (actions_1.isQueryErrorAction(action)) {
+        if (!previousState[action.queryId]) {
+            return previousState;
+        }
+        if (action.requestId < previousState[action.queryId].lastRequestId) {
+            return previousState;
+        }
+        var newState = assign({}, previousState);
+        newState[action.queryId] = assign({}, previousState[action.queryId], {
+            loading: false,
+            networkError: action.error,
+        });
+        return newState;
+    }
+    else if (actions_1.isQueryResultClientAction(action)) {
+        if (!previousState[action.queryId]) {
+            return previousState;
+        }
+        var newState = assign({}, previousState);
+        newState[action.queryId] = assign({}, previousState[action.queryId], {
+            loading: action.complete,
+            networkError: null,
+            previousVariables: null,
+        });
+        return newState;
+    }
+    else if (actions_1.isQueryStopAction(action)) {
+        var newState = assign({}, previousState);
+        newState[action.queryId] = assign({}, previousState[action.queryId], {
+            loading: false,
+            stopped: true,
+        });
+        return newState;
+    }
+    else if (actions_1.isStoreResetAction(action)) {
+        return resetQueryState(previousState, action);
+    }
+    return previousState;
+}
+exports.queries = queries;
+function resetQueryState(state, action) {
+    var observableQueryIds = action.observableQueryIds;
+    var newQueries = Object.keys(state).filter(function (queryId) {
+        return (observableQueryIds.indexOf(queryId) > -1);
+    }).reduce(function (res, key) {
+        res[key] = state[key];
+        return res;
+    }, {});
+    return newQueries;
+}
+
+},{"../actions":29,"../data/storeUtils":39,"lodash.assign":82,"lodash.isequal":93}],53:[function(require,module,exports){
+"use strict";
+var printer_1 = require('graphql-tag/printer');
+function printQueryForMissingData(options) {
+    return printQueryFromDefinition(queryDefinition(options));
+}
+exports.printQueryForMissingData = printQueryForMissingData;
+function printQueryFromDefinition(queryDef) {
+    var queryDocumentAst = {
+        kind: 'Document',
+        definitions: [
+            queryDef,
+        ],
+    };
+    return printer_1.print(queryDocumentAst);
+}
+exports.printQueryFromDefinition = printQueryFromDefinition;
+function queryDocument(_a) {
+    var missingSelectionSets = _a.missingSelectionSets, _b = _a.variableDefinitions, variableDefinitions = _b === void 0 ? null : _b, _c = _a.name, name = _c === void 0 ? null : _c, fragmentMap = _a.fragmentMap;
+    var doc = {
+        kind: 'Document',
+        definitions: [],
+    };
+    var opDefinition = queryDefinition({
+        missingSelectionSets: missingSelectionSets,
+        variableDefinitions: variableDefinitions,
+        name: name,
+    });
+    doc.definitions = [opDefinition];
+    Object.keys(fragmentMap).forEach(function (key) {
+        doc.definitions.push(fragmentMap[key]);
+    });
+    return doc;
+}
+exports.queryDocument = queryDocument;
+function queryDefinition(_a) {
+    var missingSelectionSets = _a.missingSelectionSets, _b = _a.variableDefinitions, variableDefinitions = _b === void 0 ? null : _b, _c = _a.name, name = _c === void 0 ? null : _c;
+    var selections = [];
+    missingSelectionSets.forEach(function (missingSelectionSet, ii) {
+        if (missingSelectionSet.id === 'CANNOT_REFETCH') {
+            throw new Error('diffAgainstStore did not merge selection sets correctly');
+        }
+        if (missingSelectionSet.id !== 'ROOT_QUERY') {
+            throw new Error('Only root query selections supported.');
+        }
+        missingSelectionSet.selectionSet.selections.forEach(function (selection) {
+            selections.push(selection);
+        });
+    });
+    return {
+        kind: 'OperationDefinition',
+        operation: 'query',
+        name: name,
+        variableDefinitions: variableDefinitions,
+        directives: [],
+        selectionSet: {
+            kind: 'SelectionSet',
+            selections: selections,
+        },
+    };
+}
+exports.queryDefinition = queryDefinition;
+
+},{"graphql-tag/printer":69}],54:[function(require,module,exports){
+"use strict";
+var ObservableQuery_1 = require('./ObservableQuery');
+var assign = require('lodash.assign');
+var QueryScheduler = (function () {
+    function QueryScheduler(_a) {
+        var queryManager = _a.queryManager;
+        this.queryManager = queryManager;
+        this.pollingTimers = {};
+        this.inFlightQueries = {};
+        this.registeredQueries = {};
+        this.intervalQueries = {};
+    }
+    QueryScheduler.prototype.checkInFlight = function (queryId) {
+        return this.inFlightQueries.hasOwnProperty(queryId);
+    };
+    QueryScheduler.prototype.fetchQuery = function (queryId, options) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.queryManager.fetchQuery(queryId, options).then(function (result) {
+                _this.removeInFlight(queryId);
+                resolve(result);
+            }).catch(function (error) {
+                _this.removeInFlight(queryId);
+                reject(error);
+            });
+            _this.addInFlight(queryId, options);
+        });
+    };
+    QueryScheduler.prototype.startPollingQuery = function (options, queryId, firstFetch, listener) {
+        if (firstFetch === void 0) { firstFetch = true; }
+        if (!options.pollInterval) {
+            throw new Error('Attempted to start a polling query without a polling interval.');
+        }
+        this.registeredQueries[queryId] = options;
+        if (firstFetch) {
+            this.fetchQuery(queryId, options);
+        }
+        if (listener) {
+            this.queryManager.addQueryListener(queryId, listener);
+        }
+        this.addQueryOnInterval(queryId, options);
+        return queryId;
+    };
+    QueryScheduler.prototype.stopPollingQuery = function (queryId) {
+        delete this.registeredQueries[queryId];
+    };
+    QueryScheduler.prototype.fetchQueriesOnInterval = function (interval) {
+        var _this = this;
+        this.intervalQueries[interval] = this.intervalQueries[interval].filter(function (queryId) {
+            if (!_this.registeredQueries.hasOwnProperty(queryId)) {
+                return false;
+            }
+            if (_this.checkInFlight(queryId)) {
+                return true;
+            }
+            var queryOptions = _this.registeredQueries[queryId];
+            var pollingOptions = assign({}, queryOptions);
+            pollingOptions.forceFetch = true;
+            _this.fetchQuery(queryId, pollingOptions);
+            return true;
+        });
+        if (this.intervalQueries[interval].length === 0) {
+            clearInterval(this.pollingTimers[interval]);
+        }
+    };
+    QueryScheduler.prototype.addQueryOnInterval = function (queryId, queryOptions) {
+        var _this = this;
+        var interval = queryOptions.pollInterval;
+        if (this.intervalQueries.hasOwnProperty(interval.toString()) && this.intervalQueries[interval].length > 0) {
+            this.intervalQueries[interval].push(queryId);
+        }
+        else {
+            this.intervalQueries[interval] = [queryId];
+            this.pollingTimers[interval] = setInterval(function () {
+                _this.fetchQueriesOnInterval(interval);
+            }, interval);
+        }
+    };
+    QueryScheduler.prototype.registerPollingQuery = function (queryOptions) {
+        if (!queryOptions.pollInterval) {
+            throw new Error('Attempted to register a non-polling query with the scheduler.');
+        }
+        return new ObservableQuery_1.ObservableQuery({
+            scheduler: this,
+            options: queryOptions,
+        });
+    };
+    QueryScheduler.prototype.addInFlight = function (queryId, options) {
+        this.inFlightQueries[queryId] = options;
+    };
+    QueryScheduler.prototype.removeInFlight = function (queryId) {
+        delete this.inFlightQueries[queryId];
+    };
+    return QueryScheduler;
+}());
+exports.QueryScheduler = QueryScheduler;
+
+},{"./ObservableQuery":27,"lodash.assign":82}],55:[function(require,module,exports){
+"use strict";
+var redux_1 = require('redux');
+var store_1 = require('./data/store');
+var store_2 = require('./queries/store');
+var store_3 = require('./mutations/store');
+var store_4 = require('./optimistic-data/store');
+var assign = require('lodash.assign');
+var crashReporter = function (store) { return function (next) { return function (action) {
+    try {
+        return next(action);
+    }
+    catch (err) {
+        console.error('Caught an exception!', err);
+        console.error(err.stack);
+        throw err;
+    }
+}; }; };
+function createApolloReducer(config) {
+    return function apolloReducer(state, action) {
+        if (state === void 0) { state = {}; }
+        var newState = {
+            queries: store_2.queries(state.queries, action),
+            mutations: store_3.mutations(state.mutations, action),
+            data: store_1.data(state.data, action, state.queries, state.mutations, config),
+            optimistic: [],
+        };
+        newState.optimistic = store_4.optimistic(state.optimistic, action, newState, config);
+        return newState;
+    };
+}
+exports.createApolloReducer = createApolloReducer;
+function createApolloStore(_a) {
+    var _b = _a === void 0 ? {} : _a, _c = _b.reduxRootKey, reduxRootKey = _c === void 0 ? 'apollo' : _c, initialState = _b.initialState, _d = _b.config, config = _d === void 0 ? {} : _d, reportCrashes = _b.reportCrashes;
+    var enhancers = [];
+    if (reportCrashes === undefined) {
+        reportCrashes = true;
+    }
+    if (typeof window !== 'undefined') {
+        var anyWindow = window;
+        if (anyWindow.devToolsExtension) {
+            enhancers.push(anyWindow.devToolsExtension());
+        }
+    }
+    if (reportCrashes) {
+        enhancers.push(redux_1.applyMiddleware(crashReporter));
+    }
+    var compose = redux_1.compose;
+    return redux_1.createStore(redux_1.combineReducers((_e = {}, _e[reduxRootKey] = createApolloReducer(config), _e)), initialState, compose.apply(void 0, enhancers));
+    var _e;
+}
+exports.createApolloStore = createApolloStore;
+function getDataWithOptimisticResults(store) {
+    if (store.optimistic.length === 0) {
+        return store.data;
+    }
+    var patches = store.optimistic.map(function (opt) { return opt.data; });
+    return assign.apply(void 0, [{}, store.data].concat(patches));
+}
+exports.getDataWithOptimisticResults = getDataWithOptimisticResults;
+
+},{"./data/store":38,"./mutations/store":43,"./optimistic-data/store":48,"./queries/store":52,"lodash.assign":82,"redux":262}],56:[function(require,module,exports){
 "use strict";
 var symbol_observable_1 = require('symbol-observable');
 function isSubscription(subscription) {
@@ -5635,7 +6179,7 @@ var Observable = (function () {
 }());
 exports.Observable = Observable;
 
-},{"symbol-observable":43}],57:[function(require,module,exports){
+},{"symbol-observable":45}],57:[function(require,module,exports){
 "use strict";
 function tryFunctionOrLogError(f) {
     try {
@@ -15020,7 +15564,7 @@ function makeGraphQLDriver(_ref) {
   };
 }
 
-},{"apollo-client":41,"graphql-tag":72,"most":258}],62:[function(require,module,exports){
+},{"apollo-client":42,"graphql-tag":67,"most":253}],62:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15121,7 +15665,7 @@ function parse() {
 
 },{"@most/create":63}],63:[function(require,module,exports){
 arguments[4][4][0].apply(exports,arguments)
-},{"@most/multicast":7,"dup":4,"most":258}],64:[function(require,module,exports){
+},{"@most/multicast":7,"dup":4,"most":253}],64:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -15172,7 +15716,7 @@ function makeNotificationDriver() {
   };
 }
 
-},{"fg-loadcss":65,"humane-js":75}],65:[function(require,module,exports){
+},{"fg-loadcss":65,"humane-js":70}],65:[function(require,module,exports){
 (function (global){
 /*! loadCSS: load a CSS file asynchronously. [c]2016 @scottjehl, Filament Group, Inc. Licensed MIT */
 (function(w){
@@ -15272,378 +15816,6 @@ module.exports = function (first, second) {
 }
 
 },{}],67:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"dup":47}],68:[function(require,module,exports){
-"use strict";
-var assign = require('lodash.assign');
-var countBy = require('lodash.countby');
-var identity = require('lodash.identity');
-function getMutationDefinition(doc) {
-    checkDocument(doc);
-    var mutationDef = null;
-    doc.definitions.forEach(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.operation === 'mutation') {
-            mutationDef = definition;
-        }
-    });
-    if (!mutationDef) {
-        throw new Error('Must contain a mutation definition.');
-    }
-    return mutationDef;
-}
-exports.getMutationDefinition = getMutationDefinition;
-function checkDocument(doc) {
-    if (doc.kind !== 'Document') {
-        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
-    }
-    var definitionTypes = doc.definitions.map(function (definition) {
-        return definition.kind;
-    });
-    var typeCounts = countBy(definitionTypes, identity);
-    if (typeCounts['OperationDefinition'] > 1) {
-        throw new Error('Queries must have exactly one operation definition.');
-    }
-}
-exports.checkDocument = checkDocument;
-function getOperationName(doc) {
-    var res = '';
-    doc.definitions.forEach(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.name) {
-            res = definition.name.value;
-        }
-    });
-    return res;
-}
-exports.getOperationName = getOperationName;
-function getFragmentDefinitions(doc) {
-    var fragmentDefinitions = doc.definitions.filter(function (definition) {
-        if (definition.kind === 'FragmentDefinition') {
-            return true;
-        }
-        else {
-            return false;
-        }
-    });
-    return fragmentDefinitions;
-}
-exports.getFragmentDefinitions = getFragmentDefinitions;
-function getQueryDefinition(doc) {
-    checkDocument(doc);
-    var queryDef = null;
-    doc.definitions.map(function (definition) {
-        if (definition.kind === 'OperationDefinition'
-            && definition.operation === 'query') {
-            queryDef = definition;
-        }
-    });
-    if (!queryDef) {
-        throw new Error('Must contain a query definition.');
-    }
-    return queryDef;
-}
-exports.getQueryDefinition = getQueryDefinition;
-function getFragmentDefinition(doc) {
-    if (doc.kind !== 'Document') {
-        throw new Error("Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql");
-    }
-    if (doc.definitions.length > 1) {
-        throw new Error('Fragment must have exactly one definition.');
-    }
-    var fragmentDef = doc.definitions[0];
-    if (fragmentDef.kind !== 'FragmentDefinition') {
-        throw new Error('Must be a fragment definition.');
-    }
-    return fragmentDef;
-}
-exports.getFragmentDefinition = getFragmentDefinition;
-function createFragmentMap(fragments) {
-    if (fragments === void 0) { fragments = []; }
-    var symTable = {};
-    fragments.forEach(function (fragment) {
-        symTable[fragment.name.value] = fragment;
-    });
-    return symTable;
-}
-exports.createFragmentMap = createFragmentMap;
-function addFragmentsToDocument(queryDoc, fragments) {
-    checkDocument(queryDoc);
-    return assign({}, queryDoc, {
-        definitions: queryDoc.definitions.concat(fragments),
-    });
-}
-exports.addFragmentsToDocument = addFragmentsToDocument;
-function getMainDefinition(queryDoc) {
-    checkDocument(queryDoc);
-    try {
-        return getQueryDefinition(queryDoc);
-    }
-    catch (e) {
-        try {
-            var fragments = getFragmentDefinitions(queryDoc);
-            return fragments[0];
-        }
-        catch (e) {
-            throw new Error("Expected a parsed GraphQL query with a query or a fragment.");
-        }
-    }
-}
-exports.getMainDefinition = getMainDefinition;
-
-},{"lodash.assign":87,"lodash.countby":89,"lodash.identity":94}],69:[function(require,module,exports){
-"use strict";
-var getFromAST_1 = require('./getFromAST');
-var directives_1 = require('./directives');
-var storeUtils_1 = require('./storeUtils');
-var utilities_1 = require('./utilities');
-exports.filter = utilities_1.filter;
-exports.check = utilities_1.check;
-exports.propType = utilities_1.propType;
-var isNull = require('lodash.isnull');
-var isUndefined = require('lodash.isundefined');
-var merge = require('lodash.merge');
-function graphql(resolver, document, rootValue, contextValue, variableValues, execOptions) {
-    if (execOptions === void 0) { execOptions = {}; }
-    var mainDefinition = getFromAST_1.getMainDefinition(document);
-    var fragments = getFromAST_1.getFragmentDefinitions(document);
-    var fragmentMap = getFromAST_1.createFragmentMap(fragments) || {};
-    var resultMapper = execOptions.resultMapper;
-    var fragmentMatcher = execOptions.fragmentMatcher || (function () { return true; });
-    var execContext = {
-        fragmentMap: fragmentMap,
-        contextValue: contextValue,
-        variableValues: variableValues,
-        resultMapper: resultMapper,
-        resolver: resolver,
-        fragmentMatcher: fragmentMatcher,
-    };
-    return executeSelectionSet(mainDefinition.selectionSet, rootValue, execContext);
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = graphql;
-function executeSelectionSet(selectionSet, rootValue, execContext) {
-    var fragmentMap = execContext.fragmentMap, contextValue = execContext.contextValue, variables = execContext.variableValues;
-    var result = {};
-    selectionSet.selections.forEach(function (selection) {
-        if (!directives_1.shouldInclude(selection, variables)) {
-            return;
-        }
-        if (storeUtils_1.isField(selection)) {
-            var fieldResult = executeField(selection, rootValue, execContext);
-            var resultFieldKey = storeUtils_1.resultKeyNameFromField(selection);
-            if (fieldResult !== undefined) {
-                result[resultFieldKey] = fieldResult;
-            }
-        }
-        else {
-            var fragment = void 0;
-            if (storeUtils_1.isInlineFragment(selection)) {
-                fragment = selection;
-            }
-            else {
-                fragment = fragmentMap[selection.name.value];
-                if (!fragment) {
-                    throw new Error("No fragment named " + selection.name.value);
-                }
-            }
-            var typeCondition = fragment.typeCondition.name.value;
-            if (execContext.fragmentMatcher(rootValue, typeCondition, contextValue)) {
-                var fragmentResult = executeSelectionSet(fragment.selectionSet, rootValue, execContext);
-                merge(result, fragmentResult);
-            }
-        }
-    });
-    if (execContext.resultMapper) {
-        return execContext.resultMapper(result, rootValue);
-    }
-    return result;
-}
-function executeField(field, rootValue, execContext) {
-    var variables = execContext.variableValues, contextValue = execContext.contextValue, resolver = execContext.resolver;
-    var fieldName = field.name.value;
-    var args = storeUtils_1.argumentsObjectFromField(field, variables);
-    var info = {
-        isLeaf: !field.selectionSet,
-        resultKey: storeUtils_1.resultKeyNameFromField(field),
-    };
-    var result = resolver(fieldName, rootValue, args, contextValue, info);
-    if (!field.selectionSet) {
-        return result;
-    }
-    if (isNull(result) || isUndefined(result)) {
-        return result;
-    }
-    if (Array.isArray(result)) {
-        return executeSubSelectedArray(field, result, execContext);
-    }
-    return executeSelectionSet(field.selectionSet, result, execContext);
-}
-function executeSubSelectedArray(field, result, execContext) {
-    return result.map(function (item) {
-        if (isNull(item)) {
-            return null;
-        }
-        if (Array.isArray(item)) {
-            return executeSubSelectedArray(field, item, execContext);
-        }
-        return executeSelectionSet(field.selectionSet, item, execContext);
-    });
-}
-
-},{"./directives":67,"./getFromAST":68,"./storeUtils":70,"./utilities":71,"lodash.isnull":98,"lodash.isundefined":102,"lodash.merge":107}],70:[function(require,module,exports){
-"use strict";
-var includes = require('lodash.includes');
-function isScalarValue(value) {
-    var SCALAR_TYPES = ['StringValue', 'BooleanValue', 'EnumValue'];
-    return includes(SCALAR_TYPES, value.kind);
-}
-function isNumberValue(value) {
-    var NUMBER_TYPES = ['IntValue', 'FloatValue'];
-    return includes(NUMBER_TYPES, value.kind);
-}
-function isVariable(value) {
-    return value.kind === 'Variable';
-}
-function isObject(value) {
-    return value.kind === 'ObjectValue';
-}
-function isList(value) {
-    return value.kind === 'ListValue';
-}
-function valueToObjectRepresentation(argObj, name, value, variables) {
-    if (isNumberValue(value)) {
-        argObj[name.value] = Number(value.value);
-    }
-    else if (isScalarValue(value)) {
-        argObj[name.value] = value.value;
-    }
-    else if (isObject(value)) {
-        var nestedArgObj_1 = {};
-        value.fields.map(function (obj) { return valueToObjectRepresentation(nestedArgObj_1, obj.name, obj.value, variables); });
-        argObj[name.value] = nestedArgObj_1;
-    }
-    else if (isVariable(value)) {
-        if (!variables || !(value.name.value in variables)) {
-            throw new Error("The inline argument \"" + value.name.value + "\" is expected as a variable but was not provided.");
-        }
-        var variableValue = variables[value.name.value];
-        argObj[name.value] = variableValue;
-    }
-    else if (isList(value)) {
-        argObj[name.value] = value.values.map(function (listValue) {
-            var nestedArgArrayObj = {};
-            valueToObjectRepresentation(nestedArgArrayObj, name, listValue, variables);
-            return nestedArgArrayObj[name.value];
-        });
-    }
-    else {
-        throw new Error("The inline argument \"" + name.value + "\" of kind \"" + value.kind + "\" is not supported. Use variables instead of inline arguments to overcome this limitation.");
-    }
-}
-function argumentsObjectFromField(field, variables) {
-    if (field.arguments && field.arguments.length) {
-        var argObj_1 = {};
-        field.arguments.forEach(function (_a) {
-            var name = _a.name, value = _a.value;
-            return valueToObjectRepresentation(argObj_1, name, value, variables);
-        });
-        return argObj_1;
-    }
-    return null;
-}
-exports.argumentsObjectFromField = argumentsObjectFromField;
-function resultKeyNameFromField(field) {
-    return field.alias ?
-        field.alias.value :
-        field.name.value;
-}
-exports.resultKeyNameFromField = resultKeyNameFromField;
-function isField(selection) {
-    return selection.kind === 'Field';
-}
-exports.isField = isField;
-function isInlineFragment(selection) {
-    return selection.kind === 'InlineFragment';
-}
-exports.isInlineFragment = isInlineFragment;
-function graphQLResultHasError(result) {
-    return result.errors && result.errors.length;
-}
-exports.graphQLResultHasError = graphQLResultHasError;
-
-},{"lodash.includes":95}],71:[function(require,module,exports){
-"use strict";
-var index_1 = require('./index');
-function filter(doc, data) {
-    var resolver = function (fieldName, root, args, context, info) {
-        return root[info.resultKey];
-    };
-    return index_1.default(resolver, doc, data);
-}
-exports.filter = filter;
-function check(doc, data) {
-    var resolver = function (fieldName, root, args, context, info) {
-        if (!{}.hasOwnProperty.call(root, info.resultKey)) {
-            throw new Error(info.resultKey + " missing on " + root);
-        }
-        return root[info.resultKey];
-    };
-    index_1.default(resolver, doc, data, {}, {}, {
-        fragmentMatcher: function () { return false; },
-    });
-}
-exports.check = check;
-var ANONYMOUS = '<<anonymous>>';
-function PropTypeError(message) {
-    this.message = message;
-    this.stack = '';
-}
-PropTypeError.prototype = Error.prototype;
-var reactPropTypeLocationNames = {
-    prop: 'prop',
-    context: 'context',
-    childContext: 'child context',
-};
-function createChainableTypeChecker(validate) {
-    function checkType(isRequired, props, propName, componentName, location, propFullName) {
-        componentName = componentName || ANONYMOUS;
-        propFullName = propFullName || propName;
-        if (props[propName] == null) {
-            var locationName = reactPropTypeLocationNames[location];
-            if (isRequired) {
-                if (props[propName] === null) {
-                    return new PropTypeError(("The " + locationName + " `" + propFullName + "` is marked as required ") +
-                        ("in `" + componentName + "`, but its value is `null`."));
-                }
-                return new PropTypeError(("The " + locationName + " `" + propFullName + "` is marked as required in ") +
-                    ("`" + componentName + "`, but its value is `undefined`."));
-            }
-            return null;
-        }
-        else {
-            return validate(props, propName, componentName, location, propFullName);
-        }
-    }
-    var chainedCheckType = checkType.bind(null, false);
-    chainedCheckType.isRequired = checkType.bind(null, true);
-    return chainedCheckType;
-}
-function propType(doc) {
-    return createChainableTypeChecker(function (props, propName) {
-        var prop = props[propName];
-        try {
-            check(doc, prop);
-            return null;
-        }
-        catch (e) {
-            return e;
-        }
-    });
-}
-exports.propType = propType;
-
-},{"./index":69}],72:[function(require,module,exports){
 var parse = require('./parser').parse;
 
 var cache = {};
@@ -15734,7 +15906,7 @@ gql.default = gql;
 
 module.exports = gql;
 
-},{"./parser":73}],73:[function(require,module,exports){
+},{"./parser":68}],68:[function(require,module,exports){
 module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -18503,7 +18675,7 @@ module.exports =
 
 /***/ }
 /******/ ]);
-},{}],74:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 module.exports =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -19234,7 +19406,7 @@ module.exports =
 
 /***/ }
 /******/ ]);
-},{}],75:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /**
  * humane.js
  * Humanized Messages for Notifications
@@ -19474,7 +19646,7 @@ module.exports =
    return new Humane()
 });
 
-},{}],76:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 "use strict";
 
 /*!
@@ -19513,7 +19685,7 @@ function loadCSS(href, callback) {
 module.exports = loadCSS;
 
 
-},{}],77:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /**
  * lodash 3.1.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -19646,7 +19818,7 @@ function isLength(value) {
 
 module.exports = baseFlatten;
 
-},{"lodash.isarguments":96,"lodash.isarray":78}],78:[function(require,module,exports){
+},{"lodash.isarguments":91,"lodash.isarray":73}],73:[function(require,module,exports){
 /**
  * lodash 3.0.4 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -19828,7 +20000,7 @@ function isNative(value) {
 
 module.exports = isArray;
 
-},{}],79:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /**
  * lodash 3.0.3 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -19878,7 +20050,7 @@ function createBaseFor(fromRight) {
 
 module.exports = baseFor;
 
-},{}],80:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /**
  * lodash 3.1.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -19937,7 +20109,7 @@ function indexOfNaN(array, fromIndex, fromRight) {
 
 module.exports = baseIndexOf;
 
-},{}],81:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /**
  * lodash 3.0.3 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -20007,7 +20179,7 @@ function baseUniq(array, iteratee) {
 
 module.exports = baseUniq;
 
-},{"lodash._baseindexof":80,"lodash._cacheindexof":83,"lodash._createcache":84}],82:[function(require,module,exports){
+},{"lodash._baseindexof":75,"lodash._cacheindexof":78,"lodash._createcache":79}],77:[function(require,module,exports){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -20074,7 +20246,7 @@ function identity(value) {
 
 module.exports = bindCallback;
 
-},{}],83:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -20129,7 +20301,7 @@ function isObject(value) {
 
 module.exports = cacheIndexOf;
 
-},{}],84:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 (function (global){
 /**
  * lodash 3.1.2 (Custom Build) <https://lodash.com/>
@@ -20224,7 +20396,7 @@ SetCache.prototype.push = cachePush;
 module.exports = createCache;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._getnative":85}],85:[function(require,module,exports){
+},{"lodash._getnative":80}],80:[function(require,module,exports){
 /**
  * lodash 3.9.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -20363,7 +20535,7 @@ function isNative(value) {
 
 module.exports = getNative;
 
-},{}],86:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 (function (global){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
@@ -20426,7 +20598,7 @@ function checkGlobal(value) {
 module.exports = root;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],87:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -21065,7 +21237,7 @@ function keys(object) {
 
 module.exports = assign;
 
-},{}],88:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -22817,7 +22989,7 @@ function stubFalse() {
 module.exports = cloneDeep;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],89:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -25185,7 +25357,7 @@ function property(path) {
 module.exports = countBy;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],90:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /**
  * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -25370,7 +25542,7 @@ function deburr(string) {
 
 module.exports = deburr;
 
-},{"lodash._root":86}],91:[function(require,module,exports){
+},{"lodash._root":81}],86:[function(require,module,exports){
 /**
  * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -25552,7 +25724,7 @@ function escape(string) {
 
 module.exports = escape;
 
-},{"lodash._root":86}],92:[function(require,module,exports){
+},{"lodash._root":81}],87:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -25905,7 +26077,7 @@ function isObjectLike(value) {
 module.exports = flatten;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],93:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -26409,37 +26581,8 @@ function identity(value) {
 
 module.exports = forOwn;
 
-},{}],94:[function(require,module,exports){
-/**
- * lodash 3.0.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern modularize exports="npm" -o ./`
- * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <https://lodash.com/license>
- */
-
-/**
- * This method returns the first argument provided to it.
- *
- * @static
- * @memberOf _
- * @category Utility
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'user': 'fred' };
- * _.identity(object) === object;
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-},{}],95:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
+(function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -26449,166 +26592,99 @@ module.exports = identity;
  * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  */
 
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0,
-    MAX_SAFE_INTEGER = 9007199254740991,
-    MAX_INTEGER = 1.7976931348623157e+308,
-    NAN = 0 / 0;
+    MAX_SAFE_INTEGER = 9007199254740991;
 
 /** `Object#toString` result references. */
 var argsTag = '[object Arguments]',
     funcTag = '[object Function]',
     genTag = '[object GeneratorFunction]',
-    stringTag = '[object String]',
     symbolTag = '[object Symbol]';
 
-/** Used to match leading and trailing whitespace. */
-var reTrim = /^\s+|\s+$/g;
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/,
+    reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
 
-/** Used to detect bad signed hexadecimal string values. */
-var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
 
-/** Used to detect binary string values. */
-var reIsBinary = /^0b[01]+$/i;
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
 
-/** Used to detect octal string values. */
-var reIsOctal = /^0o[0-7]+$/i;
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
 
 /** Used to detect unsigned integer values. */
 var reIsUint = /^(?:0|[1-9]\d*)$/;
 
-/** Built-in method references without a dependency on `root`. */
-var freeParseInt = parseInt;
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
 
 /**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
+ * Gets the value at `key` of `object`.
  *
  * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
  */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array ? array.length : 0,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
 }
 
 /**
- * The base implementation of `_.findIndex` and `_.findLastIndex` without
- * support for iteratee shorthands.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} predicate The function invoked per iteration.
- * @param {number} fromIndex The index to search from.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseFindIndex(array, predicate, fromIndex, fromRight) {
-  var length = array.length,
-      index = fromIndex + (fromRight ? 1 : -1);
-
-  while ((fromRight ? index-- : ++index < length)) {
-    if (predicate(array[index], index, array)) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} value The value to search for.
- * @param {number} fromIndex The index to search from.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseIndexOf(array, value, fromIndex) {
-  if (value !== value) {
-    return baseFindIndex(array, baseIsNaN, fromIndex);
-  }
-  var index = fromIndex - 1,
-      length = array.length;
-
-  while (++index < length) {
-    if (array[index] === value) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `_.isNaN` without support for number objects.
+ * Checks if `value` is a host object in IE < 9.
  *
  * @private
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
  */
-function baseIsNaN(value) {
-  return value !== value;
-}
-
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
   }
   return result;
 }
 
-/**
- * The base implementation of `_.values` and `_.valuesIn` which creates an
- * array of `object` property values corresponding to the property names
- * of `props`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array} props The property names to get values for.
- * @returns {Object} Returns the array of property values.
- */
-function baseValues(object, props) {
-  return arrayMap(props, function(key) {
-    return object[key];
-  });
-}
-
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
 /** Used for built-in method references. */
-var objectProto = Object.prototype;
+var arrayProto = Array.prototype,
+    funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
 
 /** Used to check objects for own properties. */
 var hasOwnProperty = objectProto.hasOwnProperty;
@@ -26620,58 +26696,463 @@ var hasOwnProperty = objectProto.hasOwnProperty;
  */
 var objectToString = objectProto.toString;
 
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
 
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeKeys = overArg(Object.keys, Object),
-    nativeMax = Math.max;
+/** Built-in value references. */
+var Symbol = root.Symbol,
+    propertyIsEnumerable = objectProto.propertyIsEnumerable,
+    splice = arrayProto.splice;
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map'),
+    nativeCreate = getNative(Object, 'create');
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
 
 /**
- * Creates an array of the enumerable property names of the array-like `value`.
+ * Creates a hash object.
  *
  * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
  */
-function arrayLikeKeys(value, inherited) {
-  // Safari 8.1 makes `arguments.callee` enumerable in strict mode.
-  // Safari 9 makes `arguments.length` enumerable in strict mode.
-  var result = (isArray(value) || isArguments(value))
-    ? baseTimes(value.length, String)
-    : [];
+function Hash(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
 
-  var length = result.length,
-      skipIndexes = !!length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (key == 'length' || isIndex(key, length)))) {
-      result.push(key);
-    }
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
   }
-  return result;
 }
 
 /**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  return this.has(key) && delete this.__data__[key];
+}
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+}
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+}
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  return getMapData(this, key)['delete'](key);
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  getMapData(this, key).set(key, value);
+  return this;
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/**
+ * The base implementation of `_.has` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHas(object, key) {
+  return object != null && hasOwnProperty.call(object, key);
+}
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value) {
+  return isArray(value) ? value : stringToPath(value);
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Gets the native function at `key` of `object`.
  *
  * @private
  * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
  */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = isKey(path, object) ? [path] : castPath(path);
+
+  var result,
+      index = -1,
+      length = path.length;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
     }
+    object = object[key];
   }
-  return result;
+  if (result) {
+    return result;
+  }
+  var length = object ? object.length : 0;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
 }
 
 /**
@@ -26690,60 +27171,206 @@ function isIndex(value, length) {
 }
 
 /**
- * Checks if `value` is likely a prototype object.
+ * Checks if `value` is a property name and not a property path.
  *
  * @private
  * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
  */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
 }
 
 /**
- * Checks if `value` is in `collection`. If `collection` is a string, it's
- * checked for a substring of `value`, otherwise
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * is used for equality comparisons. If `fromIndex` is negative, it's used as
- * the offset from the end of `collection`.
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoize(function(string) {
+  string = toString(string);
+
+  var result = [];
+  if (reLeadingDot.test(string)) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, string) {
+    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to process.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `delete`, `get`, `has`, and `set`.
  *
  * @static
  * @memberOf _
  * @since 0.1.0
- * @category Collection
- * @param {Array|Object|string} collection The collection to inspect.
- * @param {*} value The value to search for.
- * @param {number} [fromIndex=0] The index to search from.
- * @param- {Object} [guard] Enables use as an iteratee for methods like `_.reduce`.
- * @returns {boolean} Returns `true` if `value` is found, else `false`.
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
  * @example
  *
- * _.includes([1, 2, 3], 1);
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result);
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Assign cache to `_.memoize`.
+memoize.Cache = MapCache;
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
  * // => true
  *
- * _.includes([1, 2, 3], 1, 2);
+ * _.eq(object, other);
  * // => false
  *
- * _.includes({ 'a': 1, 'b': 2 }, 1);
+ * _.eq('a', 'a');
  * // => true
  *
- * _.includes('abcd', 'bc');
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
  * // => true
  */
-function includes(collection, value, fromIndex, guard) {
-  collection = isArrayLike(collection) ? collection : values(collection);
-  fromIndex = (fromIndex && !guard) ? toInteger(fromIndex) : 0;
-
-  var length = collection.length;
-  if (fromIndex < 0) {
-    fromIndex = nativeMax(length + fromIndex, 0);
-  }
-  return isString(collection)
-    ? (fromIndex <= length && collection.indexOf(value, fromIndex) > -1)
-    : (!!length && baseIndexOf(collection, value, fromIndex) > -1);
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
 }
 
 /**
@@ -26967,28 +27594,6 @@ function isObjectLike(value) {
 }
 
 /**
- * Checks if `value` is classified as a `String` primitive or object.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a string, else `false`.
- * @example
- *
- * _.isString('abc');
- * // => true
- *
- * _.isString(1);
- * // => false
- */
-function isString(value) {
-  return typeof value == 'string' ||
-    (!isArray(value) && isObjectLike(value) && objectToString.call(value) == stringTag);
-}
-
-/**
  * Checks if `value` is classified as a `Symbol` primitive or object.
  *
  * @static
@@ -27011,182 +27616,95 @@ function isSymbol(value) {
 }
 
 /**
- * Converts `value` to a finite number.
- *
- * @static
- * @memberOf _
- * @since 4.12.0
- * @category Lang
- * @param {*} value The value to convert.
- * @returns {number} Returns the converted number.
- * @example
- *
- * _.toFinite(3.2);
- * // => 3.2
- *
- * _.toFinite(Number.MIN_VALUE);
- * // => 5e-324
- *
- * _.toFinite(Infinity);
- * // => 1.7976931348623157e+308
- *
- * _.toFinite('3.2');
- * // => 3.2
- */
-function toFinite(value) {
-  if (!value) {
-    return value === 0 ? value : 0;
-  }
-  value = toNumber(value);
-  if (value === INFINITY || value === -INFINITY) {
-    var sign = (value < 0 ? -1 : 1);
-    return sign * MAX_INTEGER;
-  }
-  return value === value ? value : 0;
-}
-
-/**
- * Converts `value` to an integer.
- *
- * **Note:** This method is loosely based on
- * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to convert.
- * @returns {number} Returns the converted integer.
- * @example
- *
- * _.toInteger(3.2);
- * // => 3
- *
- * _.toInteger(Number.MIN_VALUE);
- * // => 0
- *
- * _.toInteger(Infinity);
- * // => 1.7976931348623157e+308
- *
- * _.toInteger('3.2');
- * // => 3
- */
-function toInteger(value) {
-  var result = toFinite(value),
-      remainder = result % 1;
-
-  return result === result ? (remainder ? result - remainder : result) : 0;
-}
-
-/**
- * Converts `value` to a number.
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
  *
  * @static
  * @memberOf _
  * @since 4.0.0
  * @category Lang
  * @param {*} value The value to process.
- * @returns {number} Returns the number.
+ * @returns {string} Returns the string.
  * @example
  *
- * _.toNumber(3.2);
- * // => 3.2
+ * _.toString(null);
+ * // => ''
  *
- * _.toNumber(Number.MIN_VALUE);
- * // => 5e-324
+ * _.toString(-0);
+ * // => '-0'
  *
- * _.toNumber(Infinity);
- * // => Infinity
- *
- * _.toNumber('3.2');
- * // => 3.2
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
  */
-function toNumber(value) {
-  if (typeof value == 'number') {
-    return value;
-  }
-  if (isSymbol(value)) {
-    return NAN;
-  }
-  if (isObject(value)) {
-    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-    value = isObject(other) ? (other + '') : other;
-  }
-  if (typeof value != 'string') {
-    return value === 0 ? value : +value;
-  }
-  value = value.replace(reTrim, '');
-  var isBinary = reIsBinary.test(value);
-  return (isBinary || reIsOctal.test(value))
-    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-    : (reIsBadHex.test(value) ? NAN : +value);
+function toString(value) {
+  return value == null ? '' : baseToString(value);
 }
 
 /**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
+ * Checks if `path` is a direct property of `object`.
  *
  * @static
  * @since 0.1.0
  * @memberOf _
  * @category Object
  * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
  * @example
  *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
+ * var object = { 'a': { 'b': 2 } };
+ * var other = _.create({ 'a': _.create({ 'b': 2 }) });
  *
- * Foo.prototype.c = 3;
+ * _.has(object, 'a');
+ * // => true
  *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
+ * _.has(object, 'a.b');
+ * // => true
  *
- * _.keys('hi');
- * // => ['0', '1']
+ * _.has(object, ['a', 'b']);
+ * // => true
+ *
+ * _.has(other, 'a');
+ * // => false
  */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+function has(object, path) {
+  return object != null && hasPath(object, path, baseHas);
 }
+
+module.exports = has;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],90:[function(require,module,exports){
+/**
+ * lodash 3.0.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern modularize exports="npm" -o ./`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.7.0 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
 
 /**
- * Creates an array of the own enumerable string keyed property values of `object`.
- *
- * **Note:** Non-object values are coerced to objects.
+ * This method returns the first argument provided to it.
  *
  * @static
- * @since 0.1.0
  * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property values.
+ * @category Utility
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
  * @example
  *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.values(new Foo);
- * // => [1, 2] (iteration order is not guaranteed)
- *
- * _.values('hi');
- * // => ['h', 'i']
+ * var object = { 'user': 'fred' };
+ * _.identity(object) === object;
+ * // => true
  */
-function values(object) {
-  return object ? baseValues(object, keys(object)) : [];
+function identity(value) {
+  return value;
 }
 
-module.exports = includes;
+module.exports = identity;
 
-},{}],96:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -27417,7 +27935,44 @@ function isObjectLike(value) {
 
 module.exports = isArguments;
 
-},{}],97:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
+/**
+ * lodash 4.0.0 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @type Function
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+},{}],93:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -29070,7 +29625,7 @@ function keys(object) {
 module.exports = isEqual;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],98:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /**
  * lodash 3.0.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -29102,7 +29657,7 @@ function isNull(value) {
 
 module.exports = isNull;
 
-},{}],99:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 /**
  * lodash 3.0.3 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -29183,7 +29738,7 @@ function isNumber(value) {
 
 module.exports = isNumber;
 
-},{}],100:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -29222,7 +29777,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],101:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 /**
  * lodash 4.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -29319,7 +29874,7 @@ function isString(value) {
 
 module.exports = isString;
 
-},{}],102:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /**
  * lodash 3.0.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -29351,7 +29906,7 @@ function isUndefined(value) {
 
 module.exports = isUndefined;
 
-},{}],103:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /**
  * lodash 3.1.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -29425,7 +29980,7 @@ var kebabCase = createCompounder(function(result, word, index) {
 
 module.exports = kebabCase;
 
-},{"lodash.deburr":90,"lodash.words":112}],104:[function(require,module,exports){
+},{"lodash.deburr":85,"lodash.words":107}],100:[function(require,module,exports){
 /**
  * lodash 3.1.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -29663,9 +30218,9 @@ function keysIn(object) {
 
 module.exports = keys;
 
-},{"lodash._getnative":85,"lodash.isarguments":96,"lodash.isarray":105}],105:[function(require,module,exports){
-arguments[4][78][0].apply(exports,arguments)
-},{"dup":78}],106:[function(require,module,exports){
+},{"lodash._getnative":80,"lodash.isarguments":91,"lodash.isarray":101}],101:[function(require,module,exports){
+arguments[4][73][0].apply(exports,arguments)
+},{"dup":73}],102:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -31949,7 +32504,7 @@ function property(path) {
 module.exports = mapValues;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],107:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -34160,7 +34715,7 @@ function stubFalse() {
 module.exports = merge;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],108:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -34667,7 +35222,7 @@ var pick = baseRest(function(object, props) {
 module.exports = pick;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],109:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 /**
  * lodash 3.6.1 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -34736,7 +35291,7 @@ function restParam(func, start) {
 
 module.exports = restParam;
 
-},{}],110:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 /**
  * lodash 3.1.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -34773,907 +35328,7 @@ var union = restParam(function(arrays) {
 
 module.exports = union;
 
-},{"lodash._baseflatten":77,"lodash._baseuniq":81,"lodash.restparam":109}],111:[function(require,module,exports){
-(function (global){
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** `Object#toString` result references. */
-var funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]';
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-/**
- * A specialized version of `_.includes` for arrays without support for
- * specifying an index to search from.
- *
- * @private
- * @param {Array} [array] The array to inspect.
- * @param {*} target The value to search for.
- * @returns {boolean} Returns `true` if `target` is found, else `false`.
- */
-function arrayIncludes(array, value) {
-  var length = array ? array.length : 0;
-  return !!length && baseIndexOf(array, value, 0) > -1;
-}
-
-/**
- * This function is like `arrayIncludes` except that it accepts a comparator.
- *
- * @private
- * @param {Array} [array] The array to inspect.
- * @param {*} target The value to search for.
- * @param {Function} comparator The comparator invoked per element.
- * @returns {boolean} Returns `true` if `target` is found, else `false`.
- */
-function arrayIncludesWith(array, value, comparator) {
-  var index = -1,
-      length = array ? array.length : 0;
-
-  while (++index < length) {
-    if (comparator(value, array[index])) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * The base implementation of `_.findIndex` and `_.findLastIndex` without
- * support for iteratee shorthands.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} predicate The function invoked per iteration.
- * @param {number} fromIndex The index to search from.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseFindIndex(array, predicate, fromIndex, fromRight) {
-  var length = array.length,
-      index = fromIndex + (fromRight ? 1 : -1);
-
-  while ((fromRight ? index-- : ++index < length)) {
-    if (predicate(array[index], index, array)) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `_.indexOf` without `fromIndex` bounds checks.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} value The value to search for.
- * @param {number} fromIndex The index to search from.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function baseIndexOf(array, value, fromIndex) {
-  if (value !== value) {
-    return baseFindIndex(array, baseIsNaN, fromIndex);
-  }
-  var index = fromIndex - 1,
-      length = array.length;
-
-  while (++index < length) {
-    if (array[index] === value) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `_.isNaN` without support for number objects.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
- */
-function baseIsNaN(value) {
-  return value !== value;
-}
-
-/**
- * Checks if a cache value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-/**
- * Checks if `value` is a host object in IE < 9.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
- */
-function isHostObject(value) {
-  // Many host objects are `Object` objects that can coerce to strings
-  // despite having improperly defined `toString` methods.
-  var result = false;
-  if (value != null && typeof value.toString != 'function') {
-    try {
-      result = !!(value + '');
-    } catch (e) {}
-  }
-  return result;
-}
-
-/**
- * Converts `set` to an array of its values.
- *
- * @private
- * @param {Object} set The set to convert.
- * @returns {Array} Returns the values.
- */
-function setToArray(set) {
-  var index = -1,
-      result = Array(set.size);
-
-  set.forEach(function(value) {
-    result[++index] = value;
-  });
-  return result;
-}
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype,
-    funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/** Built-in value references. */
-var splice = arrayProto.splice;
-
-/* Built-in method references that are verified to be native. */
-var Map = getNative(root, 'Map'),
-    Set = getNative(root, 'Set'),
-    nativeCreate = getNative(Object, 'create');
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries ? entries.length : 0;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-}
-
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  return this.has(key) && delete this.__data__[key];
-}
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
-}
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries ? entries.length : 0;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-}
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
-  } else {
-    splice.call(data, index, 1);
-  }
-  return true;
-}
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    data.push([key, value]);
-  } else {
-    data[index][1] = value;
-  }
-  return this;
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries ? entries.length : 0;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
-  };
-}
-
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  return getMapData(this, key)['delete'](key);
-}
-
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
-
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
-
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  getMapData(this, key).set(key, value);
-  return this;
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values ? values.length : 0;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
-
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
-    }
-  }
-  return -1;
-}
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-/**
- * The base implementation of `_.uniqBy` without support for iteratee shorthands.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {Function} [iteratee] The iteratee invoked per element.
- * @param {Function} [comparator] The comparator invoked per element.
- * @returns {Array} Returns the new duplicate free array.
- */
-function baseUniq(array, iteratee, comparator) {
-  var index = -1,
-      includes = arrayIncludes,
-      length = array.length,
-      isCommon = true,
-      result = [],
-      seen = result;
-
-  if (comparator) {
-    isCommon = false;
-    includes = arrayIncludesWith;
-  }
-  else if (length >= LARGE_ARRAY_SIZE) {
-    var set = iteratee ? null : createSet(array);
-    if (set) {
-      return setToArray(set);
-    }
-    isCommon = false;
-    includes = cacheHas;
-    seen = new SetCache;
-  }
-  else {
-    seen = iteratee ? [] : result;
-  }
-  outer:
-  while (++index < length) {
-    var value = array[index],
-        computed = iteratee ? iteratee(value) : value;
-
-    value = (comparator || value !== 0) ? value : 0;
-    if (isCommon && computed === computed) {
-      var seenIndex = seen.length;
-      while (seenIndex--) {
-        if (seen[seenIndex] === computed) {
-          continue outer;
-        }
-      }
-      if (iteratee) {
-        seen.push(computed);
-      }
-      result.push(value);
-    }
-    else if (!includes(seen, computed, comparator)) {
-      if (seen !== result) {
-        seen.push(computed);
-      }
-      result.push(value);
-    }
-  }
-  return result;
-}
-
-/**
- * Creates a set object of `values`.
- *
- * @private
- * @param {Array} values The values to add to the set.
- * @returns {Object} Returns the new set.
- */
-var createSet = !(Set && (1 / setToArray(new Set([,-0]))[1]) == INFINITY) ? noop : function(values) {
-  return new Set(values);
-};
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to process.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
-  }
-  return '';
-}
-
-/**
- * Creates a duplicate-free version of an array, using
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons, in which only the first occurrence of each
- * element is kept.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Array
- * @param {Array} array The array to inspect.
- * @returns {Array} Returns the new duplicate free array.
- * @example
- *
- * _.uniq([2, 1, 2]);
- * // => [2, 1]
- */
-function uniq(array) {
-  return (array && array.length)
-    ? baseUniq(array)
-    : [];
-}
-
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 8-9 which returns 'object' for typed array and other constructors.
-  var tag = isObject(value) ? objectToString.call(value) : '';
-  return tag == funcTag || tag == genTag;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * This method returns `undefined`.
- *
- * @static
- * @memberOf _
- * @since 2.3.0
- * @category Util
- * @example
- *
- * _.times(2, _.noop);
- * // => [undefined, undefined]
- */
-function noop() {
-  // No operation performed.
-}
-
-module.exports = uniq;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],112:[function(require,module,exports){
+},{"lodash._baseflatten":72,"lodash._baseuniq":76,"lodash.restparam":105}],107:[function(require,module,exports){
 /**
  * lodash 3.2.0 (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -35873,7 +35528,7 @@ function words(string, pattern, guard) {
 
 module.exports = words;
 
-},{"lodash._root":86}],113:[function(require,module,exports){
+},{"lodash._root":81}],108:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -35881,7 +35536,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":115}],114:[function(require,module,exports){
+},{"./_overArg":110}],109:[function(require,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -35903,7 +35558,7 @@ function isHostObject(value) {
 
 module.exports = isHostObject;
 
-},{}],115:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -35920,7 +35575,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],116:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -35951,7 +35606,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],117:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 var getPrototype = require('./_getPrototype'),
     isHostObject = require('./_isHostObject'),
     isObjectLike = require('./isObjectLike');
@@ -36023,7 +35678,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_getPrototype":113,"./_isHostObject":114,"./isObjectLike":116}],118:[function(require,module,exports){
+},{"./_getPrototype":108,"./_isHostObject":109,"./isObjectLike":111}],113:[function(require,module,exports){
 'use strict';
 
 var proto = Element.prototype;
@@ -36053,7 +35708,7 @@ function match(el, selector) {
   }
   return false;
 }
-},{}],119:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -36090,7 +35745,7 @@ var HoldSubjectSource = (function (_super) {
 }(SubjectSource_1.BasicSubjectSource));
 exports.HoldSubjectSource = HoldSubjectSource;
 
-},{"./SubjectSource":121,"./util":123}],120:[function(require,module,exports){
+},{"./SubjectSource":116,"./util":118}],115:[function(require,module,exports){
 "use strict";
 var SubjectDisposable = (function () {
     function SubjectDisposable(source, sink) {
@@ -36109,7 +35764,7 @@ var SubjectDisposable = (function () {
 }());
 exports.SubjectDisposable = SubjectDisposable;
 
-},{}],121:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 "use strict";
 var SubjectDisposable_1 = require('./SubjectDisposable');
 var util_1 = require('./util');
@@ -36184,7 +35839,7 @@ var BasicSubjectSource = (function () {
 }());
 exports.BasicSubjectSource = BasicSubjectSource;
 
-},{"./SubjectDisposable":120,"./util":123,"most/lib/scheduler/defaultScheduler":171}],122:[function(require,module,exports){
+},{"./SubjectDisposable":115,"./util":118,"most/lib/scheduler/defaultScheduler":166}],117:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -36226,7 +35881,7 @@ var Subject = (function (_super) {
 }(most_1.Stream));
 exports.Subject = Subject;
 
-},{"./HoldSubjectSource":119,"./SubjectSource":121,"most":189}],123:[function(require,module,exports){
+},{"./HoldSubjectSource":114,"./SubjectSource":116,"most":184}],118:[function(require,module,exports){
 "use strict";
 function tryEvent(t, x, sink) {
     try {
@@ -36329,7 +35984,7 @@ function findIndex(x, a) {
 }
 exports.findIndex = findIndex;
 
-},{}],124:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36407,7 +36062,7 @@ LinkedList.prototype.dispose = function() {
 	return Promise.all(promises);
 };
 
-},{}],125:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36418,7 +36073,7 @@ function isPromise(p) {
 	return p !== null && typeof p === 'object' && typeof p.then === 'function';
 }
 
-},{}],126:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36485,7 +36140,7 @@ function copy(src, srcIndex, dst, dstIndex, len) {
 }
 
 
-},{}],127:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36496,7 +36151,7 @@ function Stream(source) {
 	this.source = source;
 }
 
-},{}],128:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36592,7 +36247,7 @@ ReduceSink.prototype.end = function(t) {
 
 function noop() {}
 
-},{"../Stream":127,"../disposable/dispose":155,"../runSource":165,"../scheduler/PropagateTask":167,"../sink/Pipe":174}],129:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../runSource":160,"../scheduler/PropagateTask":162,"../sink/Pipe":169}],124:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36616,7 +36271,7 @@ function ap(fs, xs) {
 	return combine(apply, fs, xs);
 }
 
-},{"./combine":131,"@most/prelude":8}],130:[function(require,module,exports){
+},{"./combine":126,"@most/prelude":8}],125:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36648,7 +36303,7 @@ function concat(left, right) {
 	}, left);
 }
 
-},{"../source/core":178,"./continueWith":133}],131:[function(require,module,exports){
+},{"../source/core":173,"./continueWith":128}],126:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36766,7 +36421,7 @@ CombineSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":127,"../disposable/dispose":155,"../invoke":160,"../sink/IndexSink":173,"../sink/Pipe":174,"../source/core":178,"./transform":151,"@most/prelude":8}],132:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../invoke":155,"../sink/IndexSink":168,"../sink/Pipe":169,"../source/core":173,"./transform":146,"@most/prelude":8}],127:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36790,7 +36445,7 @@ function concatMap(f, stream) {
 	return mergeMapConcurrently(f, 1, stream);
 }
 
-},{"./mergeConcurrently":141}],133:[function(require,module,exports){
+},{"./mergeConcurrently":136}],128:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36858,7 +36513,7 @@ ContinueWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Promise":125,"../Stream":127,"../disposable/dispose":155,"../sink/Pipe":174}],134:[function(require,module,exports){
+},{"../Promise":120,"../Stream":122,"../disposable/dispose":150,"../sink/Pipe":169}],129:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -36913,7 +36568,7 @@ DelaySink.prototype.end = function(t, x) {
 
 DelaySink.prototype.error = Sink.prototype.error;
 
-},{"../Stream":127,"../disposable/dispose":155,"../scheduler/PropagateTask":167,"../sink/Pipe":174}],135:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../scheduler/PropagateTask":162,"../sink/Pipe":169}],130:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37010,7 +36665,7 @@ RecoverWithSink.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../Promise":125,"../Stream":127,"../disposable/dispose":155,"../scheduler/PropagateTask":167,"../sink/Pipe":174,"../sink/SafeSink":175,"../source/tryEvent":186}],136:[function(require,module,exports){
+},{"../Promise":120,"../Stream":122,"../disposable/dispose":150,"../scheduler/PropagateTask":162,"../sink/Pipe":169,"../sink/SafeSink":170,"../source/tryEvent":181}],131:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37086,7 +36741,7 @@ function same(a, b) {
 	return a === b;
 }
 
-},{"../Stream":127,"../fusion/Filter":157,"../sink/Pipe":174}],137:[function(require,module,exports){
+},{"../Stream":122,"../fusion/Filter":152,"../sink/Pipe":169}],132:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37118,7 +36773,7 @@ function join(stream) {
 	return mergeConcurrently(Infinity, stream);
 }
 
-},{"./mergeConcurrently":141}],138:[function(require,module,exports){
+},{"./mergeConcurrently":136}],133:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37245,7 +36900,7 @@ DebounceSink.prototype._clearTimer = function() {
 	return true;
 };
 
-},{"../Stream":127,"../disposable/dispose":155,"../fusion/Map":159,"../scheduler/PropagateTask":167,"../sink/Pipe":174}],139:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../fusion/Map":154,"../scheduler/PropagateTask":162,"../sink/Pipe":169}],134:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37298,7 +36953,7 @@ LoopSink.prototype.end = function(t) {
 	this.sink.end(t, this.seed);
 };
 
-},{"../Stream":127,"../sink/Pipe":174}],140:[function(require,module,exports){
+},{"../Stream":122,"../sink/Pipe":169}],135:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37396,7 +37051,7 @@ MergeSink.prototype.end = function(t, indexedValue) {
 	}
 };
 
-},{"../Stream":127,"../disposable/dispose":155,"../sink/IndexSink":173,"../sink/Pipe":174,"../source/core":178,"@most/prelude":8}],141:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../sink/IndexSink":168,"../sink/Pipe":169,"../source/core":173,"@most/prelude":8}],136:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37526,7 +37181,7 @@ Inner.prototype.dispose = function() {
 	return this.disposable.dispose();
 };
 
-},{"../LinkedList":124,"../Stream":127,"../disposable/dispose":155,"@most/prelude":8}],142:[function(require,module,exports){
+},{"../LinkedList":119,"../Stream":122,"../disposable/dispose":150,"@most/prelude":8}],137:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37562,7 +37217,7 @@ function drain(stream) {
 	return run(stream.source);
 }
 
-},{"../disposable/dispose":155,"../runSource":165,"../scheduler/defaultScheduler":171,"./transform":151}],143:[function(require,module,exports){
+},{"../disposable/dispose":150,"../runSource":160,"../scheduler/defaultScheduler":166,"./transform":146}],138:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37654,7 +37309,7 @@ AwaitSink.prototype._end = function(x) {
 	return Promise.resolve(x).then(this._endBound);
 };
 
-},{"../Stream":127,"../fatalError":156,"../source/core":178}],144:[function(require,module,exports){
+},{"../Stream":122,"../fatalError":151,"../source/core":173}],139:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37767,7 +37422,7 @@ function getValue(hold) {
 	return hold.value;
 }
 
-},{"../Stream":127,"../disposable/dispose":155,"../invoke":160,"../sink/Pipe":174,"@most/prelude":8}],145:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../invoke":155,"../sink/Pipe":169,"@most/prelude":8}],140:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -37948,7 +37603,7 @@ SkipWhileSink.prototype.event = function(t, x) {
 	this.sink.event(t, x);
 };
 
-},{"../Stream":127,"../disposable/dispose":155,"../fusion/Map":159,"../sink/Pipe":174,"../source/core":178}],146:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../fusion/Map":154,"../sink/Pipe":169,"../source/core":173}],141:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38060,7 +37715,7 @@ Segment.prototype._dispose = function(t) {
 	dispose.tryDispose(t, this.disposable, this.sink)
 };
 
-},{"../Stream":127,"../disposable/dispose":155}],147:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150}],142:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38069,7 +37724,7 @@ exports.thru = function thru(f, stream) {
 	return f(stream);
 }
 
-},{}],148:[function(require,module,exports){
+},{}],143:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38187,7 +37842,7 @@ UpperBound.prototype.dispose = function() {
 
 function noop() {}
 
-},{"../Stream":127,"../combinator/flatMap":137,"../disposable/dispose":155,"../sink/Pipe":174}],149:[function(require,module,exports){
+},{"../Stream":122,"../combinator/flatMap":132,"../disposable/dispose":150,"../sink/Pipe":169}],144:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38220,7 +37875,7 @@ TimestampSink.prototype.event = function(t, x) {
 	this.sink.event(t, { time: t, value: x });
 };
 
-},{"../Stream":127,"../sink/Pipe":174}],150:[function(require,module,exports){
+},{"../Stream":122,"../sink/Pipe":169}],145:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38345,7 +38000,7 @@ LegacyTxAdapter.prototype.getResult = function(x) {
 	return x.value;
 };
 
-},{"../Stream":127}],151:[function(require,module,exports){
+},{"../Stream":122}],146:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38414,7 +38069,7 @@ TapSink.prototype.event = function(t, x) {
 	this.sink.event(t, x);
 }
 
-},{"../Stream":127,"../fusion/Map":159,"../sink/Pipe":174}],152:[function(require,module,exports){
+},{"../Stream":122,"../fusion/Map":154,"../sink/Pipe":169}],147:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38549,7 +38204,7 @@ function ready(buffers) {
 	return true;
 }
 
-},{"../Queue":126,"../Stream":127,"../disposable/dispose":155,"../invoke":160,"../sink/IndexSink":173,"../sink/Pipe":174,"../source/core":178,"./transform":151,"@most/prelude":8}],153:[function(require,module,exports){
+},{"../Queue":121,"../Stream":122,"../disposable/dispose":150,"../invoke":155,"../sink/IndexSink":168,"../sink/Pipe":169,"../source/core":173,"./transform":146,"@most/prelude":8}],148:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38571,7 +38226,7 @@ Disposable.prototype.dispose = function() {
 	return this._dispose(this._data);
 };
 
-},{}],154:[function(require,module,exports){
+},{}],149:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38615,7 +38270,7 @@ SettableDisposable.prototype.dispose = function() {
 	return this.result;
 };
 
-},{}],155:[function(require,module,exports){
+},{}],150:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38744,7 +38399,7 @@ function memoized(disposable) {
 	return { disposed: false, disposable: disposable, value: void 0 };
 }
 
-},{"../Promise":125,"./Disposable":153,"./SettableDisposable":154,"@most/prelude":8}],156:[function(require,module,exports){
+},{"../Promise":120,"./Disposable":148,"./SettableDisposable":149,"@most/prelude":8}],151:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38757,7 +38412,7 @@ function fatalError (e) {
 	}, 0);
 }
 
-},{}],157:[function(require,module,exports){
+},{}],152:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38808,7 +38463,7 @@ function and(p, q) {
 	};
 }
 
-},{"../sink/Pipe":174}],158:[function(require,module,exports){
+},{"../sink/Pipe":169}],153:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38842,7 +38497,7 @@ FilterMapSink.prototype.event = function(t, x) {
 FilterMapSink.prototype.end = Pipe.prototype.end;
 FilterMapSink.prototype.error = Pipe.prototype.error;
 
-},{"../sink/Pipe":174}],159:[function(require,module,exports){
+},{"../sink/Pipe":169}],154:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38895,7 +38550,7 @@ MapSink.prototype.event = function(t, x) {
 	this.sink.event(t, f(x));
 };
 
-},{"../sink/Pipe":174,"./Filter":157,"./FilterMap":158,"@most/prelude":8}],160:[function(require,module,exports){
+},{"../sink/Pipe":169,"./Filter":152,"./FilterMap":153,"@most/prelude":8}],155:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38916,7 +38571,7 @@ function invoke(f, args) {
 	}
 }
 
-},{}],161:[function(require,module,exports){
+},{}],156:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -38949,7 +38604,7 @@ function makeIterable(f, o) {
 	return o;
 }
 
-},{}],162:[function(require,module,exports){
+},{}],157:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39001,7 +38656,7 @@ function unsubscribe(subscription) {
 	return subscription.unsubscribe();
 }
 
-},{"../Stream":127,"../disposable/dispose":155}],163:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150}],158:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39026,7 +38681,7 @@ function getObservable(o) {
 	return obs;
 }
 
-},{"symbol-observable":190}],164:[function(require,module,exports){
+},{"symbol-observable":185}],159:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39094,7 +38749,7 @@ function doDispose(fatal, subscriber, complete, error, disposable, x) {
 	}).catch(fatal);
 }
 
-},{"../disposable/dispose":155,"../fatalError":156,"../scheduler/defaultScheduler":171}],165:[function(require,module,exports){
+},{"../disposable/dispose":150,"../fatalError":151,"../scheduler/defaultScheduler":166}],160:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39150,7 +38805,7 @@ function disposeThen(end, error, disposable, x) {
 	}, error);
 }
 
-},{"./disposable/dispose":155,"./scheduler/defaultScheduler":171}],166:[function(require,module,exports){
+},{"./disposable/dispose":150,"./scheduler/defaultScheduler":166}],161:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39196,7 +38851,7 @@ function runAsap(f) {
 	return task;
 }
 
-},{"../task":188}],167:[function(require,module,exports){
+},{"../task":183}],162:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39254,7 +38909,7 @@ function end(t, x, sink) {
 	sink.end(t, x);
 }
 
-},{"../fatalError":156}],168:[function(require,module,exports){
+},{"../fatalError":151}],163:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39282,7 +38937,7 @@ ScheduledTask.prototype.dispose = function() {
 	return this.task.dispose();
 };
 
-},{}],169:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39384,7 +39039,7 @@ Scheduler.prototype._runReadyTasks = function(now) {
 	this._scheduleNextRun(this.now());
 };
 
-},{"../task":188,"./ScheduledTask":168,"./Timeline":170,"@most/prelude":8}],170:[function(require,module,exports){
+},{"../task":183,"./ScheduledTask":163,"./Timeline":165,"@most/prelude":8}],165:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39513,7 +39168,7 @@ function newTimeslot(t, events) {
 	return { time: t, events: events };
 }
 
-},{"@most/prelude":8}],171:[function(require,module,exports){
+},{"@most/prelude":8}],166:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39524,7 +39179,7 @@ var Timeline = require('./Timeline');
 
 module.exports = new Scheduler(new ClockTimer(), new Timeline());
 
-},{"./ClockTimer":166,"./Scheduler":169,"./Timeline":170}],172:[function(require,module,exports){
+},{"./ClockTimer":161,"./Scheduler":164,"./Timeline":165}],167:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39620,7 +39275,7 @@ ErrorTask.prototype.error = function(e) {
 	throw e;
 };
 
-},{"../task":188}],173:[function(require,module,exports){
+},{"../task":183}],168:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39654,7 +39309,7 @@ IndexSink.prototype.end = function(t, x) {
 
 IndexSink.prototype.error = Sink.prototype.error;
 
-},{"./Pipe":174}],174:[function(require,module,exports){
+},{"./Pipe":169}],169:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39683,7 +39338,7 @@ Pipe.prototype.error = function(t, e) {
 	return this.sink.error(t, e);
 };
 
-},{}],175:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39720,7 +39375,7 @@ SafeSink.prototype.disable = function() {
 	return this.sink;
 }
 
-},{}],176:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39767,7 +39422,7 @@ function disposeEventEmitter(info) {
 	target.source.removeListener(target.event, info.addEvent);
 }
 
-},{"../disposable/dispose":155,"../sink/DeferredSink":172,"./tryEvent":186}],177:[function(require,module,exports){
+},{"../disposable/dispose":150,"../sink/DeferredSink":167,"./tryEvent":181}],172:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39799,7 +39454,7 @@ function disposeEventTarget(info) {
 	target.source.removeEventListener(target.event, info.addEvent, target.capture);
 }
 
-},{"../disposable/dispose":155,"./tryEvent":186}],178:[function(require,module,exports){
+},{"../disposable/dispose":150,"./tryEvent":181}],173:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39873,7 +39528,7 @@ NeverSource.prototype.run = function() {
 
 var NEVER = new Stream(new NeverSource());
 
-},{"../Stream":127,"../disposable/dispose":155,"../scheduler/PropagateTask":167}],179:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../scheduler/PropagateTask":162}],174:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39909,7 +39564,7 @@ function from(a) { // eslint-disable-line complexity
 	throw new TypeError('from(x) must be observable, iterable, or array-like: ' + a);
 }
 
-},{"../Stream":127,"../iterable":161,"../observable/fromObservable":162,"../observable/getObservable":163,"./fromArray":180,"./fromIterable":182,"@most/prelude":8}],180:[function(require,module,exports){
+},{"../Stream":122,"../iterable":156,"../observable/fromObservable":157,"../observable/getObservable":158,"./fromArray":175,"./fromIterable":177,"@most/prelude":8}],175:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39943,7 +39598,7 @@ function runProducer(t, array, sink) {
 	}
 }
 
-},{"../Stream":127,"../scheduler/PropagateTask":167}],181:[function(require,module,exports){
+},{"../Stream":122,"../scheduler/PropagateTask":162}],176:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -39981,7 +39636,7 @@ function fromEvent(event, source, capture) {
 	return new Stream(s);
 }
 
-},{"../Stream":127,"./EventEmitterSource":176,"./EventTargetSource":177}],182:[function(require,module,exports){
+},{"../Stream":122,"./EventEmitterSource":171,"./EventTargetSource":172}],177:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40026,7 +39681,7 @@ function runProducer(t, producer, sink) {
 	producer.scheduler.asap(producer.task);
 }
 
-},{"../Stream":127,"../iterable":161,"../scheduler/PropagateTask":167}],183:[function(require,module,exports){
+},{"../Stream":122,"../iterable":156,"../scheduler/PropagateTask":162}],178:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40098,7 +39753,7 @@ Generate.prototype.dispose = function() {
 	this.active = false;
 };
 
-},{"../Stream":127,"@most/prelude":8}],184:[function(require,module,exports){
+},{"../Stream":122,"@most/prelude":8}],179:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40168,7 +39823,7 @@ function continueIterate(iterate, x) {
 	return !iterate.active ? iterate.value : stepIterate(iterate, x);
 }
 
-},{"../Stream":127}],185:[function(require,module,exports){
+},{"../Stream":122}],180:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40198,7 +39853,7 @@ Periodic.prototype.run = function(sink, scheduler) {
 	return scheduler.periodic(this.period, PropagateTask.event(this.value, sink));
 };
 
-},{"../Stream":127,"../disposable/dispose":155,"../scheduler/PropagateTask":167}],186:[function(require,module,exports){
+},{"../Stream":122,"../disposable/dispose":150,"../scheduler/PropagateTask":162}],181:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40222,7 +39877,7 @@ function tryEnd(t, x, sink) {
 	}
 }
 
-},{}],187:[function(require,module,exports){
+},{}],182:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40297,7 +39952,7 @@ function continueUnfold(unfold, tuple) {
 	return stepUnfold(unfold, tuple.seed);
 }
 
-},{"../Stream":127}],188:[function(require,module,exports){
+},{"../Stream":122}],183:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -40317,7 +39972,7 @@ function runTask(task) {
 	}
 }
 
-},{}],189:[function(require,module,exports){
+},{}],184:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41005,9 +40660,9 @@ Stream.prototype.multicast = function() {
 	return multicast(this);
 };
 
-},{"./lib/Stream":127,"./lib/combinator/accumulate":128,"./lib/combinator/applicative":129,"./lib/combinator/build":130,"./lib/combinator/combine":131,"./lib/combinator/concatMap":132,"./lib/combinator/continueWith":133,"./lib/combinator/delay":134,"./lib/combinator/errors":135,"./lib/combinator/filter":136,"./lib/combinator/flatMap":137,"./lib/combinator/limit":138,"./lib/combinator/loop":139,"./lib/combinator/merge":140,"./lib/combinator/mergeConcurrently":141,"./lib/combinator/observe":142,"./lib/combinator/promises":143,"./lib/combinator/sample":144,"./lib/combinator/slice":145,"./lib/combinator/switch":146,"./lib/combinator/thru":147,"./lib/combinator/timeslice":148,"./lib/combinator/timestamp":149,"./lib/combinator/transduce":150,"./lib/combinator/transform":151,"./lib/combinator/zip":152,"./lib/observable/subscribe":164,"./lib/source/core":178,"./lib/source/from":179,"./lib/source/fromEvent":181,"./lib/source/generate":183,"./lib/source/iterate":184,"./lib/source/periodic":185,"./lib/source/unfold":187,"@most/multicast":7,"@most/prelude":8,"symbol-observable":190}],190:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"./lib/index":191,"dup":43}],191:[function(require,module,exports){
+},{"./lib/Stream":122,"./lib/combinator/accumulate":123,"./lib/combinator/applicative":124,"./lib/combinator/build":125,"./lib/combinator/combine":126,"./lib/combinator/concatMap":127,"./lib/combinator/continueWith":128,"./lib/combinator/delay":129,"./lib/combinator/errors":130,"./lib/combinator/filter":131,"./lib/combinator/flatMap":132,"./lib/combinator/limit":133,"./lib/combinator/loop":134,"./lib/combinator/merge":135,"./lib/combinator/mergeConcurrently":136,"./lib/combinator/observe":137,"./lib/combinator/promises":138,"./lib/combinator/sample":139,"./lib/combinator/slice":140,"./lib/combinator/switch":141,"./lib/combinator/thru":142,"./lib/combinator/timeslice":143,"./lib/combinator/timestamp":144,"./lib/combinator/transduce":145,"./lib/combinator/transform":146,"./lib/combinator/zip":147,"./lib/observable/subscribe":159,"./lib/source/core":173,"./lib/source/from":174,"./lib/source/fromEvent":176,"./lib/source/generate":178,"./lib/source/iterate":179,"./lib/source/periodic":180,"./lib/source/unfold":182,"@most/multicast":7,"@most/prelude":8,"symbol-observable":185}],185:[function(require,module,exports){
+arguments[4][45][0].apply(exports,arguments)
+},{"./lib/index":186,"dup":45}],186:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -41032,21 +40687,21 @@ if (typeof global !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":192}],192:[function(require,module,exports){
-arguments[4][45][0].apply(exports,arguments)
-},{"dup":45}],193:[function(require,module,exports){
+},{"./ponyfill":187}],187:[function(require,module,exports){
+arguments[4][47][0].apply(exports,arguments)
+},{"dup":47}],188:[function(require,module,exports){
+arguments[4][119][0].apply(exports,arguments)
+},{"dup":119}],189:[function(require,module,exports){
+arguments[4][120][0].apply(exports,arguments)
+},{"dup":120}],190:[function(require,module,exports){
+arguments[4][121][0].apply(exports,arguments)
+},{"dup":121}],191:[function(require,module,exports){
+arguments[4][122][0].apply(exports,arguments)
+},{"dup":122}],192:[function(require,module,exports){
+arguments[4][123][0].apply(exports,arguments)
+},{"../Stream":191,"../disposable/dispose":220,"../runSource":230,"../scheduler/PropagateTask":231,"../sink/Pipe":238,"dup":123}],193:[function(require,module,exports){
 arguments[4][124][0].apply(exports,arguments)
-},{"dup":124}],194:[function(require,module,exports){
-arguments[4][125][0].apply(exports,arguments)
-},{"dup":125}],195:[function(require,module,exports){
-arguments[4][126][0].apply(exports,arguments)
-},{"dup":126}],196:[function(require,module,exports){
-arguments[4][127][0].apply(exports,arguments)
-},{"dup":127}],197:[function(require,module,exports){
-arguments[4][128][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../runSource":235,"../scheduler/PropagateTask":236,"../sink/Pipe":243,"dup":128}],198:[function(require,module,exports){
-arguments[4][129][0].apply(exports,arguments)
-},{"./combine":200,"@most/prelude":8,"dup":129}],199:[function(require,module,exports){
+},{"./combine":195,"@most/prelude":8,"dup":124}],194:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41091,37 +40746,37 @@ function cycle(stream) {
 	}, stream);
 }
 
-},{"../source/core":247,"./continueWith":202}],200:[function(require,module,exports){
+},{"../source/core":242,"./continueWith":197}],195:[function(require,module,exports){
+arguments[4][126][0].apply(exports,arguments)
+},{"../Stream":191,"../disposable/dispose":220,"../invoke":225,"../sink/IndexSink":237,"../sink/Pipe":238,"../source/core":242,"./transform":215,"@most/prelude":8,"dup":126}],196:[function(require,module,exports){
+arguments[4][127][0].apply(exports,arguments)
+},{"./mergeConcurrently":205,"dup":127}],197:[function(require,module,exports){
+arguments[4][128][0].apply(exports,arguments)
+},{"../Promise":189,"../Stream":191,"../disposable/dispose":220,"../sink/Pipe":238,"dup":128}],198:[function(require,module,exports){
+arguments[4][129][0].apply(exports,arguments)
+},{"../Stream":191,"../disposable/dispose":220,"../scheduler/PropagateTask":231,"../sink/Pipe":238,"dup":129}],199:[function(require,module,exports){
+arguments[4][130][0].apply(exports,arguments)
+},{"../Promise":189,"../Stream":191,"../disposable/dispose":220,"../scheduler/PropagateTask":231,"../sink/Pipe":238,"../sink/SafeSink":239,"../source/tryEvent":251,"dup":130}],200:[function(require,module,exports){
 arguments[4][131][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../invoke":230,"../sink/IndexSink":242,"../sink/Pipe":243,"../source/core":247,"./transform":220,"@most/prelude":8,"dup":131}],201:[function(require,module,exports){
+},{"../Stream":191,"../fusion/Filter":222,"../sink/Pipe":238,"dup":131}],201:[function(require,module,exports){
 arguments[4][132][0].apply(exports,arguments)
-},{"./mergeConcurrently":210,"dup":132}],202:[function(require,module,exports){
+},{"./mergeConcurrently":205,"dup":132}],202:[function(require,module,exports){
 arguments[4][133][0].apply(exports,arguments)
-},{"../Promise":194,"../Stream":196,"../disposable/dispose":225,"../sink/Pipe":243,"dup":133}],203:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../fusion/Map":224,"../scheduler/PropagateTask":231,"../sink/Pipe":238,"dup":133}],203:[function(require,module,exports){
 arguments[4][134][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../scheduler/PropagateTask":236,"../sink/Pipe":243,"dup":134}],204:[function(require,module,exports){
+},{"../Stream":191,"../sink/Pipe":238,"dup":134}],204:[function(require,module,exports){
 arguments[4][135][0].apply(exports,arguments)
-},{"../Promise":194,"../Stream":196,"../disposable/dispose":225,"../scheduler/PropagateTask":236,"../sink/Pipe":243,"../sink/SafeSink":244,"../source/tryEvent":256,"dup":135}],205:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../sink/IndexSink":237,"../sink/Pipe":238,"../source/core":242,"@most/prelude":8,"dup":135}],205:[function(require,module,exports){
 arguments[4][136][0].apply(exports,arguments)
-},{"../Stream":196,"../fusion/Filter":227,"../sink/Pipe":243,"dup":136}],206:[function(require,module,exports){
+},{"../LinkedList":188,"../Stream":191,"../disposable/dispose":220,"@most/prelude":8,"dup":136}],206:[function(require,module,exports){
 arguments[4][137][0].apply(exports,arguments)
-},{"./mergeConcurrently":210,"dup":137}],207:[function(require,module,exports){
+},{"../disposable/dispose":220,"../runSource":230,"../scheduler/defaultScheduler":233,"./transform":215,"dup":137}],207:[function(require,module,exports){
 arguments[4][138][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../fusion/Map":229,"../scheduler/PropagateTask":236,"../sink/Pipe":243,"dup":138}],208:[function(require,module,exports){
+},{"../Stream":191,"../fatalError":221,"../source/core":242,"dup":138}],208:[function(require,module,exports){
 arguments[4][139][0].apply(exports,arguments)
-},{"../Stream":196,"../sink/Pipe":243,"dup":139}],209:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../invoke":225,"../sink/Pipe":238,"@most/prelude":8,"dup":139}],209:[function(require,module,exports){
 arguments[4][140][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../sink/IndexSink":242,"../sink/Pipe":243,"../source/core":247,"@most/prelude":8,"dup":140}],210:[function(require,module,exports){
-arguments[4][141][0].apply(exports,arguments)
-},{"../LinkedList":193,"../Stream":196,"../disposable/dispose":225,"@most/prelude":8,"dup":141}],211:[function(require,module,exports){
-arguments[4][142][0].apply(exports,arguments)
-},{"../disposable/dispose":225,"../runSource":235,"../scheduler/defaultScheduler":238,"./transform":220,"dup":142}],212:[function(require,module,exports){
-arguments[4][143][0].apply(exports,arguments)
-},{"../Stream":196,"../fatalError":226,"../source/core":247,"dup":143}],213:[function(require,module,exports){
-arguments[4][144][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../invoke":230,"../sink/Pipe":243,"@most/prelude":8,"dup":144}],214:[function(require,module,exports){
-arguments[4][145][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../fusion/Map":229,"../sink/Pipe":243,"../source/core":247,"dup":145}],215:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../fusion/Map":224,"../sink/Pipe":238,"../source/core":242,"dup":140}],210:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41233,19 +40888,19 @@ Segment.prototype._dispose = function(t) {
 	dispose.tryDispose(t, this.disposable, this.sink)
 };
 
-},{"../Stream":196,"../disposable/dispose":225}],216:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220}],211:[function(require,module,exports){
+arguments[4][142][0].apply(exports,arguments)
+},{"dup":142}],212:[function(require,module,exports){
+arguments[4][143][0].apply(exports,arguments)
+},{"../Stream":191,"../combinator/flatMap":201,"../disposable/dispose":220,"../sink/Pipe":238,"dup":143}],213:[function(require,module,exports){
+arguments[4][144][0].apply(exports,arguments)
+},{"../Stream":191,"../sink/Pipe":238,"dup":144}],214:[function(require,module,exports){
+arguments[4][145][0].apply(exports,arguments)
+},{"../Stream":191,"dup":145}],215:[function(require,module,exports){
+arguments[4][146][0].apply(exports,arguments)
+},{"../Stream":191,"../fusion/Map":224,"../sink/Pipe":238,"dup":146}],216:[function(require,module,exports){
 arguments[4][147][0].apply(exports,arguments)
-},{"dup":147}],217:[function(require,module,exports){
-arguments[4][148][0].apply(exports,arguments)
-},{"../Stream":196,"../combinator/flatMap":206,"../disposable/dispose":225,"../sink/Pipe":243,"dup":148}],218:[function(require,module,exports){
-arguments[4][149][0].apply(exports,arguments)
-},{"../Stream":196,"../sink/Pipe":243,"dup":149}],219:[function(require,module,exports){
-arguments[4][150][0].apply(exports,arguments)
-},{"../Stream":196,"dup":150}],220:[function(require,module,exports){
-arguments[4][151][0].apply(exports,arguments)
-},{"../Stream":196,"../fusion/Map":229,"../sink/Pipe":243,"dup":151}],221:[function(require,module,exports){
-arguments[4][152][0].apply(exports,arguments)
-},{"../Queue":195,"../Stream":196,"../disposable/dispose":225,"../invoke":230,"../sink/IndexSink":242,"../sink/Pipe":243,"../source/core":247,"./transform":220,"@most/prelude":8,"dup":152}],222:[function(require,module,exports){
+},{"../Queue":190,"../Stream":191,"../disposable/dispose":220,"../invoke":225,"../sink/IndexSink":237,"../sink/Pipe":238,"../source/core":242,"./transform":215,"@most/prelude":8,"dup":147}],217:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41264,27 +40919,27 @@ function runTask(task) {
 	}
 }
 
-},{}],223:[function(require,module,exports){
+},{}],218:[function(require,module,exports){
+arguments[4][148][0].apply(exports,arguments)
+},{"dup":148}],219:[function(require,module,exports){
+arguments[4][149][0].apply(exports,arguments)
+},{"dup":149}],220:[function(require,module,exports){
+arguments[4][150][0].apply(exports,arguments)
+},{"../Promise":189,"./Disposable":218,"./SettableDisposable":219,"@most/prelude":8,"dup":150}],221:[function(require,module,exports){
+arguments[4][151][0].apply(exports,arguments)
+},{"dup":151}],222:[function(require,module,exports){
+arguments[4][152][0].apply(exports,arguments)
+},{"../sink/Pipe":238,"dup":152}],223:[function(require,module,exports){
 arguments[4][153][0].apply(exports,arguments)
-},{"dup":153}],224:[function(require,module,exports){
+},{"../sink/Pipe":238,"dup":153}],224:[function(require,module,exports){
 arguments[4][154][0].apply(exports,arguments)
-},{"dup":154}],225:[function(require,module,exports){
+},{"../sink/Pipe":238,"./Filter":222,"./FilterMap":223,"@most/prelude":8,"dup":154}],225:[function(require,module,exports){
 arguments[4][155][0].apply(exports,arguments)
-},{"../Promise":194,"./Disposable":223,"./SettableDisposable":224,"@most/prelude":8,"dup":155}],226:[function(require,module,exports){
+},{"dup":155}],226:[function(require,module,exports){
 arguments[4][156][0].apply(exports,arguments)
 },{"dup":156}],227:[function(require,module,exports){
 arguments[4][157][0].apply(exports,arguments)
-},{"../sink/Pipe":243,"dup":157}],228:[function(require,module,exports){
-arguments[4][158][0].apply(exports,arguments)
-},{"../sink/Pipe":243,"dup":158}],229:[function(require,module,exports){
-arguments[4][159][0].apply(exports,arguments)
-},{"../sink/Pipe":243,"./Filter":227,"./FilterMap":228,"@most/prelude":8,"dup":159}],230:[function(require,module,exports){
-arguments[4][160][0].apply(exports,arguments)
-},{"dup":160}],231:[function(require,module,exports){
-arguments[4][161][0].apply(exports,arguments)
-},{"dup":161}],232:[function(require,module,exports){
-arguments[4][162][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"dup":162}],233:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"dup":157}],228:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41308,13 +40963,13 @@ function getObservable(o) {
 	return obs;
 }
 
-},{"symbol-observable":292}],234:[function(require,module,exports){
-arguments[4][164][0].apply(exports,arguments)
-},{"../disposable/dispose":225,"../fatalError":226,"../scheduler/defaultScheduler":238,"dup":164}],235:[function(require,module,exports){
-arguments[4][165][0].apply(exports,arguments)
-},{"./disposable/dispose":225,"./scheduler/defaultScheduler":238,"dup":165}],236:[function(require,module,exports){
-arguments[4][167][0].apply(exports,arguments)
-},{"../fatalError":226,"dup":167}],237:[function(require,module,exports){
+},{"symbol-observable":287}],229:[function(require,module,exports){
+arguments[4][159][0].apply(exports,arguments)
+},{"../disposable/dispose":220,"../fatalError":221,"../scheduler/defaultScheduler":233,"dup":159}],230:[function(require,module,exports){
+arguments[4][160][0].apply(exports,arguments)
+},{"./disposable/dispose":220,"./scheduler/defaultScheduler":233,"dup":160}],231:[function(require,module,exports){
+arguments[4][162][0].apply(exports,arguments)
+},{"../fatalError":221,"dup":162}],232:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41538,7 +41193,7 @@ function newTimeslot(t, events) {
 	return { time: t, events: events };
 }
 
-},{"@most/prelude":8}],238:[function(require,module,exports){
+},{"@most/prelude":8}],233:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
@@ -41554,7 +41209,7 @@ var isNode = typeof process === 'object'
 module.exports = new Scheduler(isNode ? nodeTimer : setTimeoutTimer);
 
 }).call(this,require('_process'))
-},{"./Scheduler":237,"./nodeTimer":239,"./timeoutTimer":240,"_process":260}],239:[function(require,module,exports){
+},{"./Scheduler":232,"./nodeTimer":234,"./timeoutTimer":235,"_process":255}],234:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41600,7 +41255,7 @@ module.exports = {
 	}
 };
 
-},{"../defer":222}],240:[function(require,module,exports){
+},{"../defer":217}],235:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41617,7 +41272,7 @@ module.exports = {
 	}
 };
 
-},{}],241:[function(require,module,exports){
+},{}],236:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41708,19 +41363,19 @@ ErrorTask.prototype.error = function(e) {
 	throw e;
 };
 
-},{"../defer":222}],242:[function(require,module,exports){
+},{"../defer":217}],237:[function(require,module,exports){
+arguments[4][168][0].apply(exports,arguments)
+},{"./Pipe":238,"dup":168}],238:[function(require,module,exports){
+arguments[4][169][0].apply(exports,arguments)
+},{"dup":169}],239:[function(require,module,exports){
+arguments[4][170][0].apply(exports,arguments)
+},{"dup":170}],240:[function(require,module,exports){
+arguments[4][171][0].apply(exports,arguments)
+},{"../disposable/dispose":220,"../sink/DeferredSink":236,"./tryEvent":251,"dup":171}],241:[function(require,module,exports){
+arguments[4][172][0].apply(exports,arguments)
+},{"../disposable/dispose":220,"./tryEvent":251,"dup":172}],242:[function(require,module,exports){
 arguments[4][173][0].apply(exports,arguments)
-},{"./Pipe":243,"dup":173}],243:[function(require,module,exports){
-arguments[4][174][0].apply(exports,arguments)
-},{"dup":174}],244:[function(require,module,exports){
-arguments[4][175][0].apply(exports,arguments)
-},{"dup":175}],245:[function(require,module,exports){
-arguments[4][176][0].apply(exports,arguments)
-},{"../disposable/dispose":225,"../sink/DeferredSink":241,"./tryEvent":256,"dup":176}],246:[function(require,module,exports){
-arguments[4][177][0].apply(exports,arguments)
-},{"../disposable/dispose":225,"./tryEvent":256,"dup":177}],247:[function(require,module,exports){
-arguments[4][178][0].apply(exports,arguments)
-},{"../Stream":196,"../disposable/dispose":225,"../scheduler/PropagateTask":236,"dup":178}],248:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../scheduler/PropagateTask":231,"dup":173}],243:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41801,11 +41456,11 @@ Subscription.prototype.dispose = function() {
 	}
 };
 
-},{"../Stream":196,"../sink/DeferredSink":241,"./tryEvent":256,"@most/multicast":7}],249:[function(require,module,exports){
-arguments[4][179][0].apply(exports,arguments)
-},{"../Stream":196,"../iterable":231,"../observable/fromObservable":232,"../observable/getObservable":233,"./fromArray":250,"./fromIterable":252,"@most/prelude":8,"dup":179}],250:[function(require,module,exports){
-arguments[4][180][0].apply(exports,arguments)
-},{"../Stream":196,"../scheduler/PropagateTask":236,"dup":180}],251:[function(require,module,exports){
+},{"../Stream":191,"../sink/DeferredSink":236,"./tryEvent":251,"@most/multicast":7}],244:[function(require,module,exports){
+arguments[4][174][0].apply(exports,arguments)
+},{"../Stream":191,"../iterable":226,"../observable/fromObservable":227,"../observable/getObservable":228,"./fromArray":245,"./fromIterable":247,"@most/prelude":8,"dup":174}],245:[function(require,module,exports){
+arguments[4][175][0].apply(exports,arguments)
+},{"../Stream":191,"../scheduler/PropagateTask":231,"dup":175}],246:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41841,13 +41496,13 @@ function fromEvent(event, source /*, useCapture = false */) {
 	return new Stream(s);
 }
 
-},{"../Stream":196,"./EventEmitterSource":245,"./EventTargetSource":246,"@most/multicast":7}],252:[function(require,module,exports){
-arguments[4][182][0].apply(exports,arguments)
-},{"../Stream":196,"../iterable":231,"../scheduler/PropagateTask":236,"dup":182}],253:[function(require,module,exports){
-arguments[4][183][0].apply(exports,arguments)
-},{"../Stream":196,"@most/prelude":8,"dup":183}],254:[function(require,module,exports){
-arguments[4][184][0].apply(exports,arguments)
-},{"../Stream":196,"dup":184}],255:[function(require,module,exports){
+},{"../Stream":191,"./EventEmitterSource":240,"./EventTargetSource":241,"@most/multicast":7}],247:[function(require,module,exports){
+arguments[4][177][0].apply(exports,arguments)
+},{"../Stream":191,"../iterable":226,"../scheduler/PropagateTask":231,"dup":177}],248:[function(require,module,exports){
+arguments[4][178][0].apply(exports,arguments)
+},{"../Stream":191,"@most/prelude":8,"dup":178}],249:[function(require,module,exports){
+arguments[4][179][0].apply(exports,arguments)
+},{"../Stream":191,"dup":179}],250:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -41882,11 +41537,11 @@ function emit(t, x, sink) {
 	sink.event(t, x);
 }
 
-},{"../Stream":196,"../disposable/dispose":225,"../scheduler/PropagateTask":236,"@most/multicast":7}],256:[function(require,module,exports){
-arguments[4][186][0].apply(exports,arguments)
-},{"dup":186}],257:[function(require,module,exports){
-arguments[4][187][0].apply(exports,arguments)
-},{"../Stream":196,"dup":187}],258:[function(require,module,exports){
+},{"../Stream":191,"../disposable/dispose":220,"../scheduler/PropagateTask":231,"@most/multicast":7}],251:[function(require,module,exports){
+arguments[4][181][0].apply(exports,arguments)
+},{"dup":181}],252:[function(require,module,exports){
+arguments[4][182][0].apply(exports,arguments)
+},{"../Stream":191,"dup":182}],253:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2016 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -42600,7 +42255,7 @@ Stream.prototype.multicast = function() {
 	return multicast(this);
 };
 
-},{"./lib/Stream":196,"./lib/combinator/accumulate":197,"./lib/combinator/applicative":198,"./lib/combinator/build":199,"./lib/combinator/combine":200,"./lib/combinator/concatMap":201,"./lib/combinator/continueWith":202,"./lib/combinator/delay":203,"./lib/combinator/errors":204,"./lib/combinator/filter":205,"./lib/combinator/flatMap":206,"./lib/combinator/limit":207,"./lib/combinator/loop":208,"./lib/combinator/merge":209,"./lib/combinator/mergeConcurrently":210,"./lib/combinator/observe":211,"./lib/combinator/promises":212,"./lib/combinator/sample":213,"./lib/combinator/slice":214,"./lib/combinator/switch":215,"./lib/combinator/thru":216,"./lib/combinator/timeslice":217,"./lib/combinator/timestamp":218,"./lib/combinator/transduce":219,"./lib/combinator/transform":220,"./lib/combinator/zip":221,"./lib/observable/subscribe":234,"./lib/source/core":247,"./lib/source/create":248,"./lib/source/from":249,"./lib/source/fromEvent":251,"./lib/source/generate":253,"./lib/source/iterate":254,"./lib/source/periodic":255,"./lib/source/unfold":257,"@most/multicast":7,"@most/prelude":8,"symbol-observable":292}],259:[function(require,module,exports){
+},{"./lib/Stream":191,"./lib/combinator/accumulate":192,"./lib/combinator/applicative":193,"./lib/combinator/build":194,"./lib/combinator/combine":195,"./lib/combinator/concatMap":196,"./lib/combinator/continueWith":197,"./lib/combinator/delay":198,"./lib/combinator/errors":199,"./lib/combinator/filter":200,"./lib/combinator/flatMap":201,"./lib/combinator/limit":202,"./lib/combinator/loop":203,"./lib/combinator/merge":204,"./lib/combinator/mergeConcurrently":205,"./lib/combinator/observe":206,"./lib/combinator/promises":207,"./lib/combinator/sample":208,"./lib/combinator/slice":209,"./lib/combinator/switch":210,"./lib/combinator/thru":211,"./lib/combinator/timeslice":212,"./lib/combinator/timestamp":213,"./lib/combinator/transduce":214,"./lib/combinator/transform":215,"./lib/combinator/zip":216,"./lib/observable/subscribe":229,"./lib/source/core":242,"./lib/source/create":243,"./lib/source/from":244,"./lib/source/fromEvent":246,"./lib/source/generate":248,"./lib/source/iterate":249,"./lib/source/periodic":250,"./lib/source/unfold":252,"@most/multicast":7,"@most/prelude":8,"symbol-observable":287}],254:[function(require,module,exports){
 function createHandler(divisor,noun,restOfString){
 	return function(diff){
 		var n = Math.floor(diff/divisor);
@@ -42634,7 +42289,7 @@ var prettydate = {
 }
  
 module.exports = prettydate;
-},{}],260:[function(require,module,exports){
+},{}],255:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -42816,7 +42471,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],261:[function(require,module,exports){
+},{}],256:[function(require,module,exports){
 /*!
  * Pusher JavaScript Library v3.2.0
  * http://pusher.com/
@@ -46891,7 +46546,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-},{}],262:[function(require,module,exports){
+},{}],257:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -46950,7 +46605,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":265}],263:[function(require,module,exports){
+},{"./compose":260}],258:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47002,7 +46657,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],264:[function(require,module,exports){
+},{}],259:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47147,7 +46802,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":266,"./utils/warning":268,"_process":260,"lodash/isPlainObject":117}],265:[function(require,module,exports){
+},{"./createStore":261,"./utils/warning":263,"_process":255,"lodash/isPlainObject":112}],260:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -47186,7 +46841,7 @@ function compose() {
     }, last.apply(undefined, arguments));
   };
 }
-},{}],266:[function(require,module,exports){
+},{}],261:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47448,7 +47103,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":117,"symbol-observable":269}],267:[function(require,module,exports){
+},{"lodash/isPlainObject":112,"symbol-observable":264}],262:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -47497,7 +47152,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":262,"./bindActionCreators":263,"./combineReducers":264,"./compose":265,"./createStore":266,"./utils/warning":268,"_process":260}],268:[function(require,module,exports){
+},{"./applyMiddleware":257,"./bindActionCreators":258,"./combineReducers":259,"./compose":260,"./createStore":261,"./utils/warning":263,"_process":255}],263:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47523,13 +47178,13 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],269:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments)
-},{"./lib/index":270,"dup":43}],270:[function(require,module,exports){
-arguments[4][44][0].apply(exports,arguments)
-},{"./ponyfill":271,"dup":44}],271:[function(require,module,exports){
+},{}],264:[function(require,module,exports){
 arguments[4][45][0].apply(exports,arguments)
-},{"dup":45}],272:[function(require,module,exports){
+},{"./lib/index":265,"dup":45}],265:[function(require,module,exports){
+arguments[4][46][0].apply(exports,arguments)
+},{"./ponyfill":266,"dup":46}],266:[function(require,module,exports){
+arguments[4][47][0].apply(exports,arguments)
+},{"dup":47}],267:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47569,7 +47224,7 @@ function classNameFromVNode(vNode) {
 
   return cn.trim();
 }
-},{"./selectorParser":273}],273:[function(require,module,exports){
+},{"./selectorParser":268}],268:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47627,7 +47282,7 @@ function selectorParser() {
     className: classes.join(' ')
   };
 }
-},{"browser-split":58}],274:[function(require,module,exports){
+},{"browser-split":58}],269:[function(require,module,exports){
 
 // All SVG children elements, not in this list, should self-close
 
@@ -47650,12 +47305,12 @@ module.exports = {
   'metadata': true,
   'title': true
 };
-},{}],275:[function(require,module,exports){
+},{}],270:[function(require,module,exports){
 
 var init = require('./init');
 
 module.exports = init([require('./modules/attributes'), require('./modules/style')]);
-},{"./init":276,"./modules/attributes":277,"./modules/style":278}],276:[function(require,module,exports){
+},{"./init":271,"./modules/attributes":272,"./modules/style":273}],271:[function(require,module,exports){
 
 var parseSelector = require('./parse-selector');
 var VOID_ELEMENTS = require('./void-elements');
@@ -47715,7 +47370,7 @@ module.exports = function init(modules) {
     return tag.join('');
   };
 };
-},{"./container-elements":274,"./parse-selector":279,"./void-elements":280}],277:[function(require,module,exports){
+},{"./container-elements":269,"./parse-selector":274,"./void-elements":275}],272:[function(require,module,exports){
 
 var forOwn = require('lodash.forown');
 var escape = require('lodash.escape');
@@ -47780,7 +47435,7 @@ function setAttributes(values, target) {
     target[key] = value;
   });
 }
-},{"../parse-selector":279,"lodash.escape":91,"lodash.forown":281,"lodash.union":110}],278:[function(require,module,exports){
+},{"../parse-selector":274,"lodash.escape":86,"lodash.forown":276,"lodash.union":106}],273:[function(require,module,exports){
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var forOwn = require('lodash.forown');
@@ -47807,7 +47462,7 @@ module.exports = function style(vnode) {
 
   return styles.length ? 'style="' + styles.join('; ') + '"' : '';
 };
-},{"lodash.escape":91,"lodash.forown":281,"lodash.kebabcase":103}],279:[function(require,module,exports){
+},{"lodash.escape":86,"lodash.forown":276,"lodash.kebabcase":99}],274:[function(require,module,exports){
 
 // https://github.com/Matt-Esch/virtual-dom/blob/master/virtual-hyperscript/parse-tag.js
 
@@ -47854,7 +47509,7 @@ module.exports = function parseSelector(selector, upper) {
     className: classes.join(' ')
   };
 };
-},{"browser-split":58}],280:[function(require,module,exports){
+},{"browser-split":58}],275:[function(require,module,exports){
 
 // http://www.w3.org/html/wg/drafts/html/master/syntax.html#void-elements
 
@@ -47875,7 +47530,7 @@ module.exports = {
   track: true,
   wbr: true
 };
-},{}],281:[function(require,module,exports){
+},{}],276:[function(require,module,exports){
 /**
  * lodash 3.0.2 (Custom Build) <https://lodash.com/>
  * Build: `lodash modern modularize exports="npm" -o ./`
@@ -47948,7 +47603,7 @@ var forOwn = createForOwn(baseForOwn);
 
 module.exports = forOwn;
 
-},{"lodash._basefor":79,"lodash._bindcallback":82,"lodash.keys":104}],282:[function(require,module,exports){
+},{"lodash._basefor":74,"lodash._bindcallback":77,"lodash.keys":100}],277:[function(require,module,exports){
 function createElement(tagName){
   return document.createElement(tagName);
 }
@@ -48004,13 +47659,13 @@ module.exports = {
   setTextContent: setTextContent
 };
 
-},{}],283:[function(require,module,exports){
+},{}],278:[function(require,module,exports){
 module.exports = {
   array: Array.isArray,
   primitive: function(s) { return typeof s === 'string' || typeof s === 'number'; },
 };
 
-},{}],284:[function(require,module,exports){
+},{}],279:[function(require,module,exports){
 var booleanAttrs = ["allowfullscreen", "async", "autofocus", "autoplay", "checked", "compact", "controls", "declare", 
                 "default", "defaultchecked", "defaultmuted", "defaultselected", "defer", "disabled", "draggable", 
                 "enabled", "formnovalidate", "hidden", "indeterminate", "inert", "ismap", "itemscope", "loop", "multiple", 
@@ -48051,7 +47706,7 @@ function updateAttrs(oldVnode, vnode) {
 
 module.exports = {create: updateAttrs, update: updateAttrs};
 
-},{}],285:[function(require,module,exports){
+},{}],280:[function(require,module,exports){
 function updateClass(oldVnode, vnode) {
   var cur, name, elm = vnode.elm,
       oldClass = oldVnode.data.class || {},
@@ -48071,7 +47726,7 @@ function updateClass(oldVnode, vnode) {
 
 module.exports = {create: updateClass, update: updateClass};
 
-},{}],286:[function(require,module,exports){
+},{}],281:[function(require,module,exports){
 var is = require('../is');
 
 function arrInvoker(arr) {
@@ -48114,7 +47769,7 @@ function updateEventListeners(oldVnode, vnode) {
 
 module.exports = {create: updateEventListeners, update: updateEventListeners};
 
-},{"../is":283}],287:[function(require,module,exports){
+},{"../is":278}],282:[function(require,module,exports){
 var raf = (typeof window !== 'undefined' && window.requestAnimationFrame) || setTimeout;
 var nextFrame = function(fn) { raf(function() { raf(fn); }); };
 
@@ -48268,7 +47923,7 @@ function post() {
 
 module.exports = {pre: pre, create: create, destroy: destroy, post: post};
 
-},{}],288:[function(require,module,exports){
+},{}],283:[function(require,module,exports){
 function updateProps(oldVnode, vnode) {
   var key, cur, old, elm = vnode.elm,
       oldProps = oldVnode.data.props || {}, props = vnode.data.props || {};
@@ -48288,7 +47943,7 @@ function updateProps(oldVnode, vnode) {
 
 module.exports = {create: updateProps, update: updateProps};
 
-},{}],289:[function(require,module,exports){
+},{}],284:[function(require,module,exports){
 var raf = (typeof window !== 'undefined' && window.requestAnimationFrame) || setTimeout;
 var nextFrame = function(fn) { raf(function() { raf(fn); }); };
 
@@ -48354,7 +48009,7 @@ function applyRemoveStyle(vnode, rm) {
 
 module.exports = {create: updateStyle, update: updateStyle, destroy: applyDestroyStyle, remove: applyRemoveStyle};
 
-},{}],290:[function(require,module,exports){
+},{}],285:[function(require,module,exports){
 // jshint newcap: false
 /* global require, module, document, Node */
 'use strict';
@@ -48623,14 +48278,14 @@ function init(modules, api) {
 
 module.exports = {init: init};
 
-},{"./htmldomapi.js":282,"./is":283,"./vnode":291}],291:[function(require,module,exports){
+},{"./htmldomapi.js":277,"./is":278,"./vnode":286}],286:[function(require,module,exports){
 module.exports = function(sel, data, children, text, elm) {
   var key = data === undefined ? undefined : data.key;
   return {sel: sel, data: data, children: children,
           text: text, elm: elm, key: key};
 };
 
-},{}],292:[function(require,module,exports){
+},{}],287:[function(require,module,exports){
 (function (global){
 /* global window */
 'use strict';
@@ -48638,7 +48293,7 @@ module.exports = function(sel, data, children, text, elm) {
 module.exports = require('./ponyfill')(global || window || this);
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":293}],293:[function(require,module,exports){
+},{"./ponyfill":288}],288:[function(require,module,exports){
 'use strict';
 
 module.exports = function symbolObservablePonyfill(root) {
@@ -48659,7 +48314,7 @@ module.exports = function symbolObservablePonyfill(root) {
 	return result;
 };
 
-},{}],294:[function(require,module,exports){
+},{}],289:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -48757,8 +48412,12 @@ module.exports = function symbolObservablePonyfill(root) {
   Headers.prototype.append = function(name, value) {
     name = normalizeName(name)
     value = normalizeValue(value)
-    var oldValue = this.map[name]
-    this.map[name] = oldValue ? oldValue+','+value : value
+    var list = this.map[name]
+    if (!list) {
+      list = []
+      this.map[name] = list
+    }
+    list.push(value)
   }
 
   Headers.prototype['delete'] = function(name) {
@@ -48766,8 +48425,12 @@ module.exports = function symbolObservablePonyfill(root) {
   }
 
   Headers.prototype.get = function(name) {
-    name = normalizeName(name)
-    return this.has(name) ? this.map[name] : null
+    var values = this.map[normalizeName(name)]
+    return values ? values[0] : null
+  }
+
+  Headers.prototype.getAll = function(name) {
+    return this.map[normalizeName(name)] || []
   }
 
   Headers.prototype.has = function(name) {
@@ -48775,15 +48438,15 @@ module.exports = function symbolObservablePonyfill(root) {
   }
 
   Headers.prototype.set = function(name, value) {
-    this.map[normalizeName(name)] = normalizeValue(value)
+    this.map[normalizeName(name)] = [normalizeValue(value)]
   }
 
   Headers.prototype.forEach = function(callback, thisArg) {
-    for (var name in this.map) {
-      if (this.map.hasOwnProperty(name)) {
-        callback.call(thisArg, this.map[name], name, this)
-      }
-    }
+    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+      this.map[name].forEach(function(value) {
+        callback.call(thisArg, value, name, this)
+      }, this)
+    }, this)
   }
 
   Headers.prototype.keys = function() {
@@ -49119,7 +48782,7 @@ module.exports = function symbolObservablePonyfill(root) {
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],295:[function(require,module,exports){
+},{}],290:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49277,7 +48940,14 @@ function main(_ref) {
 
       var _ = _ref8[0];
       var data = _ref8[1];
-      return eval('(' + data + ')');
+
+      try {
+        return eval('(' + data + ')');
+      } catch (e) {
+        return null;
+      }
+    }).filter(function (x) {
+      return x;
     }).concat((endpoint && endpoint.recentEvents || []).map(function (data) {
       return JSON.parse(data);
     }));
@@ -49418,7 +49088,7 @@ function main(_ref) {
   };
 }
 
-},{"./vrender":298,"@most/hold":6,"fwitch":66,"most":258}],296:[function(require,module,exports){
+},{"./vrender":293,"@most/hold":6,"fwitch":66,"most":253}],291:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49539,7 +49209,7 @@ function haiku() {
   return base + '-' + suffix;
 }
 
-},{"@motorcycle/dom":17,"codemirror":60,"codemirror/addon/mode/simple":59}],297:[function(require,module,exports){
+},{"@motorcycle/dom":17,"codemirror":60,"codemirror/addon/mode/simple":59}],292:[function(require,module,exports){
 'use strict';
 
 var _templateObject = _taggedTemplateLiteral(['\nquery {\n  endpoints {\n    id, url, description, eventCount\n  }\n}\n      '], ['\nquery {\n  endpoints {\n    id, url, description, eventCount\n  }\n}\n      ']),
@@ -49617,7 +49287,7 @@ function pusherDriver(identifier$) {
   };
 }
 
-},{"./app":295,"@cycle/most-run":3,"@most/create":4,"@most/hold":6,"@motorcycle/dom":17,"cycle-graphql-most-driver":61,"cycle-hashrouter-most-driver":62,"cycle-notification-most-driver":64,"pusher-js":261,"snabbdom/modules/props":288,"snabbdom/modules/style":289}],298:[function(require,module,exports){
+},{"./app":290,"@cycle/most-run":3,"@most/create":4,"@most/hold":6,"@motorcycle/dom":17,"cycle-graphql-most-driver":61,"cycle-hashrouter-most-driver":62,"cycle-notification-most-driver":64,"pusher-js":256,"snabbdom/modules/props":283,"snabbdom/modules/style":284}],293:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49883,4 +49553,4 @@ function empty() {
   return (0, _dom.h)('div');
 }
 
-},{"./helpers":296,"@motorcycle/dom":17,"codemirror":60,"fwitch":66,"loads-css":76,"pretty-date":259}]},{},[297]);
+},{"./helpers":291,"@motorcycle/dom":17,"codemirror":60,"fwitch":66,"loads-css":71,"pretty-date":254}]},{},[292]);

@@ -100,7 +100,14 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     (endpoint, pusherEvents) =>
       pusherEvents
         .filter(([id]) => id = endpoint.id)
-        .map(([_, data]) => eval('(' + data + ')'))
+        .map(([_, data]) => {
+          try {
+            return eval('(' + data + ')')
+          } catch (e) {
+            return null
+          }
+        })
+        .filter(x => x)
         .concat(
           (endpoint && endpoint.recentEvents || [])
             .map(data => JSON.parse(data))

@@ -14,6 +14,7 @@
     "@most/create": "^1.0.1",
     "@most/hold": "^1.3.1",
     "@motorcycle/dom": "^2.0.0",
+    "apollo-client": "^0.4.22",
     "codemirror": "^5.15.2",
     "cycle-graphql-most-driver": "^0.2.2",
     "cycle-hashrouter-most-driver": "0.0.3",
