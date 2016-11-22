@@ -191,6 +191,7 @@ export default function main ({DOM, GRAPHQL, ROUTER, PUSHER}) {
     .merge(
       DOM.select('form button.delete').events('click')
         .tap(e => e.preventDefault())
+        .filter(() => window.confirm('Are you sure you want to delete this endpoint?'))
         .map(e => e.ownerTarget.parentNode.parentNode.parentNode)
         .map(form => ({
           mutation: 'deleteEndpoint',
